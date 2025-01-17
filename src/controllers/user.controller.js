@@ -292,11 +292,150 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 });
 
+// UPDATE USER EMAIL AND PASSWORD 
+
+const updateAccountDetails = asyncHandler(async (req,res)=>{
+
+    // GET UPDATED DETAILS FRON USER
+
+    const { email , fullName } = req.body ;
+
+    if(!email || !fullName){
+        throw new ApiError(400 , "All fields are required")
+    }
+
+    // FIND CURRENT USER AND UPDATE
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id , 
+        {
+            $set:{
+                fullName,
+                email
+            }
+        } ,
+        { new:true } // return updated user
+    ).select("-password")
+
+    // RETURN RESPONSE
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200 , 
+            user ,
+            "Account Details Updated Succesfully"
+        )
+    )
+})
+
+// UPDATE AVATAR
+
+const updateUserAvatar = asyncHandler(async (req,res)=>{
+
+    //  GET NEW AVATAR FROM USER
+
+    const avatarLoacalPath = req.files?.path ;
+
+    // CEHCK FOR THE LOCAL AVATAR 
+
+    if(!avatarLoacalPath){
+        throw new ApiError(400 , "Avatar file is misssing") ;
+    }
+
+    // UPLOAD ON CLOUDINARY 
+
+    const avatar = await uploadCloudinary(avatarLoacalPath) ;
+
+    // CHECK FOR AVATAR
+
+    if(!avatar){
+        throw new ApiError(400 , "Error while uploading on avatar")
+    }
+
+    // FIND AND UPDATE CURRENT USER AVATAR
+
+    const user =  await User.findOneAndUpdate(
+        req.user?._id ,
+        {
+            $set:{avatar : avatar.url}
+        } ,
+        { new : true }
+    ).select("-password")
+
+    // RETURN RESPONSE
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200 ,
+            user ,
+            "Avatar Image Updated Succesfully"
+        )
+    )
+
+})
+
+// UPDATE COVER IMAGE
+
+const updateUserCoverImage = asyncHandler(async (req,res)=>{
+
+    //  GET NEW COVER IMAGE FROM USER
+
+    const coverImageLoacalPath = req.files?.path ;
+
+    // CEHCK FOR THE LOCAL COVER IMAGE 
+
+    if(!coverImageLoacalPath){
+        throw new ApiError(400 , "Cover Image file is misssing") ;
+    }
+
+    // UPLOAD ON CLOUDINARY 
+
+    const coverImage = await uploadCloudinary(coverImageLoacalPath) ;
+
+    // CHECK FOR Cover Image
+
+    if(!coverImage){
+        throw new ApiError(400 , "Error while uploading on Cover Image")
+    }
+
+    // FIND AND UPDATE CURRENT USER COVER IMAGE
+
+   const user = await User.findOneAndUpdate(
+        req.user?._id ,
+        {
+            $set:{coverImage : coverImage.url}
+        } ,
+        { new : true }
+    ).select("-password")
+
+    // RETURN RESPONSE
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200 ,
+            user ,
+            "Cover Image Updated Succesfully"
+        )
+    )
+
+})
+
 export {
+    
   registerUser,
   loginUser,
   logoutUser,
   refreshAcessToken,
   changePassword,
-  getCurrentUser
+  getCurrentUser,
+  updateAccountDetails,
+  updateUserAvatar,
+  updateUserCoverImage
+
 };
