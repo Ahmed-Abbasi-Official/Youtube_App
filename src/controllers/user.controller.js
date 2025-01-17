@@ -93,6 +93,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // LOGIN USER
 
 const loginUser = asyncHandler(async (req, res) => {
+
   // GET DATA FROM USER
 
   const { email, username, password } = req.body;
@@ -105,7 +106,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // FIND
 
-  const user = await findOne({
+  const user = await User.findOne({
     $or: [{ email }, { username }],
   });
 
@@ -158,6 +159,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // LOGOUT USER
 
 const logoutUser = asyncHandler(async (req, res) => {
+
   // FIND AND UPDATE
 
   await User.findByIdAndUpdate(
@@ -184,6 +186,61 @@ const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User Logged Out"));
+
 });
 
-export { registerUser, loginUser };
+// REFRESH TOKEN 
+
+const refreshAcessToken=asyncHandler(async (req,res)=>{
+
+    // GET REFRESH TOKEN FROM COOKIES 
+
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken ;
+
+    if(!incomingRefreshToken){
+        throw new ApiError(401 , "Unauthorized Requst") ;
+    }
+
+    //   DECODE TOKEN
+    
+      const decodeToken = jwt.verify(token, process.env.ACCEES_TOKEN_SECRET);
+
+    //   FIND USER
+
+    const user = await User.findById(decodeToken?._id) ;
+
+    if(!user){
+        throw new ApiError(401 , "Invalid refresh token")
+    }
+
+    // CHECK INCOMING AND HOLD REFRESH TOKEN 
+
+    if(incomingRefreshToken !== user?.refreshToken){
+        throw new ApiError(401 , "Refresh Token is Expired")
+    }
+
+    // GENERATE NEW TOKENS
+
+    const options = {
+        http:true , 
+        secure :true
+    }
+
+  const {accessToken , newRefreshToken} =  await generateAccessAndRefreshToken(user?._id) ;
+
+    // RETURN RESPONSE 
+
+    return res
+    .status(200)
+    .cookie("accessToken",accessToken,options)
+    .cookie("refreshToken",newRefreshToken,options)
+    .jsono(
+        new ApiResponse(
+            200,
+            { accessToken , refreshToken : newRefreshToken } , 
+            "Acsess Token Refreshed Succesfully"
+        )
+    )
+})
+
+export { registerUser , loginUser , logoutUser , refreshAcessToken };
