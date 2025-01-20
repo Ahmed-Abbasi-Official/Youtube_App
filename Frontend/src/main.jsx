@@ -11,11 +11,13 @@ import {
 } from "react-router-dom";
 import MainLayout from './Mainlayout/MainLayout.jsx';
 import HomePage from './routes/HomePage.jsx';
+import RegisterPage from './routes/RegisterPage.jsx';
 
 const router=createBrowserRouter(
   createRoutesFromElements(
     <Route path='' element={<MainLayout/>}>
       <Route path='/' element={<HomePage/>}/>
+      <Route path='/register' element={<RegisterPage/>}/>
     </Route>
   )
 )

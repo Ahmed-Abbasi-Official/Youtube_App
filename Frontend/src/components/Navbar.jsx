@@ -3,6 +3,7 @@ import Input from '../utils/Input'
 import Button from '../utils/Button'
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FiSearch } from "react-icons/fi";
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
@@ -10,11 +11,13 @@ const Navbar = () => {
       {/* DESKTOP MENU */}
       <div className='hidden sm:flex justify-between items-center'>
         {/* LOGO */}
+       <Link to='/'>
         <img src="/Logo/Logo.png"
+        
         className='w-16 h-16 bg-cover '
         loading='lazy'
 
-         alt="" />
+         alt="" /></Link>
         {/* SEARCH */}
         <div>
           {/* SEARCH ICON */}
@@ -36,13 +39,15 @@ const Navbar = () => {
           value="Log in"
           />
           {/* SIGNUP */}
-          <div className='bg-[#AE7AFF] shadow-custom py-1 px-2'
+          <Link className='bg-[#AE7AFF] shadow-custom py-1 px-2'
+          to='/register'
+
           >
           <Button
           value="Sign up"
           className="text-black"
           />
-          </div>
+          </Link>
         </div>
       </div>
       {/* MOBILE MENU */}
