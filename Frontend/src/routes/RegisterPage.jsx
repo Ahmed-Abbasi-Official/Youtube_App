@@ -3,27 +3,43 @@ import Input from "../utils/Input";
 import Button from "../utils/Button";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useUser } from "../context/User.Context";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
+
     const [fileUrl, setFileUrl] = useState(null);
+    const {signupUser}=useUser()
   // REACT HOOK FORM
   const { register, handleSubmit, formState: { errors } } = useForm();
+
+  // HANDLE AVATAR FILE
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      console.log(url)
+      // console.log(url)
       setFileUrl(url);
     }
   };
-  const onSubmit = (data) => {
-    data.file=fileUrl
-    console.log(data);
+  // HANDLE SUBMIT FORM
+
+  const onSubmit = async (data) => {
+    data.file = fileUrl;
+  
+    try {
+      const response = await signupUser.mutateAsync(data);
+      // console.log("Success:", response);
+      toast.success(response?.data);
+    } catch (error) {
+      // console.error("Error:", error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
+    }
   };
-  if(errors){
-    console.log(errors)
-  }
+  
   return (
     <div className="w-full h-[calc(100vh-72px)]  flex justify-center items-center">
       <div className="flex w-full flex-col items-center gap-8">
@@ -31,9 +47,9 @@ const RegisterPage = () => {
         <div>
           <img src="/Logo/Logo.png" alt="" />
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-[20%]">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-[65%] sm:w-[45%] md:w-[30%] lg:w-[20%]">
             {/* username */}
-         <div className="mb-4">
+         <div className="mb-2">
          <input  
           {...register("username",{required:"username must be provided"})} 
            placeholder="username"
@@ -44,7 +60,7 @@ const RegisterPage = () => {
           )}
          </div>
              {/* fullName */}
-         <div className="mb-4">
+         <div className="mb-2">
          <input 
           {...register("fullName",{required:"FullName is required"})} 
           placeholder="fullName" 
@@ -55,7 +71,7 @@ const RegisterPage = () => {
           )}
          </div>
           {/* Email */}
-          <div className="mb-4">
+          <div className="mb-2">
           <input
           {...register("email",{required:"Email is required"})}
            placeholder="email"
@@ -66,7 +82,7 @@ const RegisterPage = () => {
           )}
           </div>
           {/* Password */}
-         <div className="mb-4">
+         <div className="mb-2">
          <input 
           {...register("password",{required:"Password is required"})}
           placeholder="password" 
@@ -77,7 +93,7 @@ const RegisterPage = () => {
           )}
          </div>
           {/* AVATAR */}
-          <div className="mb-4 cursor-pointer">
+          <div className="mb-2 cursor-pointer">
             <label htmlFor="avatar" className="cursor-pointer">Choose Avatar</label>
             <input
             id="avatar"
