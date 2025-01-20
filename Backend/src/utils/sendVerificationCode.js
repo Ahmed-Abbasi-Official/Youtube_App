@@ -1,4 +1,3 @@
-import { ApiResponse } from "./ApiResponse.js";
 import { asyncHandler } from "./asyncHandler.js";
 import { transporter } from "./emailConfig.js";
 import { Verification_Email_Template } from "./emailTemplate.js";

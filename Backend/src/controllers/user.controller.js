@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { sendEmail } from "../utils/sendMail.js";
 
 // TOKENS
 
@@ -30,7 +31,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   // GET DATA FROM USER
 
-  const { email, fullName, username, password } = req.body;
+  const { email, fullName, username, password,file } = req.body;
   // console.log(email);
 
   // VALIDATION - NOT EMPTY
@@ -70,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     fullName,
     email,
-    // avatar:avatar.url,
+    avatar:file,
     // coverImage:coverImage.url || "",
     password,
     username: username,
@@ -557,6 +558,10 @@ const getWatchHistory = asyncHandler(async(req, res) => {
         )
     )
 })
+
+// VERIFT OTP
+
+
 
 
 export {
