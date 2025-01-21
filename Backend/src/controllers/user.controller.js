@@ -82,17 +82,18 @@ const registerUser = asyncHandler(async (req, res) => {
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
-  // SEND EMAIL
-  await sendEmail({ _id: createdUser._id, email: createdUser.email }, res);
+  
   // CHECK FOR USER CREATION
   if (!createdUser) {
     throw new ApiError(500, "Someting went wrong while registration the user");
   }
+  // SEND EMAIL
+  await sendEmail({ _id: createdUser._id, email: createdUser.email }, res);
   // RETURN RESPONSE
 
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered Successfully"));
+    .json(new ApiResponse(200, createdUser, "Verification Code Sent Successfully"));
 });
 
 // LOGIN USER

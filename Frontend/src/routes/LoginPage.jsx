@@ -1,50 +1,30 @@
 import React, { useState } from "react";
-import Input from "../utils/Input";
 import Button from "../utils/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useUser } from "../context/User.Context";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { toast } from "react-toastify";
-import VerifiedPopUp from "../components/VerifiedPopUp";
 
-const RegisterPage = () => {
-    const [fileUrl, setFileUrl] = useState(null);
-    const [showPopUp, setShowPopUp] = useState(false);
-    const [data, setData] = useState('');
-    const {signupUser}=useUser()
+const LoginPage = () => {
+    const {signinUser}=useUser()
+
+    const navigate = useNavigate();
   // REACT HOOK FORM
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  // HANDLE AVATAR FILE
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      // console.log(url)
-      setFileUrl(url);
-    }
-  };
   // HANDLE SUBMIT FORM
 
   const onSubmit = async (data) => {
-    data.file = fileUrl;
-  
     try {
-      setShowPopUp(true);
-      const response = await signupUser.mutateAsync(data);
+      const response = await signinUser.mutateAsync(data);
       toast.success(response?.data);
-      setData(response);
+      navigate('/');
     } catch (error) {
-      // console.error("Error:", error?.response?.data?.message);
+      console.error("Error:", error?.response?.data?.message);
       toast.error(error?.response?.data?.message);
     }
   };
 
-  console.log(data);
-  
   
   return (
     <>
@@ -64,17 +44,6 @@ const RegisterPage = () => {
              />
              {errors && (
             <p className="text-[10px] mt-1 text-red-400">{errors?.username?.message}</p>
-          )}
-         </div>
-             {/* fullName */}
-         <div className="mb-2">
-         <input 
-          {...register("fullName",{required:"FullName is required"})} 
-          placeholder="fullName" 
-          className="w-full bg-black px-4 py-2 border border-[#D0D5DD] rounded-none text-white outline-none" 
-          />
-            {errors && (
-            <p className="text-[10px] mt-1 text-red-400">{errors?.fullName?.message}</p>
           )}
          </div>
           {/* Email */}
@@ -99,40 +68,24 @@ const RegisterPage = () => {
             <p className="text-[10px] mt-1 text-red-400">{errors?.password?.message}</p>
           )}
          </div>
-          {/* AVATAR */}
-          <div className="mb-2 cursor-pointer">
-            <label htmlFor="avatar" className="cursor-pointer">Choose Avatar</label>
-            <input
-            id="avatar"
-            {...register("file",{required:"Avatar is required"})}
-             type="file"
-            className="hidden"
-            onChange={handleFileChange}
-            />
-            {fileUrl && <img src={fileUrl} alt="Preview" className="mt-2 w-16 h-16 rounded-full object-cover" />}
-               {errors && (
-            <p className="text-[10px] mt-1 text-red-400">{errors?.file?.message}</p>
-          )}
-          </div>
+          
           <Button
           type="submit"
-            value="Create Account"
+            value="Continue"
             className="bg-[#AE7AFF] text-center py-2"
           />
         </form>
         <p className="text-sm text-gray-500">
-          if you already have account?{" "}
+          if you dont have account?{" "}
           <Link to="/register" className="cursor-pointer text-white">
-            Log in
+            Sign up
           </Link>
         </p>
       </div>
     </div>
-    {/* VERIFIED OTP */}
-    {showPopUp && (<VerifiedPopUp data={data.message}/>)}
     </>
     
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

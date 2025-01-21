@@ -14,11 +14,11 @@ const sendEmail=asyncHandler(async({_id,email},res)=>{
     })
   await sendVerificationCode(email,otp)
 
-    return res
-    .status(200)
-    .json(
-      new ApiResponse(200,"Verification Code Sent Successfully")
-    )
+    // return res
+    // .status(200)
+    // .json(
+    //   new ApiResponse(200,{email,_id},"Verification Code Sent Successfully")
+    // )
 })
 
 export { sendEmail }

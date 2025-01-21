@@ -14,6 +14,7 @@ import MainLayout from "./Mainlayout/MainLayout.jsx";
 import HomePage from "./routes/HomePage.jsx";
 import RegisterPage from "./routes/RegisterPage.jsx";
 import { ToastContainer } from 'react-toastify';
+import LoginPage from "./routes/LoginPage.jsx";
 
 
 
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
     <Route path="" element={<MainLayout />}>
       <Route path="/" element={<HomePage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
     </Route>
   )
 );
