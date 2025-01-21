@@ -8,9 +8,11 @@ import {
     logoutUser,
     refreshAcessToken,
     registerUser,
+    resendOTP,
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
+    verifyEmail,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/isAuth.middleware.js";
@@ -44,5 +46,7 @@ router
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
 router.route("/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/history").get(verifyJWT, getWatchHistory);
+router.route("/verify-email").post( verifyEmail );
+router.route("/resend-email").post( resendOTP );
 
 export default router;

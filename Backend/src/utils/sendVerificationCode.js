@@ -13,6 +13,6 @@ export const sendVerificationCode=asyncHandler(async(email,verificationCode)=>{
         html: Verification_Email_Template.replace("{verificationCode}",verificationCode), // html body
       });
 
-      console.log("Email Send Succesfully : ",response)
+      // console.log("Email Send Succesfully : ",response)
      
 })
