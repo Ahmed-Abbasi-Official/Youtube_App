@@ -55,26 +55,24 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // CHECK FOR AVATAR
-  // const avatarLocalPath=req.files?.avatar[0]?.path ;
-  // const coverLocalPath=req.files?.coverImage[0]?.path
+  console.log(req.file)
+  const avatarLocalPath=req.file?.path ;
 
-  // if(!avatarLocalPath){
-  //     throw new ApiError(400,"Avatar file is required")
-  // }
+  if(!avatarLocalPath){
+      throw new ApiError(400,"AvatarLocal file is required")
+  }
   // MULTER CHECK
   // UPLOAD CLOUDINARY
-  // const avatar = await uploadCloudinary(avatarLocalPath)
-  // const coverImage = await uploadCloudinary(coverLocalPath)
+  const avatar = await uploadCloudinary(avatarLocalPath)
 
-  // if(!avatar){
-  //     throw new ApiError(400,"Avatar file is required")
-  // }
+  if(!avatar){
+      throw new ApiError(400,"Avatar file is required")
+  }
   // CREATE OBJECT
   const user = await User.create({
     fullName,
     email,
-    avatar: file,
-    // coverImage:coverImage.url || "",
+    avatar: avatar.url,
     password,
     username: username,
   });
@@ -192,7 +190,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User Logged Out"));
 });
 
-// REFRESH TOKEN
+// REFRESH TOKEN  
 
 const refreshAcessToken = asyncHandler(async (req, res) => {
   // GET REFRESH TOKEN FROM COOKIES
@@ -248,7 +246,7 @@ const refreshAcessToken = asyncHandler(async (req, res) => {
     );
 });
 
-// CHANGE PASSWORD
+// CHANGE PASSWORD  
 
 const changePassword = asyncHandler(async (req, res) => {
   // GET NEW AND OLD PASSWORD
@@ -288,12 +286,18 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password Successfully Changed"));
 });
 
-// GET CURRENT USER
+// GET CURRENT USER 
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   // RETURN RESPONSE
 
-  return res.status(200).json(200, req.user, "User Fetched Successfully");
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      req.user,
+      "User Details Retrieved Successfully"
+    )
+  );
 });
 
 // UPDATE USER EMAIL AND PASSWORD
@@ -410,7 +414,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 // GET CHANNEL PROFILE
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
-  const { username } = req.params;
+  const { username } = req.params ;
 
   if (!username?.trim()) {
     throw new ApiError(400, "username is missing");
@@ -609,6 +613,12 @@ const resendOTP = asyncHandler( async (req, res) => {
         await UserOTP.deleteMany({ userId });
 
         await sendEmail({ _id: userId , email }, res);
+        res.status(200).json(new ApiResponse(
+          200,
+          {}
+          ,
+          "Verification code has been sent to your registered email.",
+        ))
     }
 });
 

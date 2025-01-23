@@ -20,23 +20,14 @@ import { verifyJWT } from "../middlewares/isAuth.middleware.js";
 const router = Router();
 
 router.route("/register").post(
-  //   upload.fields([
-  //     {
-  //       name: "avatar",
-  //       maxCount: 1,
-  //     },
-  //     {
-  //       name: "coverImage",
-  //       maxCount: 1,
-  //     },
-  //   ]),
+    upload.single('avatar'),
   registerUser
 );
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(refreshAcessToken);
 router.route("/change-password").post(verifyJWT, changePassword);
-router.route("/").get(getCurrentUser);
+router.route("/me").get(verifyJWT,getCurrentUser);
 router.route("/update-account").patch(updateAccountDetails);
 router
   .route("/update-avatar")

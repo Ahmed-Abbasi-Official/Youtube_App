@@ -1,0 +1,19 @@
+@media (max-width: 480px) {
+    .w_480px{
+        width: 55%;
+    }
+}
+@media (max-width: 385px) {
+    .w_480px{
+        width: 65%;
+    }
+}
+@media (768px <width<818px) {
+    .flex_col{
+        flex-direction: column;
+    }
+}
+
+.box-shadow{
+    box-shadow: -2px 4px 13px 0px rgba(255,255,255,0.84);
+}

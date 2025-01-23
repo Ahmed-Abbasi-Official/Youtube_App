@@ -9,7 +9,7 @@ const VerifiedPopUp = ({ data }) => {
   const [timer, setTimer] = useState();
   const [isResendDisabled, setIsResendDisabled] = useState(false);
 
-  const {verifiedOTP}=useUser();
+  const {verifiedOTP,resendOTP}=useUser();
   const navigate = useNavigate();
 
     // TIMER
@@ -45,6 +45,20 @@ const VerifiedPopUp = ({ data }) => {
          toast.error(error?.response?.data?.message);
        }
   };
+
+  // RESNED OTP
+
+  const handleResendOtp = async () => {
+    try {
+      // console.log(data)
+      const response = await resendOTP.mutateAsync({data});
+      console.log(response)
+      toast.success("Resend OTP Successfully");
+    } catch (error) {
+      // console.error("Error:", error);
+      toast.error(error?.response?.data?.message);
+    }
+  }
   
 
   return (
@@ -70,7 +84,7 @@ const VerifiedPopUp = ({ data }) => {
           <button
             className="text-[#AE7AFF] font-semibold cursor-pointer hover:text-[#ad7affcb] disabled:text-gray-400 disabled:cursor-not-allowed"
             onClick={() => {
-              resendOtp.mutate();
+              handleResendOtp()
               setIsResendDisabled(true);
               setTimer(60);
             }}
