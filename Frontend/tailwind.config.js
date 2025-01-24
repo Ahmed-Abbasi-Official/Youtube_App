@@ -12,6 +12,24 @@ export default {
       screens: {
         '540px': { max: '540px' },
       },
+      keyframes: {
+        slide: {
+          from: { scale:"0" },
+          to: { scale: '1' },
+        },
+      },
+      keyframes: {
+        slideIn: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        slide: 'slide .2s ease-in-out',
+      },
+      animation: {
+        slideIn: 'slideIn .5s ease-in-out forwards',
+      },
     },
   },
   plugins: [],
