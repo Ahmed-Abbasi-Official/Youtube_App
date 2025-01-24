@@ -2,10 +2,11 @@ import React, { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { useUser } from '../context/User.Context';
+import Loader from '../components/Loader';
 
 const MainLayout = () => {
   const {setIsAuthenticated,user,userLoading}=useUser();
-  
+
   // CHECK FOR AUTHENTICATED USER
 
   useEffect(()=>{
@@ -14,7 +15,8 @@ const MainLayout = () => {
       setIsAuthenticated(true)
     }
   },[user])
-  if(userLoading) return <p>Loading...</p>;
+
+  if(userLoading) return <Loader/>;
 
   
   return (

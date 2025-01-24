@@ -15,7 +15,7 @@ import HomePage from "./routes/HomePage.jsx";
 import RegisterPage from "./routes/RegisterPage.jsx";
 import { ToastContainer } from 'react-toastify';
 import LoginPage from "./routes/LoginPage.jsx";
-import Profile from "./routes/Profile.jsx";
+import MyChannel from "./routes/MyChannel.jsx";
 
 
 
@@ -27,7 +27,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<HomePage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/:id" element={<MyChannel />} />
     </Route>
   )
 );
