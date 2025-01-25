@@ -305,10 +305,20 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req, res) => {
   // GET UPDATED DETAILS FRON USER
 
-  const { email, fullName } = req.body;
+  const { username, fullName } = req.body;
 
-  if (!email || !fullName) {
+  if (!username || !fullName) {
     throw new ApiError(400, "All fields are required");
+  }
+
+   // CHECK FOR (username and email) DUPLICATION
+
+   const existedUser = await User.findOne({
+    $or: [ { username } ],
+  });
+
+  if (existedUser) {
+    throw new ApiError(409, "User with username already exists");
   }
 
   // FIND CURRENT USER AND UPDATE
@@ -318,7 +328,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     {
       $set: {
         fullName,
-        email,
+        username,
       },
     },
     { new: true } // return updated user

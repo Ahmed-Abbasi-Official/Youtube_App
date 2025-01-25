@@ -57,7 +57,7 @@ const Modal = ({ setModal}) => {
           {/* LOGOUT  BUTTON */}
           <Link
             className="bg-gray-400 md:py-2 md:px-4 py-1 sm:px-2 text-sm sm:text-md  text-white rounded text-center"
-            to={user?.message?._id}
+            to={user?.message?.username}
           >
             My Channel
           </Link>

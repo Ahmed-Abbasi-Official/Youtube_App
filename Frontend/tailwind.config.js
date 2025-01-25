@@ -14,23 +14,47 @@ export default {
       },
       keyframes: {
         slide: {
-          from: { scale:"0" },
-          to: { scale: '1' },
+          from: { scale: "0" },
+          to: { scale: "1" },
         },
-      },
-      keyframes: {
         slideIn: {
-          '0%': { transform: 'translateX(100%)' },
-          '100%': { transform: 'translateX(0)' },
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
         },
       },
       animation: {
-        slide: 'slide .2s ease-in-out',
+        slide: "slide .2s ease-in-out",
+        slideIn: "slideIn .5s ease-in-out forwards",
       },
-      animation: {
-        slideIn: 'slideIn .5s ease-in-out forwards',
+      // Custom scrollbar styles
+      scrollbar: {
+        DEFAULT: {
+          width: '6px',
+          borderRadius: '10px',
+          backgroundColor: '#1f2937', // gray-800
+          thumbColor: '#9333ea', // purple-600
+          thumbHoverColor: '#7e22ce', // purple-700
+        },
       },
     },
   },
-  plugins: [],
-}
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".custom-scrollbar::-webkit-scrollbar": {
+          width: "6px",
+        },
+        ".custom-scrollbar::-webkit-scrollbar-thumb": {
+          backgroundColor: "#9333ea",
+          borderRadius: "10px",
+        },
+        ".custom-scrollbar::-webkit-scrollbar-thumb:hover": {
+          backgroundColor: "#7e22ce",
+        },
+        ".custom-scrollbar::-webkit-scrollbar-track": {
+          backgroundColor: "#1f2937",
+        },
+      });
+    },
+  ],
+};

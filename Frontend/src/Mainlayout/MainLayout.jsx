@@ -11,7 +11,7 @@ const MainLayout = () => {
 
   useEffect(()=>{
     if(user){
-      console.log(user)
+      // console.log(user)
       setIsAuthenticated(true)
     }
   },[user])

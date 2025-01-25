@@ -12,7 +12,7 @@ const Navbar = () => {
   const { isAuthenticated , user} = useUser();
   const [mobileBar, setMobileBar] = useState(false);
   const [modal, setModal] = useState(false);
-  console.log(isAuthenticated,user)
+  // console.log(isAuthenticated,user)
 
  
 

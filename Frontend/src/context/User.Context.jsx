@@ -96,6 +96,19 @@ export const UserProvider = ({ children }) => {
     },
   });
 
+  // GET CHANNEL PROFILE
+
+  const { data:channelData, error:channelError, isLoading:channelLoading } = useQuery({
+    queryKey: ["channelProfile", user?.message],
+    queryFn: async ()=>{
+      const res = await axios.get(`/api/v1/users/${user?.message?.username}`);
+      return res.data;
+    },
+    enabled: !!user?.message,  // Tabhi chale jab user.message ho
+    retry: 2,                  // 2 dafa retry kare ga agar fail ho
+    staleTime: 1000 * 60 * 5,   // 5 minutes tak cache fresh rahe ga
+  });
+
   return (
     <UserContext.Provider
       value={{
@@ -108,7 +121,10 @@ export const UserProvider = ({ children }) => {
         userLoading,
         logoutMutation,
         isAuthenticated,
-        setIsAuthenticated
+        setIsAuthenticated,
+        channelData,
+        channelError,
+        channelLoading,
       }}
     >
       {children}
