@@ -49,11 +49,6 @@ const Modal = ({ setModal}) => {
         </div>
         {/* BUTTONS */}
         <div className="flex flex-col gap-2">
-          {/* UPDATED PROFILE BUTTON */}
-          <button className="md:py-2 text-sm sm:text-md md:px-4 py-1 sm:px-2 bg-[#AE7AFF] text-white rounded " onClick={()=>{
-          }}>
-            Update Profile
-          </button>
           {/* LOGOUT  BUTTON */}
           <Link
             className="bg-gray-400 md:py-2 md:px-4 py-1 sm:px-2 text-sm sm:text-md  text-white rounded text-center"

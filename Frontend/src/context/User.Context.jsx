@@ -144,7 +144,7 @@ export const UserProvider = ({ children }) => {
   const updateUserCoverImg = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      console.log(data)
+      // console.log(data)
       const res = await axios.patch(`/api/v1/users/update-coverImage`, data);
       console.log(res);
       return res.data;

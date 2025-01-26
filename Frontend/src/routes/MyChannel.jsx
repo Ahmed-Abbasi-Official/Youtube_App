@@ -16,7 +16,9 @@ const MyChannel = () => {
   const [updateCover, setUpdateCover] = useState(null);
   const [updateAvatar, setUpdateAvatar] = useState(null);
   const [avatarLoading, setAvatarLoading] = useState(false);
+  const [coverLoading, setCoverLoading] = useState(false);
   const [showAvatarBtn, setShowAvatarBtn] = useState(true);
+  const [showCoverBtn, setShowCoverBtn] = useState(true);
 
   if (channelError) return <p>Error in Fetching data {channelError} </p>;
   if (channelLoading) return <p>Loading...</p>;
@@ -73,10 +75,22 @@ const MyChannel = () => {
   // HANDLE COVER IMAGE UPDATION
 
   const handleCoverImageChange = async(e) => {
+    setCoverLoading(true)
     const formData=new FormData();
     formData.append("coverImage", updateCover);
-    console.log(formData);
-    await updateUserCoverImg.mutate(formData);
+    await updateUserCoverImg.mutate(formData,{
+      onSuccess: () => {
+        queryClient.invalidateQueries(["user", "channelProfile"]);
+        setShowCoverBtn(true)
+        setCoverLoading(false)
+        toast.success("Cover Image Updated Successfully");
+      },
+      onError: (error) => {
+        setShowCoverBtn(true)
+        setCoverLoading(false)
+        toast.error(error?.response?.data?.message);
+      },
+    });
   }
   
 
@@ -90,34 +104,45 @@ const MyChannel = () => {
             <img
               src={ channelData?.message?.coverImage ||"/Main/coverImg.png"}
               alt="Cover Image"
-              className="w-full h-60 object-cover"
+              className="w-full sm:h-60 h-40 object-center"
             />
             {/* EDIT COVER IMAGE */}
             {
               user?.message?.username === channelData?.message?.username && (
+                <>
                 <div className="absolute top-2 right-2 bg-white rounded-full p-2 text-sm">
-                    <label htmlFor="coverImage">
-                    <FaPen className="text-blue-500 cursor-pointer" />
-                      <input type="file"  
-                      id="coverImage"
-                      className="hidden"
-                      onChange={(e)=>{
-                        setUpdateCover(e.target.files[0])
-                      }}
-                       />
-                    
-                    </label>
+                    {
+                      showCoverBtn ?(
+                        <label htmlFor="coverImage">
+                        <FaPen className="text-blue-500 cursor-pointer" />
+                          <input type="file"  
+                          id="coverImage"
+                          className="hidden"
+                          onChange={(e)=>{
+                            setUpdateCover(e.target.files[0])
+                            setShowCoverBtn(false)
+                          }}
+                           />
+                        </label>
+                      ):(
+                        <button
+                        onClick={handleCoverImageChange}
+                        className="text-black px-4 font-semibold py-2 text-md"
+                        >{coverLoading ? "Uploading...":"Save"}</button>
+                      )
+                    }
                 </div>
+                </>
               )
             }
           </div>
 
           {/* PROFILE SECTION */}
 
-          <div className="px-6 py-4 flex items-center space-x-6">
+          <div className="px-4 sm:px-6 sm:py-4 flex sm:flex-row flex-col items-start sm:items-center sm:space-x-6">
             {/* AVATAR */}
-            <button onClick={handleCoverImageChange}>handleCoverImageChange</button>
-            <div className="relative w-32 h-32 -mt-14 z-20 group cursor-pointer">
+            
+            <div className="relative sm:w-32 sm:h-32 w-16 h-16 -mt-14 z-20 group cursor-pointer">
               {/* AVATAR LOGO */}
               <img
                 src={channelData?.message?.avatar || "/Logo/user.png"}
@@ -128,8 +153,6 @@ const MyChannel = () => {
               { user?.message?.username === channelData?.message?.username && <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <label 
                 htmlFor="avatar"
-                
-                
                 >
                   <TbUserEdit
                     className="text-white text-4xl cursor-pointer"
@@ -147,7 +170,11 @@ const MyChannel = () => {
                 </label>
               </div>}
               { user?.message?.username === channelData?.message?.username && ( 
-               !showAvatarBtn &&  <button disabled={avatarLoading} onClick={handleUpdateAvatar}>{ avatarLoading ? "Uploading...":"save" }</button>
+               !showAvatarBtn &&  <button 
+               disabled={avatarLoading} 
+               onClick={handleUpdateAvatar}
+               className="sm:ml-0 ml-40 font-bold text-md cursor-pointer "
+               >{ avatarLoading ? "Uploading...":"Save" }</button>
                 )}
             </div>
             {/* EDIT DETAILS */}
@@ -171,17 +198,17 @@ const MyChannel = () => {
                 </div>
               ) : (
                 <>
-                  <h1 className="text-3xl font-bold">
+                  <h1 className="text-lg sm:text-3xl font-bold">
                     {channelData?.message?.fullName}
                   </h1>
-                  <p className="text-gray-400 text-lg">
+                  <p className="text-gray-400 text-sm sm:text-lg">
                     @{channelData?.message?.username}
                   </p>
                 </>
               )}
-              <p className="text-gray-400">
-                {channelData?.message?.subscribersCount} •{" "}
-                {channelData?.message?.channelsSubscribedToCount}
+              <p className="text-gray-400 sm:text-[14px] text-xs sm:py-0 py-1 ">
+              Subscribers  {channelData?.message?.subscribersCount} •{" "}
+               Subscribed {channelData?.message?.channelsSubscribedToCount}
               </p>
             </div>
             {/* OWNER EDIT BUTTON */}
@@ -191,7 +218,7 @@ const MyChannel = () => {
                 className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg flex items-center space-x-2"
               >
                 <FaPen />
-                <span>{isEditing ? "Save" : "Edit"}</span>
+                <span className="sm:text-md text-xs">{isEditing ? "Save" : "Edit"}</span>
               </button>
             ) : (
               // HANDLE USER SUBSCRIBED UNSUBSCRIBED BUTTON
@@ -203,10 +230,10 @@ const MyChannel = () => {
                 }
                 className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg flex items-center space-x-2"
               >
-                <span>
+                <span className="text-xs sm:text-md">
                   {channelData?.message?.isSubscribed
-                    ? "Subscribe"
-                    : "Unsubscribe"}
+                    ? "Unsubscribe"
+                    : "Subscribe"}
                 </span>
               </button>
             )}
@@ -214,7 +241,7 @@ const MyChannel = () => {
             {isEditing && (
               <button
                 onClick={handleCancelClick}
-                className="ml-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold px-5 py-2 rounded-lg"
+                className="sm:ml-4 sm:mt-0 mt-1 bg-gray-700 sm:text-md text-xs hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg"
               >
                 Cancel
               </button>
@@ -224,22 +251,22 @@ const MyChannel = () => {
           {/* NAVIGATION TABS */}
 
           <div className="border-b  border-gray-700">
-            <div className="flex justify-start space-x-10 text-gray-400 px-6 py-3">
+            <div className="flex sm:justify-start justify-evenly space-x-2 sm:space-x-10 text-gray-400 px-2 sm:px-6 py-3">
               <Link
                 to={`/${channelData?.message?.username}?cat=all`}
-                className=" font-semibold px-12 bg-white py-2 text-purple-600 border-b-2 border-purple-600  "
+                className=" font-semibold px-4 sm:px-12 bg-white py-2 text-purple-600 border-b-2 border-purple-600  "
               >
                 Videos
               </Link>
               <Link
                 to={`/${channelData?.message?.username}?cat=playlist`}
-                className="hover:text-white"
+                className="hover:text-white "
               >
                 Playlist
               </Link>
               <Link
                 to={`/${channelData?.message?.username}?cat=community`}
-                className="hover:text-white"
+                className="hover:text-white "
               >
                 Community
               </Link>
@@ -271,6 +298,7 @@ const MyChannel = () => {
               </Link>
             </div>
           </div>
+
           {/* VEDIOS SHOWCASE */}
           <div className=" flex flex-wrap py-4 lg:gap-4 gap-6 sm:gap-2 justify-center w-full bg-black overflow-y-scroll h-[600px] custom-scrollbar">
             <HomeCard />
