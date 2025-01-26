@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useUser } from "../context/User.Context";
 import { toast } from "react-toastify";
 import VerifiedPopUp from "../components/VerifiedPopUp";
-import {  Oval } from "react-loader-spinner";
+import { PuffLoader } from "react-spinners";
 
 const RegisterPage = () => {
   const [fileUrl, setFileUrl] = useState(null);
@@ -154,7 +154,7 @@ const RegisterPage = () => {
               value={
                 loading ? (
                   <div className="flex justify-center items-center">
-                    <Oval
+                    <PuffLoader
                       height={20}
                       width={20}
                       color="#ffffff"
