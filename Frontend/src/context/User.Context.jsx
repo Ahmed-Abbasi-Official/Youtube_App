@@ -55,8 +55,7 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL
-      }/me`);
+      const res = await axios.get("https://play-jo4f.onrender.com/api/v1/users/me");
         console.log(res)
       return res.data;
     },
