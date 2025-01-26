@@ -5,7 +5,7 @@ import HomeSideBar from "../components/HomeSideBar";
 import { FaPen, FaSadCry } from "react-icons/fa";
 import HomeCard from "../components/HomeCard";
 import { Link, useSearchParams } from "react-router-dom";
-import { TbUserEdit } from "react-icons/tb";
+import { TbUserEdit } from "react-icons/tb"
 
 const MyChannel = () => {
   const { channelData, channelLoading, channelError, user, updateUserDetails , updateUserAvatar , updateUserCoverImg } =
