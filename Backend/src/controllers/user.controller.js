@@ -322,7 +322,6 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
   }
 
   // FIND CURRENT USER AND UPDATE
-
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
@@ -333,7 +332,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     },
     { new: true } // return updated user
   ).select("-password");
-
+  
   // RETURN RESPONSE
 
   return res
@@ -346,7 +345,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 const updateUserAvatar = asyncHandler(async (req, res) => {
   //  GET NEW AVATAR FROM USER
 
-  const avatarLoacalPath = req.files?.path;
+  const avatarLoacalPath = req.file?.path;
 
   // CEHCK FOR THE LOCAL AVATAR
 
@@ -386,7 +385,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 const updateUserCoverImage = asyncHandler(async (req, res) => {
   //  GET NEW COVER IMAGE FROM USER
 
-  const coverImageLoacalPath = req.files?.path;
+  const coverImageLoacalPath = req.file?.path;
 
   // CEHCK FOR THE LOCAL COVER IMAGE
 

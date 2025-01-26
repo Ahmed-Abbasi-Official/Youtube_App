@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useUser } from "../context/User.Context";
 import { toast } from "react-toastify";
 import VerifiedPopUp from "../components/VerifiedPopUp";
-import { FallingLines, Oval } from "react-loader-spinner";
+import {  Oval } from "react-loader-spinner";
 
 const RegisterPage = () => {
   const [fileUrl, setFileUrl] = useState(null);

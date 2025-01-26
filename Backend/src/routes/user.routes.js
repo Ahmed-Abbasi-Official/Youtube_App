@@ -28,7 +28,7 @@ router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(refreshAcessToken);
 router.route("/change-password").post(verifyJWT, changePassword);
 router.route("/me").get(verifyJWT,getCurrentUser);
-router.route("/update-account").patch(updateAccountDetails);
+router.route("/update-account").patch(verifyJWT,updateAccountDetails);
 router
   .route("/update-avatar")
   .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);

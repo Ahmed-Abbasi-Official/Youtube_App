@@ -109,9 +109,56 @@ export const UserProvider = ({ children }) => {
     staleTime: 1000 * 60 * 5,   // 5 minutes tak cache fresh rahe ga
   });
 
+  // USER DETAILS UPDATE
+
+  const updateUserDetails = useMutation({
+    mutationKey: ["user","channelProfile"],
+    mutationFn: async (data) => {
+      const res = await axios.patch(`/api/v1/users/update-account`, data);
+      // console.log(res);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["user,channelProfile"]); // Refresh user data
+    },
+    enabled:!!user, // Tabhi chale jab user ho
+  })
+
+  // UPDATE USER AVATAR PICTURE
+
+  const updateUserAvatar = useMutation({
+    mutationKey: ["user", "channelProfile"],
+    mutationFn: async (data) => {
+      console.log(data)
+      const res = await axios.patch(`/api/v1/users/update-avatar`, data);
+      console.log(res);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["user", "channelProfile"]);
+    },
+  });
+
+  // UPDATE COVER IMAGE
+
+  const updateUserCoverImg = useMutation({
+    mutationKey: ["user", "channelProfile"],
+    mutationFn: async (data) => {
+      console.log(data)
+      const res = await axios.patch(`/api/v1/users/update-coverImage`, data);
+      console.log(res);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["user", "channelProfile"]);
+    },
+  });
+  
+
   return (
     <UserContext.Provider
       value={{
+
         signupUser,
         verifiedOTP,
         signinUser,
@@ -125,6 +172,10 @@ export const UserProvider = ({ children }) => {
         channelData,
         channelError,
         channelLoading,
+        updateUserDetails,
+        updateUserAvatar,
+        updateUserCoverImg
+
       }}
     >
       {children}
