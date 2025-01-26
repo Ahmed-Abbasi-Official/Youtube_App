@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
   const signinUser = useMutation({
     mutationKey: ["user"],
     mutationFn: async (data) => {
-      const res = await axios.post(`${BASE_URL}/login`, data);
+      const res = await axios.post(`http://localhost:4000/api/v1/users/login`, data);
       console.log(res);
       return res.data;
     },
@@ -55,13 +55,18 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}/me`);
+      const res = await axios.get("https://play-jo4f.onrender.com/api/v1/users/me", {
+        withCredentials: true,  // Allow cookies to be sent
+      });
+      console.log(res);
       return res.data;
     },
     retry: false,
     staleTime: Infinity,
     cacheTime: Infinity,
   });
+  
+
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -79,6 +84,7 @@ export const UserProvider = ({ children }) => {
     queryKey: ["channelProfile", user?.message],
     queryFn: async () => {
       const res = await axios.get(`${BASE_URL}/${user?.message?.username}`);
+      console.log(res)
       return res.data;
     },
     enabled: !!user?.message,
