@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import './Modal.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../context/User.Context";
 import { toast } from "react-toastify";
 
 const Modal = ({ setModal}) => {
   const {user , logoutMutation }=useUser();
+  const navigate = useNavigate();
 
     // HANDLE LOGOUT
 
     const handleLogout = () => {
       logoutMutation.mutate(null, {
         onSuccess: () => {
+          navigate("/");
           toast.success("Logged Out Successfully");
           
         },
@@ -49,7 +51,7 @@ const Modal = ({ setModal}) => {
         </div>
         {/* BUTTONS */}
         <div className="flex flex-col gap-2">
-          {/* LOGOUT  BUTTON */}
+          {/* LOGOUT  BUTTOn */}
           <Link
             className="bg-gray-400 md:py-2 md:px-4 py-1 sm:px-2 text-sm sm:text-md  text-white rounded text-center"
             to={user?.message?.username}

@@ -5,7 +5,11 @@ import { useForm } from "react-hook-form";
 import { useUser } from "../context/User.Context";
 import { toast } from "react-toastify";
 import VerifiedPopUp from "../components/VerifiedPopUp";
+<<<<<<< HEAD
 import {  PuffLoader } from 'react-spinners'
+=======
+import { PuffLoader } from "react-spinners";
+>>>>>>> abd653e32c9b7896b221aae2c37ce8b835f2e82c
 
 const RegisterPage = () => {
   const [fileUrl, setFileUrl] = useState(null);

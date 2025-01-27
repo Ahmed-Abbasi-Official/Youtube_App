@@ -138,8 +138,9 @@ const loginUser = asyncHandler(async (req, res) => {
   // GENERATES COOKIES
 
   const options = {
-    http: true,
-    secure: true,
+    httpOnly: true, // Cookie can't be accessed via JavaScript
+    secure: true, // Only set to true in production (use HTTPS)
+    sameSite: 'None', // Ensure it works with cross-site cookies
   };
 
   res
@@ -290,7 +291,6 @@ const changePassword = asyncHandler(async (req, res) => {
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   // RETURN RESPONSE
-
   return res.status(200).json(
     new ApiResponse(
       200,
