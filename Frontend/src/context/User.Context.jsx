@@ -55,6 +55,7 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
+      console.log(document.cookie)
       const res = await axios.get("https://play-jo4f.onrender.com/api/v1/users/me", {
         withCredentials: true,  // Allow cookies to be sent
       });

@@ -139,9 +139,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true, // Cookie can't be accessed via JavaScript
-    secure: process.env.NODE_ENV === 'production', // Only set to true in production (use HTTPS)
+    secure: true, // Only set to true in production (use HTTPS)
     sameSite: 'None', // Ensure it works with cross-site cookies
-    maxAge: 1000 * 60 * 60 * 24, // Optional: Set expiration time (1 day in this case)
   };
 
   res
