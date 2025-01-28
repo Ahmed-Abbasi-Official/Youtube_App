@@ -4,7 +4,7 @@ import { createContext, useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const VideoContext = createContext();
-const BASE_URL = "http://localhost:4000/api/v1/videos";
+const BASE_URL = "https://play-lgud.onrender.com/api/v1/videos";
 
 export const VideoProvider = ({ children }) => {
   const queryClient = useQueryClient();
