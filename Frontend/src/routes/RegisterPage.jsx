@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useUser } from "../context/User.Context";
 import { toast } from "react-toastify";
 import VerifiedPopUp from "../components/VerifiedPopUp";
-import {  Oval } from "react-loader-spinner";
+import {  PuffLoader } from "react-spinners";
 
 const RegisterPage = () => {
   const [fileUrl, setFileUrl] = useState(null);
@@ -61,7 +61,7 @@ const RegisterPage = () => {
   return (
     <>
       <div className="w-full h-[calc(100vh-72px)]  flex justify-center items-center">
-        <div className="flex w-full flex-col items-center gap-8">
+        <div className="flex w-full flex-col items-center gap-8 overflow-y-auto">
           {/* LOGO */}
           <div>
             <img src="/Logo/Logo.png" alt="" />
@@ -154,7 +154,7 @@ const RegisterPage = () => {
               value={
                 loading ? (
                   <div className="flex justify-center items-center">
-                    <Oval
+                    <PuffLoader
                       height={20}
                       width={20}
                       color="#ffffff"

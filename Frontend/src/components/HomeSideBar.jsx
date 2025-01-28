@@ -52,8 +52,8 @@ const HomeSideBar = () => {
     },
     {
       icon:<IoSettingsSharp />,
-      routeName:'Settings',
-      path:'/settings'
+      routeName:'Dashboard',
+      path:'/dashboard'
     },
   ]
   return (

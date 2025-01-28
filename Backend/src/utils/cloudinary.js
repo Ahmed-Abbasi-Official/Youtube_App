@@ -21,10 +21,10 @@ const uploadCloudinary = async (localFilePath) => {
       }
     );
     // console.log("File is Uploaded on Cloudinary : ",response.url)
-    // fs.unLinkSync(localFilePath) ;
+    await fs.promises.unlink(localFilePath);
     return uploadResult
   } catch (error) {
-    // fs.unLinkSync(localFilePath) ;
+   await fs.promises.unlink(localFilePath);
     return null ;
   }
 };

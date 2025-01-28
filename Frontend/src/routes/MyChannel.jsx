@@ -4,12 +4,14 @@ import { toast } from "react-toastify";
 import HomeSideBar from "../components/HomeSideBar";
 import { FaPen, FaSadCry } from "react-icons/fa";
 import HomeCard from "../components/HomeCard";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { TbUserEdit } from "react-icons/tb";
+import { useVideo } from "../context/Videos.Context";
 
 const MyChannel = () => {
   const { channelData, channelLoading, channelError, user, updateUserDetails , updateUserAvatar , updateUserCoverImg } =
     useUser();
+  const {userVideos} = useVideo()
   const [channelName, setChannelName] = useState(channelData?.message?.fullName);
   const [username, setUsername] = useState(channelData?.message?.username);
   const [isEditing, setIsEditing] = useState(false);
@@ -19,9 +21,25 @@ const MyChannel = () => {
   const [coverLoading, setCoverLoading] = useState(false);
   const [showAvatarBtn, setShowAvatarBtn] = useState(true);
   const [showCoverBtn, setShowCoverBtn] = useState(true);
+  const params = useParams();
 
+  
+  // GET USER VIDEOS
+  useEffect(()=>{
+    userVideos.mutate(params.username, {
+      onSuccess: (data) => {
+        console.log("User videos fetched:", data);
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.message);
+        console.error("Error fetching user videos:", error);
+      },
+    });
+  },[params.username])
+  
   if (channelError) return <p>Error in Fetching data {channelError} </p>;
   if (channelLoading) return <p>Loading...</p>;
+
   
 
   // HANDLE EDIT CLICK
@@ -92,6 +110,10 @@ const MyChannel = () => {
       },
     });
   }
+
+
+
+  
   
 
   return (
@@ -301,21 +323,18 @@ const MyChannel = () => {
 
           {/* VEDIOS SHOWCASE */}
           <div className=" flex flex-wrap py-4 lg:gap-4 gap-6 sm:gap-2 justify-center w-full bg-black overflow-y-scroll h-[600px] custom-scrollbar">
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
-            <HomeCard />
+            {
+              userVideos?.isPending ?(
+                <p>Loading</p>
+              ):(
+                userVideos?.data?.message?.map((video) => (
+                  <HomeCard
+                  key={video?.slug}
+                  video={video}
+                  />
+                ))
+              )
+            }
           </div>
         </div>
       </div>
