@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const UserContext = createContext();
-const BASE_URL = "https://play-lgud.onrender.com/api/v1/users";
+const BASE_URL = "http://localhost:4000/api/v1/users";
 
 export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
