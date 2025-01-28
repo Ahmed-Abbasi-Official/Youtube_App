@@ -4,7 +4,8 @@ import {app} from './app.js'
 
 // ENV CONFIG
 
-dotenv.config({ path: "./env" });
+// import dotenv from "dotenv";
+dotenv.config(); // Default path: .env in root
 
 // DATABASE CONNECTION
 

@@ -180,6 +180,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   const options = {
     http: true,
     secure: true,
+    sameSite:"none"
   };
 
   //   RETURN RESPONSE

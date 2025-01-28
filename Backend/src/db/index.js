@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-import { db } from "../constants.js";
 
 const connectDB = async () => {
   try {
-    const connectionInstance = await mongoose.connect(
-      `${process.env.MONGODB_URI}/${db}`
-    );
-    // Resulting URI: mongodb+srv://username:password@cluster0.mongodb.net/myDatabase
-    console.log(`Connecting to MongoDB at: ${process.env.MONGODB_URI}/${db}`);
+    const connectionInstance = await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
-    console.log(`MongoDB Connected !! DB HOST : ${connectionInstance}`);
+    console.log(
+      `MongoDB Connected! HOST: ${connectionInstance.connection.host}`
+    );
   } catch (error) {
-    console.log("MongoDB ERROR : ===> ", error);
+    console.error("MongoDB ERROR: ===> ", error.message);
     throw error;
   }
 };

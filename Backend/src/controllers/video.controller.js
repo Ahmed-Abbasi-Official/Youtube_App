@@ -157,14 +157,6 @@ export const getVideosByUser = asyncHandler(async (req, res) => {
 
   const videos = await Video.find({ owner: user._id }).populate("owner");
 
-  // CHECK VALLIDATON
-
-  if (videos.length===0) {
-    throw new ApiError(400, "No Video found");
-  }
-
-
-
   // RETURN RESPONSE
 
   return res

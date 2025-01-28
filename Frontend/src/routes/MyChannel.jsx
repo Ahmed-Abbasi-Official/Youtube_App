@@ -39,7 +39,6 @@ const MyChannel = () => {
   
   if (channelError) return <p>Error in Fetching data {channelError} </p>;
   if (channelLoading) return <p>Loading...</p>;
-
   
 
   // HANDLE EDIT CLICK
@@ -110,11 +109,6 @@ const MyChannel = () => {
       },
     });
   }
-
-
-
-  
-  
 
   return (
     <>
@@ -327,12 +321,17 @@ const MyChannel = () => {
               userVideos?.isPending ?(
                 <p>Loading</p>
               ):(
-                userVideos?.data?.message?.map((video) => (
-                  <HomeCard
-                  key={video?.slug}
-                  video={video}
-                  />
-                ))
+                userVideos?.data?.message?.length === 0 ? (
+                  <p>No Videos Yet</p>
+                ):
+                (
+                  userVideos?.data?.message?.map((video) => (
+                    <HomeCard
+                    key={video?.slug}
+                    video={video}
+                    />
+                  ))
+                )
               )
             }
           </div>
