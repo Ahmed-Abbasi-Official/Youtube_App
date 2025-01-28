@@ -15,7 +15,7 @@ const Dashboard = () => {
         return <div>Error: {userError.message}</div>
     }
 
-    if(user){
+    if(!user){
         return <div>You are not logged in.</div>
     }
     console.log(user)

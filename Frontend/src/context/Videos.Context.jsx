@@ -4,6 +4,7 @@ import { createContext, useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const VideoContext = createContext();
+const BASE_URL = "http://localhost:4000/api/v1/videos";
 
 export const VideoProvider = ({ children }) => {
   const queryClient = useQueryClient();
@@ -15,7 +16,7 @@ export const VideoProvider = ({ children }) => {
     mutationFn: async (data) => {
       const controller = new AbortController(); // Create abort controller
       setAbortController(controller); // Save controller
-      const res = await axios.post(`/api/v1/videos/upload-video`,data,{
+      const res = await axios.post(`${BASE_URL}/upload-video`,data,{
         signal: controller.signal, // Pass signal for cancellation
       });
       return res.data;
@@ -40,7 +41,7 @@ export const VideoProvider = ({ children }) => {
   const {data:allVideos , error:allVideosError , isLoading:allVideosLoading} = useQuery({
     queryKey: ["videos"],
     queryFn: async () => {
-      const res = await axios.get("/api/v1/videos");
+      const res = await axios.get(`${BASE_URL}`);
       return res.data;
     },
     retry: false, // Prevent retry on failure
@@ -52,7 +53,7 @@ export const VideoProvider = ({ children }) => {
 
   const userVideos = useMutation({
     mutationFn: async (username) => {
-      const res = await axios.get(`/api/v1/videos/user/${username}`);
+      const res = await axios.get(`${BASE_URL}/user/${username}`);
       return res.data;
     },
   })

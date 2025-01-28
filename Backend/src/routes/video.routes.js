@@ -20,6 +20,8 @@ router.route('/:id').delete( verifyJWT , deleteVideo) ;
 
 // GET SELECTED USER VIDEOS
 router.route('/user/:username').get(getVideosByUser);
+
+// UPDATE VIDEO
 router.route('/user/update/:id').put( verifyJWT , upload.single('video') , updateVideo);
 
 

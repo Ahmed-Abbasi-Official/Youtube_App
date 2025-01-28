@@ -226,6 +226,7 @@ const refreshAcessToken = asyncHandler(async (req, res) => {
   const options = {
     http: true,
     secure: true,
+    sameSite: 'none', // Ensure it works with cross-site cookies
   };
 
   const { accessToken, newRefreshToken } = await generateAccessAndRefreshToken(

@@ -85,7 +85,7 @@ export const uploadVideo = asyncHandler(async (req, res) => {
 export const getAllVideos = asyncHandler(async (req, res) => {
   // GET ALL VIDEOS
 
-  const videos = await Video.find({isPublic: "public"}).populate('owner');
+  const videos = await Video.find({isPublic: "public"}).sort({ createdAt: -1 }).populate('owner');
 
   // RETURN RESPONSE
 
@@ -148,7 +148,7 @@ export const deleteVideo = asyncHandler(async (req, res) => {
 
 export const getVideosByUser = asyncHandler(async (req, res) => {
   // GET SELECTED USER VIDEOS
-  const user = await User.findOne({ username: req?.params?.username });
+  const user = await User.findOne({ username: req?.params?.username }).sort({ createdAt: -1 });
   if(!user){
     throw new ApiError(404, "User not found");
   }

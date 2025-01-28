@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
 
   const signupUser = useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post(`/api/v1/users/register`, data);
+      const res = await axios.post(`${BASE_URL}/register`, data);
       return res.data;
     },
   });
@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
   const signinUser = useMutation({
     mutationKey: ["user"],
     mutationFn: async (data) => {
-      const res = await axios.post(`/api/v1/users/login`, data);
+      const res = await axios.post(`${BASE_URL}/login`, data);
       console.log(res);
       return res.data;
     },
@@ -30,7 +30,7 @@ export const UserProvider = ({ children }) => {
 
   const verifiedOTP = useMutation({
     mutationFn: async ({ getOtp, data }) => {
-      const res = await axios.post(`/api/v1/users/verify-email`, {
+      const res = await axios.post(`${BASE_URL}/verify-email`, {
         otp: getOtp,
         userId: data?._id,
       });
@@ -40,7 +40,7 @@ export const UserProvider = ({ children }) => {
 
   const resendOTP = useMutation({
     mutationFn: async ({ data }) => {
-      const res = await axios.post(`/api/v1/users/resend-email`, {
+      const res = await axios.post(`${BASE_URL}/resend-email`, {
         userId: data?._id,
         email: data?.email,
       });
@@ -56,10 +56,10 @@ export const UserProvider = ({ children }) => {
     queryKey: ["user"],
     queryFn: async () => {
       console.log(document.cookie)
-      const res = await axios.get(`/api/v1/users/me`, {
+      const res = await axios.get(`${BASE_URL}/me`, {
         withCredentials: true,  // Allow cookies to be sent
       });
-      console.log(res);
+      console.log("res");
       return res.data;
     },
     retry: false,
@@ -71,7 +71,7 @@ export const UserProvider = ({ children }) => {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post(`/api/v1/users/logout`);
+      const res = await axios.post(`${BASE_URL}/logout`);
       return res.data;
     },
     onSuccess: () => {
@@ -84,7 +84,9 @@ export const UserProvider = ({ children }) => {
   const { data: channelData, error: channelError, isLoading: channelLoading } = useQuery({
     queryKey: ["channelProfile", user?.message],
     queryFn: async () => {
-      const res = await axios.get(`/api/v1/users/user/${user?.message?.username}`);
+      const res = await axios.get(`${BASE_URL}/user/${user?.message?.username}`,{
+        withCredentials: true,  // Allow cookies to be sent
+      });
       console.log(res)
       return res.data;
     },
@@ -96,7 +98,7 @@ export const UserProvider = ({ children }) => {
   const updateUserDetails = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`/api/v1/users/update-account`, data);
+      const res = await axios.patch(`${BASE_URL}/update-account`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -107,7 +109,7 @@ export const UserProvider = ({ children }) => {
   const updateUserAvatar = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`/api/v1/users/update-avatar`, data);
+      const res = await axios.patch(`${BASE_URL}/update-avatar`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -118,7 +120,7 @@ export const UserProvider = ({ children }) => {
   const updateUserCoverImg = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`/api/v1/users/update-coverImage`, data);
+      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data);
       return res.data;
     },
     onSuccess: () => {
