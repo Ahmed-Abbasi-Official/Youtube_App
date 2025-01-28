@@ -1,26 +1,24 @@
+import React from "react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
-import { UserProvider } from "./context/User.Context.jsx";
-import { VideoProvider } from "./context/Videos.Context.jsx";
+import { UserProvider } from "./context/User.Context";
+import { VideoProvider } from "./context/Videos.Context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
-  Route,
   createBrowserRouter,
   RouterProvider,
   createRoutesFromElements,
+  Route,
 } from "react-router-dom";
-import MainLayout from "./Mainlayout/MainLayout.jsx";
-import HomePage from "./routes/HomePage.jsx";
-import RegisterPage from "./routes/RegisterPage.jsx";
-import { ToastContainer } from 'react-toastify';
-import LoginPage from "./routes/LoginPage.jsx";
-import MyChannel from "./routes/MyChannel.jsx";
-import Dashboard from "./routes/Dashboard.jsx";
-import SingleVideo from "./routes/SingleVideo.jsx";
-
-
+import MainLayout from "./Mainlayout/MainLayout";
+import HomePage from "./routes/HomePage";
+import RegisterPage from "./routes/RegisterPage";
+import LoginPage from "./routes/LoginPage";
+import MyChannel from "./routes/MyChannel";
+import Dashboard from "./routes/Dashboard";
+import SingleVideo from "./routes/SingleVideo";
+import { ToastContainer } from "react-toastify";
 
 const queryClient = new QueryClient();
 
@@ -39,14 +37,13 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-      <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <VideoProvider>
-      <RouterProvider router={router} />
-      <ToastContainer position="top-right" />
-      </VideoProvider>
-      <App />
-    </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <VideoProvider>
+          <RouterProvider router={router} />
+          <ToastContainer position="top-right" />
+        </VideoProvider>
+      </UserProvider>
     </QueryClientProvider>
   </StrictMode>
 );
