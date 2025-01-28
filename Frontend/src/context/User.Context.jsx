@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const UserContext = createContext();
-const BASE_URL = "https://play-jo4f.onrender.com/api/v1/users";
+const BASE_URL = "http://localhost:4000/api/v1/users";
 
 export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
 
   const signupUser = useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post(`${BASE_URL}/register`, data);
+      const res = await axios.post(`/api/v1/users/register`, data);
       return res.data;
     },
   });
@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
   const signinUser = useMutation({
     mutationKey: ["user"],
     mutationFn: async (data) => {
-      const res = await axios.post(`http://localhost:4000/api/v1/users/login`, data);
+      const res = await axios.post(`/api/v1/users/login`, data);
       console.log(res);
       return res.data;
     },
@@ -56,7 +56,7 @@ export const UserProvider = ({ children }) => {
     queryKey: ["user"],
     queryFn: async () => {
       console.log(document.cookie)
-      const res = await axios.get("https://play-jo4f.onrender.com/api/v1/users/me", {
+      const res = await axios.get(`/api/v1/users/me`, {
         withCredentials: true,  // Allow cookies to be sent
       });
       console.log(res);
@@ -71,7 +71,7 @@ export const UserProvider = ({ children }) => {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post(`${BASE_URL}/logout`);
+      const res = await axios.post(`/api/v1/users/logout`);
       return res.data;
     },
     onSuccess: () => {
@@ -84,7 +84,7 @@ export const UserProvider = ({ children }) => {
   const { data: channelData, error: channelError, isLoading: channelLoading } = useQuery({
     queryKey: ["channelProfile", user?.message],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}/${user?.message?.username}`);
+      const res = await axios.get(`/api/v1/users/user/${user?.message?.username}`);
       console.log(res)
       return res.data;
     },
@@ -96,7 +96,7 @@ export const UserProvider = ({ children }) => {
   const updateUserDetails = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-account`, data);
+      const res = await axios.patch(`/api/v1/users/update-account`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -107,7 +107,7 @@ export const UserProvider = ({ children }) => {
   const updateUserAvatar = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-avatar`, data);
+      const res = await axios.patch(`/api/v1/users/update-avatar`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -118,7 +118,7 @@ export const UserProvider = ({ children }) => {
   const updateUserCoverImg = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data);
+      const res = await axios.patch(`/api/v1/users/update-coverImage`, data);
       return res.data;
     },
     onSuccess: () => {

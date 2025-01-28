@@ -35,7 +35,7 @@ router
 router
   .route("/update-coverImage")
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
-router.route("/:username").get(verifyJWT, getUserChannelProfile);
+router.route("/user/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/history").get(verifyJWT, getWatchHistory);
 router.route("/verify-email").post( verifyEmail );
 router.route("/resend-email").post( resendOTP );
