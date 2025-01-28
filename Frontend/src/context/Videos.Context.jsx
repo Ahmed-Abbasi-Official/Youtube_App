@@ -4,7 +4,7 @@ import { createContext, useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const VideoContext = createContext();
-const BASE_URL = "http://localhost:4000/api/v1/videos";
+const BASE_URL = "https://play-lgud.onrender.com/api/v1/videos";
 
 export const VideoProvider = ({ children }) => {
   const queryClient = useQueryClient();
@@ -17,6 +17,7 @@ export const VideoProvider = ({ children }) => {
       const controller = new AbortController(); // Create abort controller
       setAbortController(controller); // Save controller
       const res = await axios.post(`${BASE_URL}/upload-video`,data,{
+        withCredentials:true,
         signal: controller.signal, // Pass signal for cancellation
       });
       return res.data;
