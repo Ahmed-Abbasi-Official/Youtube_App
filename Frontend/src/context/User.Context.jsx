@@ -30,7 +30,7 @@ export const UserProvider = ({ children }) => {
 
   const verifiedOTP = useMutation({
     mutationFn: async ({ getOtp, data }) => {
-      const res = await axios.post(`${BASE_URL}/verify-email`, {
+      const res = await axios.post(`/api/v1/users/verify-email`, {
         otp: getOtp,
         userId: data?._id,
       });
@@ -40,7 +40,7 @@ export const UserProvider = ({ children }) => {
 
   const resendOTP = useMutation({
     mutationFn: async ({ data }) => {
-      const res = await axios.post(`${BASE_URL}/resend-email`, {
+      const res = await axios.post(`/api/v1/users/resend-email`, {
         userId: data?._id,
         email: data?.email,
       });
