@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import VerifiedPopUp from "../components/VerifiedPopUp";
 import {  PuffLoader } from "react-spinners";
 
+
+
 const RegisterPage = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [getFileUrl, setgetFileUrl] = useState(null);

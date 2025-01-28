@@ -3,69 +3,50 @@ import { createContext, useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const UserContext = createContext();
+const BASE_URL = "https://play-jo4f.onrender.com/api/v1/users";
 
 export const UserProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track auth status
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const queryClient = useQueryClient();
 
-  // SIGNUP USER
   const signupUser = useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post("/api/v1/users/register", data);
-      // console.log(res);
-
+      const res = await axios.post(`${BASE_URL}/register`, data);
       return res.data;
     },
   });
-
-  // SIGNIN USER
 
   const signinUser = useMutation({
     mutationKey: ["user"],
     mutationFn: async (data) => {
-      const res = await axios.post("/api/v1/users/login", data);
+      const res = await axios.post(`http://localhost:4000/api/v1/users/login`, data);
       console.log(res);
-
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["user"]); // Refresh user data
+      queryClient.invalidateQueries(["user"]);
     },
   });
-
-  // VERIFY OTP
 
   const verifiedOTP = useMutation({
     mutationFn: async ({ getOtp, data }) => {
-      const userId = data?._id;
-      const otp = getOtp;
-      // console.log(otp,userId)
-      const res = await axios.post("/api/v1/users/verify-email", {
-        otp,
-        userId,
+      const res = await axios.post(`${BASE_URL}/verify-email`, {
+        otp: getOtp,
+        userId: data?._id,
       });
-      // console.log(res)
       return res.data;
     },
   });
-
-  // RESEND OTP
 
   const resendOTP = useMutation({
     mutationFn: async ({ data }) => {
-      const email = data?.email;
-      const userId = data?._id;
-      // console.log(email,userId)
-      const res = await axios.post("/api/v1/users/resend-email", {
-        userId,
-        email,
+      const res = await axios.post(`${BASE_URL}/resend-email`, {
+        userId: data?._id,
+        email: data?.email,
       });
-      // console.log(res)
       return res.data;
     },
   });
-
-  // GET CURRENT USER
 
   const {
     data: user,
@@ -74,91 +55,80 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const res = await axios.get("/api/v1/users/me");
+      console.log(document.cookie)
+      const res = await axios.get("https://play-jo4f.onrender.com/api/v1/users/me", {
+        withCredentials: true,  // Allow cookies to be sent
+      });
+      console.log(res);
       return res.data;
     },
-    retry: false, // Prevent retry on failure
-    staleTime: Infinity, // Data is considered fresh indefinitely, preventing unnecessary refetches
-    cacheTime: Infinity, // Cache will persist indefinitely
+    retry: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
   });
+  
 
-  // LOGOUT
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post("/api/v1/users/logout");
+      const res = await axios.post(`${BASE_URL}/logout`);
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["user"]);
       queryClient.removeQueries(["user"]);
-      setIsAuthenticated(false); // Set unauthenticated status when logged out
+      setIsAuthenticated(false);
     },
   });
 
-  // GET CHANNEL PROFILE
-
-  const { data:channelData, error:channelError, isLoading:channelLoading } = useQuery({
+  const { data: channelData, error: channelError, isLoading: channelLoading } = useQuery({
     queryKey: ["channelProfile", user?.message],
-    queryFn: async ()=>{
-      const res = await axios.get(`/api/v1/users/${user?.message?.username}`);
+    queryFn: async () => {
+      const res = await axios.get(`${BASE_URL}/${user?.message?.username}`);
+      console.log(res)
       return res.data;
     },
-    enabled: !!user?.message,  // Tabhi chale jab user.message ho
-    retry: 2,                  // 2 dafa retry kare ga agar fail ho
-    staleTime: 1000 * 60 * 5,   // 5 minutes tak cache fresh rahe ga
+    enabled: !!user?.message,
+    retry: 2,
+    staleTime: 1000 * 60 * 5,
   });
 
-  // USER DETAILS UPDATE
-
   const updateUserDetails = useMutation({
-    mutationKey: ["user","channelProfile"],
+    mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`/api/v1/users/update-account`, data);
-      // console.log(res);
+      const res = await axios.patch(`${BASE_URL}/update-account`, data);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["user,channelProfile"]); // Refresh user data
+      queryClient.invalidateQueries(["user", "channelProfile"]);
     },
-    enabled:!!user, // Tabhi chale jab user ho
-  })
-
-  // UPDATE USER AVATAR PICTURE
+  });
 
   const updateUserAvatar = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      console.log(data)
-      const res = await axios.patch(`/api/v1/users/update-avatar`, data);
-      console.log(res);
+      const res = await axios.patch(`${BASE_URL}/update-avatar`, data);
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["user", "channelProfile"]);
     },
   });
-
-  // UPDATE COVER IMAGE
 
   const updateUserCoverImg = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      // console.log(data)
-      const res = await axios.patch(`/api/v1/users/update-coverImage`, data);
-      console.log(res);
+      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data);
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["user", "channelProfile"]);
     },
   });
-  
 
   return (
     <UserContext.Provider
       value={{
-
         signupUser,
         verifiedOTP,
         signinUser,
@@ -174,8 +144,7 @@ export const UserProvider = ({ children }) => {
         channelLoading,
         updateUserDetails,
         updateUserAvatar,
-        updateUserCoverImg
-
+        updateUserCoverImg,
       }}
     >
       {children}
