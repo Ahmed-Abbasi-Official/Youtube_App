@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://play-jo4f.onrender.com',  // Target backend server
+        target: 'http://localhost:4000',  // Target backend server
         changeOrigin: true,
       }
     }

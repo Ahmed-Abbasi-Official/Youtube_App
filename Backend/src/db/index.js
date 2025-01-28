@@ -6,6 +6,9 @@ const connectDB = async () => {
     const connectionInstance = await mongoose.connect(
       `${process.env.MONGODB_URI}/${db}`
     );
+    // Resulting URI: mongodb+srv://username:password@cluster0.mongodb.net/myDatabase
+    console.log(`Connecting to MongoDB at: ${process.env.MONGODB_URI}/${db}`);
+
     console.log(`MongoDB Connected !! DB HOST : ${connectionInstance}`);
   } catch (error) {
     console.log("MongoDB ERROR : ===> ", error);

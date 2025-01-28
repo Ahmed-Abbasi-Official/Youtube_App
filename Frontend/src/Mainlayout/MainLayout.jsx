@@ -11,7 +11,7 @@ const MainLayout = () => {
     if (user) {
       setIsAuthenticated(true);
     }
-  }, [user, setIsAuthenticated]);
+  }, [user]);
 
   if (userLoading) return <Loader />;
 

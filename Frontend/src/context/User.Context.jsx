@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
   const signinUser = useMutation({
     mutationKey: ["user"],
     mutationFn: async (data) => {
-      const res = await axios.post(`${BASE_URL}/login`, data);
+      const res = await axios.post(`/api/v1/users/login`, data);
       console.log(res);
       return res.data;
     },

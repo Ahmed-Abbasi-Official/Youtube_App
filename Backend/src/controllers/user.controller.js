@@ -138,9 +138,9 @@ const loginUser = asyncHandler(async (req, res) => {
   // GENERATES COOKIES
 
   const options = {
-    httpOnly: true, // Cookie can't be accessed via JavaScript
+    http: true, // Cookie can't be accessed via JavaScript
     secure: true, // Only set to true in production (use HTTPS)
-    sameSite: 'None', // Ensure it works with cross-site cookies
+    sameSite: 'none', // Ensure it works with cross-site cookies
   };
 
   res
