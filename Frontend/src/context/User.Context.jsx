@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const UserContext = createContext();
-const BASE_URL = "https://play-lgud.onrender.com/api/v1/users";
+const BASE_URL = "http://localhost:4000/api/v1/users";
 
 export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -98,7 +98,9 @@ export const UserProvider = ({ children }) => {
   const updateUserDetails = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-account`, data);
+      const res = await axios.patch(`${BASE_URL}/update-account`, data,{
+        withCredentials: true,  // Allow cookies to be sent
+      });
       return res.data;
     },
     onSuccess: () => {
@@ -109,7 +111,9 @@ export const UserProvider = ({ children }) => {
   const updateUserAvatar = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-avatar`, data);
+      const res = await axios.patch(`${BASE_URL}/update-avatar`, data,{
+        withCredentials: true,  // Allow cookies to be sent
+      });
       return res.data;
     },
     onSuccess: () => {
@@ -120,7 +124,9 @@ export const UserProvider = ({ children }) => {
   const updateUserCoverImg = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data);
+      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data,{
+        withCredentials: true,  // Allow cookies to be sent
+      });
       return res.data;
     },
     onSuccess: () => {

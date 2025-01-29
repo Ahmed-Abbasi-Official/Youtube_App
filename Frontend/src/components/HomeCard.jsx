@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { format } from 'timeago.js';
 
 const HomeCard = ({ video }) => {
@@ -10,6 +10,7 @@ const HomeCard = ({ video }) => {
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
+  const navigate=useNavigate();
 
   useEffect(() => {
     if (videoRef.current) {
@@ -65,12 +66,17 @@ const HomeCard = ({ video }) => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  console.log(video)
+
   return (
     <div className="flex flex-col gap-2 w-[40%] 540px:w-[90%] sm:w-[30%] lg:w-[23%] cursor-pointer">
       <div 
         className="relative group rounded-xl overflow-hidden"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={()=>{
+          navigate(`/video/${video?._id}`)
+        }}
       >
         <video
           ref={videoRef}
@@ -151,9 +157,11 @@ const HomeCard = ({ video }) => {
         />
         </Link>
         <div className="flex-1 min-w-0">
+          <Link to={`/video/${video?._id}`}>
           <h2 className="text-sm font-medium line-clamp-2 mb-1">
             {video?.title || "Video Title"}
           </h2>
+          </Link>
           <Link to={`/${video?.owner?.username}`}>
             <p className="text-sm text-gray-500 hover:text-gray-700">
               {video?.owner?.username || "Username"}
