@@ -1,9 +1,11 @@
 import { Router } from "express";
 import {
     changePassword,
+    dislikeVideo,
     getCurrentUser,
     getUserChannelProfile,
     getWatchHistory,
+    likeVideo,
     loginUser,
     logoutUser,
     refreshAcessToken,
@@ -39,5 +41,7 @@ router.route("/user/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/history").get(verifyJWT, getWatchHistory);
 router.route("/verify-email").post( verifyEmail );
 router.route("/resend-email").post( resendOTP );
+router.route("/liked-video").post( verifyJWT , likeVideo );
+router.route("/dis-liked-video").post( verifyJWT , dislikeVideo )
 
 export default router;

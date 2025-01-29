@@ -3,11 +3,13 @@ import { createContext, useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const UserContext = createContext();
-const BASE_URL = "http://localhost:4000/api/v1/users";
+const BASE_URL = "/api/v1/users";
 
 export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const queryClient = useQueryClient();
+
+  // SIGN USER
 
   const signupUser = useMutation({
     mutationFn: async (data) => {
@@ -15,6 +17,8 @@ export const UserProvider = ({ children }) => {
       return res.data;
     },
   });
+
+  // SIGNUP USER
 
   const signinUser = useMutation({
     mutationKey: ["user"],
@@ -28,6 +32,8 @@ export const UserProvider = ({ children }) => {
     },
   });
 
+  // VERIFIED USER
+
   const verifiedOTP = useMutation({
     mutationFn: async ({ getOtp, data }) => {
       const res = await axios.post(`${BASE_URL}/verify-email`, {
@@ -37,6 +43,8 @@ export const UserProvider = ({ children }) => {
       return res.data;
     },
   });
+
+  // RESEND OTP
 
   const resendOTP = useMutation({
     mutationFn: async ({ data }) => {
@@ -48,6 +56,8 @@ export const UserProvider = ({ children }) => {
     },
   });
 
+  // GET USER
+
   const {
     data: user,
     error: userError,
@@ -55,11 +65,11 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      console.log(document.cookie)
+      // console.log(document.cookie)
       const res = await axios.get(`${BASE_URL}/me`, {
         withCredentials: true,  // Allow cookies to be sent
       });
-      console.log("res");
+      // console.log("res");
       return res.data;
     },
     retry: false,
@@ -67,7 +77,7 @@ export const UserProvider = ({ children }) => {
     cacheTime: Infinity,
   });
   
-
+  // LOGOUT USER
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -81,19 +91,23 @@ export const UserProvider = ({ children }) => {
     },
   });
 
+  // CHANNEL DATA
+
   const { data: channelData, error: channelError, isLoading: channelLoading } = useQuery({
     queryKey: ["channelProfile", user?.message],
     queryFn: async () => {
       const res = await axios.get(`${BASE_URL}/user/${user?.message?.username}`,{
         withCredentials: true,  // Allow cookies to be sent
       });
-      console.log(res)
+      // console.log(res)
       return res.data;
     },
     enabled: !!user?.message,
     retry: 2,
     staleTime: 1000 * 60 * 5,
   });
+
+  // UPDATE USER
 
   const updateUserDetails = useMutation({
     mutationKey: ["user", "channelProfile"],
@@ -108,6 +122,8 @@ export const UserProvider = ({ children }) => {
     },
   });
 
+  // UPDATE AVATAR
+
   const updateUserAvatar = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
@@ -121,6 +137,8 @@ export const UserProvider = ({ children }) => {
     },
   });
 
+  // UPDATE COVER IMAGE
+
   const updateUserCoverImg = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
@@ -133,6 +151,38 @@ export const UserProvider = ({ children }) => {
       queryClient.invalidateQueries(["user", "channelProfile"]);
     },
   });
+
+  // LIKED VIDEOS
+
+  const likedVideos=useMutation({
+    mutationKey: ["likedVideos", user?.message],
+    mutationFn: async (video) => {
+      const videoId = video?._id
+      const res = await axios.post(`${BASE_URL}/liked-video`,{videoId}, {
+        withCredentials: true,  // Allow cookies to be sent
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["likedVideos", "user"]);
+    },
+  })
+
+  // DISLIKED VIDEOS
+
+  const dislikedVideos=useMutation({
+    mutationKey: ["dislikedVideos", user?.message],
+    mutationFn: async (video) => {
+      const videoId = video?._id
+      const res = await axios.post(`${BASE_URL}/dis-liked-video`,{videoId}, {
+        withCredentials: true,  // Allow cookies to be sent
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["dislikedVideos", "user"]);
+    },
+  })
 
   return (
     <UserContext.Provider
@@ -153,6 +203,8 @@ export const UserProvider = ({ children }) => {
         updateUserDetails,
         updateUserAvatar,
         updateUserCoverImg,
+        likedVideos,
+        dislikedVideos
       }}
     >
       {children}

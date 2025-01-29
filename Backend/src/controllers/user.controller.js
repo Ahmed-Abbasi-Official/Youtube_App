@@ -633,6 +633,79 @@ const resendOTP = asyncHandler( async (req, res) => {
     }
 });
 
+// LIKED VIDEOS
+
+const likeVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.body;
+
+  if (!videoId) {
+    throw new ApiError(400, "Video ID is missing");
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // Check if video is already liked
+  const isLiked = user.likedVideos.includes(videoId);
+
+  // Update user's likedVideos array
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      [isLiked ? "$pull" : "$push"]: { likedVideos: videoId }, // Pull if liked, Push if not
+    },
+    { new: true }
+  ).select("-password");
+
+
+  // Return response
+
+  return res.status(200).json(
+    new ApiResponse(200, updatedUser, isLiked ? "Video Unliked Successfully" : "Video Liked Successfully")
+  );
+});
+
+// DISLIKED VIDEOS
+
+const dislikeVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.body;
+  
+  if (!videoId) {
+    throw new ApiError(400, "Video ID is missing");
+  }
+  
+  const user = await User.findById(req.user._id);
+  
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  
+  // Check if video is already disliked
+  const isDisliked = user.disLikedVideos.includes(videoId);
+  
+  // Update user's dislikedVideos array
+  
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      [isDisliked? "$pull" : "$push"]: { dislikedVideos: videoId }, // Pull if disliked, Push if not
+    },
+    { new: true }
+  ).select("-password");
+
+  // Return response
+  
+  return res.status(200).json(
+    new ApiResponse(200, updatedUser, isDisliked? "Video Undisliked Successfully" : "Video Disliked Successfully")
+  );
+
+})
+
+
 export {
 
   registerUser,
@@ -647,6 +720,8 @@ export {
   getUserChannelProfile,
   getWatchHistory,
   verifyEmail,
-  resendOTP
+  resendOTP,
+  likeVideo,
+  dislikeVideo
 
 };

@@ -4,7 +4,7 @@ import { createContext, useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const VideoContext = createContext();
-const BASE_URL = "http://localhost:4000/api/v1/videos";
+const BASE_URL = "/api/v1/videos";
 
 export const VideoProvider = ({ children }) => {
   const queryClient = useQueryClient();
@@ -59,6 +59,13 @@ export const VideoProvider = ({ children }) => {
     },
   })
 
+  // GET SINGLE VIDEOS
+
+  const fetchSingleVideo = async (slug) => {
+    const res = await axios.get(`${BASE_URL}/${slug}`);
+    return res.data;
+  };
+
   return <VideoContext.Provider value={{
 
     allVideos,
@@ -66,7 +73,8 @@ export const VideoProvider = ({ children }) => {
     allVideosLoading,
     userVideos,
     uploadVideo,
-    cancelUpload
+    cancelUpload,
+    fetchSingleVideo
 
   }}>{children}</VideoContext.Provider>;
 };

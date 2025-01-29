@@ -28,7 +28,7 @@ const MyChannel = () => {
   useEffect(()=>{
     userVideos.mutate(params.username, {
       onSuccess: (data) => {
-        console.log("User videos fetched:", data);
+        // console.log("User videos fetched:", data);
       },
       onError: (error) => {
         toast.error(error?.response?.data?.message);

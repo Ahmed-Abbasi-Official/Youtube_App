@@ -38,6 +38,18 @@ const userSchema = new Schema(
         ref: "Video",
       },
     ],
+    likedVideos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Video",
+      },
+    ],
+    disLikedVideos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Video",
+      },
+    ],
     password: {
       type: String,
       required: [true, "Password is required"],

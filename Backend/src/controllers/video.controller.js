@@ -99,7 +99,7 @@ export const getAllVideos = asyncHandler(async (req, res) => {
 export const getSingleVideo = asyncHandler(async (req, res) => {
   // GET SINGLE VIDEO
 
-  const video = await Video.findOne({ slug: req.params.slug });
+  const video = await Video.findOne({ slug: req?.params?.slug }).populate('owner');
 
   // CHECK VIDEO
 

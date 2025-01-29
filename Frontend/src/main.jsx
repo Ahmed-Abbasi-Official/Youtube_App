@@ -30,7 +30,7 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginPage />} />
       <Route path="/:username" element={<MyChannel />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/video/:videoId" element={<SingleVideo />} />
+      <Route path="/video/:slug" element={<SingleVideo />} />
     </Route>
   )
 );
