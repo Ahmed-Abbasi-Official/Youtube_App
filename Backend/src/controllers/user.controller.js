@@ -673,6 +673,7 @@ const likeVideo = asyncHandler(async (req, res) => {
 
 const dislikeVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.body;
+  // console.log(videoId)
   
   if (!videoId) {
     throw new ApiError(400, "Video ID is missing");
@@ -683,24 +684,28 @@ const dislikeVideo = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(404, "User not found");
   }
+  // console.log(user)
   
   // Check if video is already disliked
   const isDisliked = user.disLikedVideos.includes(videoId);
+  // console.log(isDisliked)
   
   // Update user's dislikedVideos array
   
   const updatedUser = await User.findByIdAndUpdate(
     req.user._id,
     {
-      [isDisliked? "$pull" : "$push"]: { dislikedVideos: videoId }, // Pull if disliked, Push if not
+      [isDisliked ? "$pull" : "$push"]: { disLikedVideos: videoId }, // Pull if disliked, Push if not
     },
     { new: true }
   ).select("-password");
 
+  // console.log(updatedUser)
+
   // Return response
   
   return res.status(200).json(
-    new ApiResponse(200, updatedUser, isDisliked? "Video Undisliked Successfully" : "Video Disliked Successfully")
+    new ApiResponse(200, updatedUser, isDisliked ? "Video Undisliked Successfully" : "Video Disliked Successfully")
   );
 
 })

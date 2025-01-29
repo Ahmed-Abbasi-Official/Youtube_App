@@ -17,12 +17,14 @@ import { useUser } from "../context/User.Context";
 import { toast } from "react-toastify";
 import { MdThumbDownAlt } from "react-icons/md";
 import millify from "millify";
+import SaveModal from "./SaveModal";
 
 export default function VideoPlayer({ video }) {
   const { likedVideos , dislikedVideos } = useUser();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [savedModal , setSavedModal] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [likedVideo, setLikedVideo] = useState(false);
   const [unLikedVideo, setUnLikedVideo] = useState(false);
@@ -107,9 +109,10 @@ export default function VideoPlayer({ video }) {
       });
     };
 
-    console.log(video)
+    // console.log(video)
 
   return (
+    <>
     <div className="flex flex-col lg:flex-row gap-6 p-6 bg-black text-white min-h-screen">
       {/* Main content */}
       <div className="flex-2 space-y-6">
@@ -187,15 +190,15 @@ export default function VideoPlayer({ video }) {
                 className="flex items-center px-3 py-1 rounded-l-full text-white hover:bg-gray-700"
               >
                 {
-                  unLikedVideo? (
+                  likedVideo? (
                    <>
                     <IoMdThumbsUp className="h-5 w-5 mr-2 " />
-                    <span className="text-sm">{millify(video?.owner?.disLikedVideos?.length)}</span>
+                    <span className="text-sm">{millify(video?.owner?.likedVideos?.length)}</span>
                    </>
                   ) : (
                     <>
                     <ThumbsUp className="h-5 w-5 mr-2 " />
-                    <span className="text-sm">{millify(video?.owner?.disLikedVideos?.length)}</span>
+                    <span className="text-sm">{millify(video?.owner?.likedVideos?.length)}</span>
                     </>
                   )
                 }
@@ -209,18 +212,22 @@ export default function VideoPlayer({ video }) {
                   unLikedVideo? (
                    <>
                     <MdThumbDownAlt className="h-5 w-5 mr-2 " />
-                    <span className="text-sm">{millify(video?.owner?.likedVideos?.length)}</span>
+                    <span className="text-sm">{millify(video?.owner?.disLikedVideos?.length)}</span>
                    </>
                   ) : (
                     <>
                     <ThumbsDown className="h-5 w-5 mr-2 " />
-                    <span className="text-sm">{millify(video?.owner?.likedVideos?.length)}</span>
+                    <span className="text-sm">{millify(video?.owner?.disLikedVideos?.length)}</span>
                     </>
                   )
                 }
               </button>
             </div>
-            <button className="flex items-center px-3 py-1 rounded-full text-white border border-gray-700 hover:bg-gray-800">
+            <button 
+            onClick={()=>{
+              setSavedModal(true)
+            }}
+            className="flex items-center px-3 py-1 rounded-full text-white border border-gray-700 hover:bg-gray-800">
               <BookmarkIcon className="h-5 w-5 mr-2" />
               Save
             </button>
@@ -290,6 +297,14 @@ export default function VideoPlayer({ video }) {
         ))}
       </div>
     </div>
+    {
+      savedModal && (
+          <SaveModal
+          onClose={setSavedModal}
+          />
+      )
+    }
+    </>
   );
 }
 
