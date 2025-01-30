@@ -4,9 +4,11 @@ import UploadModal from "../components/UploadVideoModal";
 import { TiEye } from "react-icons/ti";
 import { GrUserAdmin } from "react-icons/gr";
 import { FaRegHeart } from "react-icons/fa";
+import { useVideo } from "../context/Videos.Context";
 
 const Dashboard = () => {
   const { user, userError, userLoading } = useUser();
+  const {dashboardData}=useVideo();
   const [showUploadModal, setShowUploadModal] = useState(false);
 
   if (userLoading) {
@@ -20,7 +22,7 @@ const Dashboard = () => {
   if (!user) {
     return <div>You are not logged in.</div>;
   }
-  // console.log(user);
+  // console.log(dashboardData.data);
   return (
     <div className="px-3 sm:px-6 md:px-28 md:py-8 sm:py-4 py-2 relative flex flex-col space-y-3 sm:space-y-6 justify-center  bg-black  ">
         {/* HEAD */}
@@ -52,19 +54,19 @@ const Dashboard = () => {
         <div className="text-[14px] sm:text-xs md:text-[18px] border p-3 sm:p-6 flex flex-col justify-center gap-3 sm:gap-4 w-[280px] sm:w-[388px]">
           <TiEye className="text-[42px] bg-[#AE7AFF] text-[#fff] rounded-3xl w-9 font-bold py-2  " />
           <p className="text-sm">Total Views</p>
-          <p className="text-3xl font-semibold">2201</p>
+          <p className="text-3xl font-semibold">{dashboardData?.data?.message?.totalViews || "0"}</p>
         </div>
         {/* FOLLOWERS */}
         <div className="text-[14px] sm:text-xs md:text-[18px] border p-3 sm:p-6 flex flex-col justify-center gap-3 sm:gap-4 w-[280px] sm:w-[388px]">
           <GrUserAdmin className="text-[42px] bg-[#AE7AFF] text-[#fff] rounded-3xl w-9 font-bold py-2  " />
           <p className="text-sm">Total Followers</p>
-          <p className="text-3xl font-semibold">2201</p>
+          <p className="text-3xl font-semibold">{dashboardData?.data?.message?.subscribersCount || "0"}</p>
         </div>
         {/* LIKES */}
         <div className="text-[14px] sm:text-xs md:text-[18px] border p-3 sm:p-6 flex flex-col justify-center gap-3 sm:gap-4 w-[280px] sm:w-[388px]">
           <FaRegHeart className="text-[42px] bg-[#AE7AFF] text-[#fff] rounded-3xl w-9 font-bold py-2  " />
           <p className="text-sm">Total Likes</p>
-          <p className="text-3xl font-semibold">2201</p>
+          <p className="text-3xl font-semibold">{dashboardData?.data?.message?.totalLikes || "0"}</p>
         </div>
       </div>
 

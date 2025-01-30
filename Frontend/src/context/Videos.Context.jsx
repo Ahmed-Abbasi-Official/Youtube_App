@@ -93,6 +93,21 @@ export const VideoProvider = ({ children }) => {
     }
   })
 
+  // GET DASHBOARD
+
+  const dashboardData = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: async () => {
+      const res = await axios.get(`${BASE_URL}/dashboard/data`,{
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    retry: false, // Prevent retry on failure
+    staleTime: Infinity, // Data is considered fresh indefinitely, preventing unnecessary refetches
+    cacheTime: Infinity, // Cache will persist indefinitely
+  })
+
   return <VideoContext.Provider value={{
 
     allVideos,
@@ -103,7 +118,8 @@ export const VideoProvider = ({ children }) => {
     cancelUpload,
     fetchSingleVideo,
     deleteVideo,
-    updateVideo
+    updateVideo,
+    dashboardData
 
   }}>{children}</VideoContext.Provider>;
 };
