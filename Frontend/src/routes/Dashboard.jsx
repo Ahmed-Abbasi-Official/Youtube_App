@@ -20,7 +20,7 @@ const Dashboard = () => {
   if (!user) {
     return <div>You are not logged in.</div>;
   }
-  console.log(user);
+  // console.log(user);
   return (
     <div className="px-3 sm:px-6 md:px-28 md:py-8 sm:py-4 py-2 relative flex flex-col space-y-3 sm:space-y-6 justify-center  bg-black  ">
         {/* HEAD */}

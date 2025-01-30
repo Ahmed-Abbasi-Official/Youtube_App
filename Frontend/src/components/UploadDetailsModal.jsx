@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import { useVideo } from "../context/Videos.Context";
 import { useNavigate } from "react-router-dom";
 
-const UploadDetailsModal = ({ video }) => {
-  const {uploadVideo,cancelUpload} = useVideo();
+const UploadDetailsModal = ({ video , videos , imp=true , onClose }) => {
+  const {uploadVideo,cancelUpload , updateVideo} = useVideo();
   const [loading , setLoading]=useState(false);
   const navigate = useNavigate();
   // REACT HOOK FORM
@@ -13,15 +13,22 @@ const UploadDetailsModal = ({ video }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: videos?.title || "Title", // Default value for title
+      description: videos?.description || "desc", // Default value for title
+      category: videos?.category || "category", // Default value for title
+      privacy: videos?.isPublic || "privacy", // Default value for title
+    },
+  });
 
   // ON SUBMIT
 
-  const onSubmit = (data) => {
-    if (!video) {
+  const onSubmit =async (data) => {
+    if (!video && imp) {
+      setLoading(true);
       return toast.error("Please enter a video");
     }
-    setLoading(true);
     const formData=new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
@@ -29,20 +36,49 @@ const UploadDetailsModal = ({ video }) => {
     formData.append("category", data.category);
     formData.append("isPublic", data.privacy); // Tags field name match with backend
     
-    uploadVideo.mutate(formData ,  {
-      onSuccess: (data) => {
-        setLoading(false)
-        console.log(data)
-        toast.success(data?.data);
-        navigate(`/video/${data?.message?._id}`)
-      },
-      onError: (error) => {
-        console.error("Error:", error);
-        setLoading(false)
-        toast.error(error?.response?.data?.message);
-      },
-    })
+
+    if(imp){
+      await uploadVideo.mutate(formData ,  {
+        onSuccess: (data) => {
+          setLoading(false)
+          console.log(data)
+          toast.success(data?.data);
+          navigate(`/video/${data?.message?.slug}`)
+        },
+        onError: (error) => {
+          console.error("Error:", error);
+          setLoading(false)
+          toast.error(error?.response?.data?.message);
+        },
+      })
+    }else{
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(key, value);
+      // }
+      console.log(data)
+      setLoading(true);
+      // console.log(videos)
+      await updateVideo.mutate(
+        { videoId: videos?._id, data: formData },  // 👈 Pehla argument ek object hona chahiye
+        {
+          onSuccess: (data) => {
+            setLoading(false);
+            toast.success(data?.data);
+            onClose(false)
+            navigate(`/video/${data?.message?.slug}`);
+          },
+          onError: (error) => {
+            console.error("Error:", error);
+            setLoading(false);
+            toast.error(error?.response?.data?.message);
+          },
+        }
+      );
+      
+    }
+
   };
+  // console.log(videos)
 
   // HANDEL CANCEL UPLOAD
 
@@ -51,6 +87,8 @@ const UploadDetailsModal = ({ video }) => {
     setLoading(false);
     toast.info("Video upload canceled");
   };
+
+  // console.log(videos)
 
   return (
     <>
@@ -62,9 +100,9 @@ const UploadDetailsModal = ({ video }) => {
             Title*
             <input
               {...register("title", {
-                required: "title must be provided",
+                required: imp ? "title must be provided" : false ,
               })}
-              placeholder="Title"
+              placeholder={ videos?.title || "Title"}
               className="mt-2 w-full bg-black px-4 py-2 border border-[#D0D5DD] rounded-none text-white outline-none"
               id="title"
             />
@@ -81,9 +119,9 @@ const UploadDetailsModal = ({ video }) => {
             Description*
             <textarea
               {...register("description", {
-                required: "description must be provided",
+                required: imp ? "description must be provided" : false,
               })}
-              placeholder="description"
+              placeholder={ videos?.description || "description"}
               className="mt-2 w-full bg-black px-4 py-2 border border-[#D0D5DD] rounded-none text-white outline-none"
               id="description"
             />
@@ -103,7 +141,7 @@ const UploadDetailsModal = ({ video }) => {
               className="mt-2 w-full bg-black px-4 py-2 border border-[#D0D5DD] rounded-none text-white outline-none"
               id="category"
             >
-              <option value="general">General</option>{" "}
+              <option value="general">{ videos?.category || "General"}</option>{" "}
               {/* Default placeholder */}
               <option value="technology">Technology</option>
               <option value="education">Education</option>
@@ -122,7 +160,7 @@ const UploadDetailsModal = ({ video }) => {
               className="mt-2 w-full bg-black px-4 py-2 border border-[#D0D5DD] rounded-none text-white outline-none"
               id="Privacy"
             >
-              <option value="public">public</option>{" "}
+              <option value="public">{ videos?.isPublic || "public"}</option>{" "}
               {/* Default placeholder */}
               <option value="private">private</option>
             </select>
@@ -130,18 +168,10 @@ const UploadDetailsModal = ({ video }) => {
         </div>
         {/* BUTTONS */}
         <div className="flex sm:flex-row flex-col gap-4 justify-evenly mt-3 sm:mt-4 w-full z-20">
-          {/* <button className="text-white py-3 px-16 border "
-          onClick={()=>{
-            toast.dismiss()
-            uploadVideo.cancel()
-            console.log("done")
-
-          }}
-          >Cancel</button> */}
           <button type="submit" className="text-black bg-[#AE7AFF] py-3 px-16"
           disabled={loading}
           >
-            {loading ? "Uploading..." :"Upload"}
+            { imp ? (loading ? "Uploading..." :"Upload"):(loading ? "Updating..." : "Update" )}
           </button>
         </div>
       </form>

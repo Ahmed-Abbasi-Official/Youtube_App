@@ -4,14 +4,14 @@ import { RxCross2 } from "react-icons/rx";
 import { toast } from "react-toastify";
 import UploadDetailsModal from "./UploadDetailsModal";
 
-const UploadVideoModal = ({setShowUploadModal}) => {
+const UploadVideoModal = ({setShowUploadModal,videos}) => {
   const [video , setVideo]=useState(null);
 
 
 
 
   return (
-    <div className=" animate-slide absolute z-20 bg-black top-[85px] sm:top-[90px] translate-x-1/2 right-1/2 w-[90%] sm:w-[70%]  md:w-[60%] h-[500px]  p-2 sm:p-6 rounded shadow-sm shadow-white">
+    <div className=" animate-slide fixed z-20 bg-black top-[85px] sm:top-[90px] translate-x-1/2 right-1/2 w-[90%] sm:w-[70%]  md:w-[60%] h-[500px]  p-2 sm:p-6 rounded shadow-sm shadow-white">
       <div className="flex flex-col gap-2 sm:gap-4 overflow-y-hidden">
         {/* UPPER PART */}
         <div className="flex justify-between items-center">
@@ -52,7 +52,10 @@ const UploadVideoModal = ({setShowUploadModal}) => {
         {/* UPLOAD DETAILS */}
         <div className="overflow-y-auto">
           <UploadDetailsModal
+          imp={false}
           video={video}
+          videos={videos}
+          onClose={setShowUploadModal}
           />
         </div>
       </div>

@@ -168,12 +168,13 @@ export const getVideosByUser = asyncHandler(async (req, res) => {
 
 export const updateVideo = asyncHandler(async (req, res) => {
     // GET SINGLE VIDEO
+    // console.log(req.body)
     const video = await Video.findById(req?.params?.id);
-  
     // CHECK VIDEO
     if (!video) {
       throw new ApiError(404, "Video not found");
     }
+    // console.log(video)
   
     // CHECK FOR THE OWNER
     if (String(video.owner) !== String(req?.user?._id)) {
@@ -209,12 +210,17 @@ export const updateVideo = asyncHandler(async (req, res) => {
     const updatedVideo = await Video.findByIdAndUpdate(
       req?.params?.id,
       { 
-        ...req.body, 
+        title:req.body.title || video?.title,
+        description : req.body.description || video?.description,
+        category : req.body.category || video?.category,
+        slug:video?.slug,
+        isPublic:req.body.isPublic || video?.isPublic,
         videoFile: newUpdatedVideoURL || video.videoFile, // Ensure videoFile is updated only if a new file is provided
         thumbnail: thumbnailUrl
       },
       { new: true }
     );
+    // console.log(updateVideo)
   
     // RETURN RESPONSE
     return res

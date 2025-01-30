@@ -66,6 +66,33 @@ export const VideoProvider = ({ children }) => {
     return res.data;
   };
 
+  // DELETE VIDEO
+
+  const deleteVideo = useMutation({
+    mutationFn: async (videoId) => {
+      const res = await axios.delete(`${BASE_URL}/${videoId}`);
+      return res.data;
+    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["videos"]) ;
+    }
+  })
+
+  // UPDATE VIDEO
+
+  const updateVideo = useMutation({
+    mutationFn: async ({ videoId, data }) => {
+      const res = await axios.patch(`${BASE_URL}/user/update/${videoId}`, data, {
+        withCredentials: true,
+        // signal: controller.signal,
+      });
+      return res.data;
+    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["videos"]) ;
+    }
+  })
+
   return <VideoContext.Provider value={{
 
     allVideos,
@@ -74,7 +101,9 @@ export const VideoProvider = ({ children }) => {
     userVideos,
     uploadVideo,
     cancelUpload,
-    fetchSingleVideo
+    fetchSingleVideo,
+    deleteVideo,
+    updateVideo
 
   }}>{children}</VideoContext.Provider>;
 };

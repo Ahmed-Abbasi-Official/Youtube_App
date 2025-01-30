@@ -81,7 +81,6 @@ export const togglePlaylist = asyncHandler( async(req,res)=>{
     if(!video){
         throw new ApiError(404, 'Video not found');
     }
-    // console.log(video)
 
    await Video.findByIdAndUpdate(video?._id,{
     $set:{isChecked:!video.isChecked},
@@ -112,3 +111,4 @@ export const togglePlaylist = asyncHandler( async(req,res)=>{
        .json(new ApiResponse(200, updatedPlaylist, isCheckedPlaylist? 'Video removed from playlist' : 'Video added to playlist'));
 
 } )
+

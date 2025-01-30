@@ -23,6 +23,7 @@ const MyChannel = () => {
   const [showCoverBtn, setShowCoverBtn] = useState(true);
   const params = useParams();
 
+  console.log(channelData)
   
   // GET USER VIDEOS
   useEffect(()=>{

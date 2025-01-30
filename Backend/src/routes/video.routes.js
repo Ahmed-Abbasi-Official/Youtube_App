@@ -22,7 +22,7 @@ router.route('/:id').delete( verifyJWT , deleteVideo) ;
 router.route('/user/:username').get(getVideosByUser);
 
 // UPDATE VIDEO
-router.route('/user/update/:id').put( verifyJWT , upload.single('video') , updateVideo);
+router.route('/user/update/:id').patch( verifyJWT , upload.single('video') , updateVideo);
 
 
 export default router;
