@@ -41,6 +41,10 @@ const videoSchema = new Schema(
       required: true,
       unique: true,
     },
+    isChecked:{
+      type: Boolean,
+      default: false,
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",

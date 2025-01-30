@@ -19,6 +19,7 @@ import MyChannel from "./routes/MyChannel";
 import Dashboard from "./routes/Dashboard";
 import SingleVideo from "./routes/SingleVideo";
 import { ToastContainer } from "react-toastify";
+import { PlaylistProvider } from "./context/Playlist.Context";
 
 const queryClient = new QueryClient();
 
@@ -40,8 +41,10 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <UserProvider>
         <VideoProvider>
+        <PlaylistProvider>
           <RouterProvider router={router} />
           <ToastContainer position="top-right" />
+        </PlaylistProvider>
         </VideoProvider>
       </UserProvider>
     </QueryClientProvider>

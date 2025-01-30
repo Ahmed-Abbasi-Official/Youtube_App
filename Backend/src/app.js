@@ -40,10 +40,12 @@ app.use(cookieParser());
 
 import userRoutes from './routes/user.routes.js';
 import videosRoutes from './routes/video.routes.js';
+import playlistRoutes from './routes/playlist.routes.js';
 
 // ROUTES DICLERATION ;
 
 app.use('/api/v1/users',userRoutes);
 app.use('/api/v1/videos',videosRoutes);
+app.use('/api/v1/playlist',playlistRoutes);
 
 export { app };
