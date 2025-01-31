@@ -74,19 +74,18 @@ const HomeCard = ({ video ,className }) => {
         className="relative group rounded-xl overflow-hidden"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-       
+       onClick={()=>{
+        navigate(`/video/${video?.slug}`)
+       }}
       >
         <video
           ref={videoRef}
           src={video?.videoFile}
           className="w-full h-[200px] object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
           onTimeUpdate={handleTimeUpdate}
-          muted={isMuted}
+          // muted={isMuted}
           loop
           playsInline
-          onClick={()=>{
-            navigate(`/video/${video?.slug}`)
-          }}
         />
 
         {/* Overlay with controls (only visible on hover) */}
@@ -95,15 +94,15 @@ const HomeCard = ({ video ,className }) => {
             {/* Volume controls */}
             <div 
               className="absolute top-4 right-4 flex items-center gap-2"
-              onMouseEnter={() => setIsVolumeSliderVisible(true)}
-              onMouseLeave={() => setIsVolumeSliderVisible(false)}
+              // onMouseEnter={() => setIsVolumeSliderVisible(true)}
+              // onMouseLeave={() => setIsVolumeSliderVisible(false)}
             >
               <button
                 onClick={toggleMute}
                 className="p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-70 transition-all duration-200"
               >
                 <span className="text-white text-lg">
-                  {isMuted ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}
+                  {/* {isMuted ? '🔇' : volume < 0.5 ? '🔉' : '🔊'} */}
                 </span>
               </button>
               
