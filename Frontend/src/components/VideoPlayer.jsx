@@ -10,6 +10,7 @@ import {
   Pause,
   Volume2,
   VolumeX,
+  Smile,
 } from "lucide-react";
 import { format } from "timeago.js";
 import { Link } from "react-router-dom";
@@ -20,10 +21,27 @@ import millify from "millify";
 import SaveModal from "./SaveModal";
 import EditAndDeleteModal from "./EditAndDeleteModal";
 import { useVideo } from "../context/Videos.Context";
+import EmojiPicker from "emoji-picker-react";
+import Comment from "./Comment";
+import { useComments } from "../context/Comment.Context";
+import { useQuery } from "@tanstack/react-query";
 
-export default function VideoPlayer({ video }) {
-  const { likedVideos, dislikedVideos , user } = useUser();
-  const {toggleSubscription} = useVideo();
+function VideoPlayer({ video }) {
+  const { likedVideos, dislikedVideos, user } = useUser();
+  const { createComment } = useComments();
+  const { getComments } = useComments();
+  const { toggleSubscription } = useVideo();
+  // GET ALL COMMENTS
+  const {
+    data: commentData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["comments"],
+    queryFn: async () => {
+      return await getComments(video?._id);
+    },
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -32,6 +50,10 @@ export default function VideoPlayer({ video }) {
   const [isMuted, setIsMuted] = useState(false);
   const [likedVideo, setLikedVideo] = useState(false);
   const [unLikedVideo, setUnLikedVideo] = useState(false);
+  const [showCommentIcons, setShowCommentIcons] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [comment, setComment] = useState("");
+  const [selectedEmoji, setSelectedEmoji] = useState("");
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -39,14 +61,15 @@ export default function VideoPlayer({ video }) {
     if (videoRef.current) {
       setDuration(videoRef.current.duration);
     }
-    if(video?.likes.includes(user?.message?._id)){
+    if (video?.likes.includes(user?.message?._id)) {
       setLikedVideo(true);
     }
-    if(video?.disLikes.includes(user?.message?._id)){
+    if (video?.disLikes.includes(user?.message?._id)) {
       setUnLikedVideo(true);
     }
   }, [videoRef]); // Updated dependency
- 
+
+  useEffect(() => {}, [selectedEmoji]);
 
   const togglePlay = () => {
     if (videoRef.current.paused) {
@@ -122,35 +145,70 @@ export default function VideoPlayer({ video }) {
 
   // console.log(video)
 
-  const handelDots = ()=>{
-    setShowEditAndDeleteModals((prev)=>!prev);
-  }
+  const handelDots = () => {
+    setShowEditAndDeleteModals((prev) => !prev);
+  };
 
-  const handleToggleSubscribed = async ()=>{
-   await toggleSubscription.mutate({videoId: video?._id},
-     {
+  // SUBSCRIBED TOGGLED
+
+  const handleToggleSubscribed = async () => {
+    await toggleSubscription.mutate(
+      { videoId: video?._id },
+      {
+        onSuccess: (data) => {
+          if (data?.data === "Subscribed Successfully") {
+            toast.success(data?.data);
+          } else {
+            toast.success(data?.data);
+          }
+        },
+        onError: (error) => {
+          console.log(error);
+          toast.error(error?.response?.data?.message);
+        },
+      }
+    );
+  };
+
+  // COMMENT AND EMOJI HANDLER
+
+  const handleEmojiClick = (emojiObject) => {
+    setComment((prev) => prev + emojiObject?.emoji);
+  };
+
+  const handleComment = (e) => {
+    setComment(e.target.value);
+    // console.log(comment)
+  };
+
+  // CREATE COMMENT
+
+  const handleCreateComment = async () => {
+    const data = {
+      comment,
+      videoId: video?._id,
+    };
+
+    await createComment.mutate(data, {
       onSuccess: (data) => {
-        if (data?.data === "Subscribed Successfully") {
-          toast.success(data?.data);
-        } else {
-          toast.success(data?.data);
-        }
+        console.log(data);
+        setComment("");
+        toast.success(data?.data);
       },
       onError: (error) => {
         console.log(error);
         toast.error(error?.response?.data?.message);
       },
-     }
-    )
-  }
+    });
+  };
 
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-6 p-6 bg-black text-white min-h-screen">
         {/* Main content */}
-        <div className="flex-2 space-y-6">
-          {/* Video Player */}
-          <div className="relative aspect-video rounded-lg overflow-hidden">
+
+        <div className="flex-1 space-y-6">
+          <div className="relative aspect-video rounded-lg overflow-hidden w-full">
             <video
               ref={videoRef}
               src={video?.videoFile}
@@ -203,7 +261,9 @@ export default function VideoPlayer({ video }) {
               </div>
             </div>
           </div>
+
           {/* Video Info */}
+
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl font-semibold">
@@ -271,14 +331,13 @@ export default function VideoPlayer({ video }) {
                 Save
               </button>
               <div className="relative">
-              <button
-                onClick={handelDots}
-                className="p-1 text-white rounded-full hover:bg-gray-800 "
-              >
-                <MoreVertical className="h-5 w-5 mr-2 " />
-                
+                <button
+                  onClick={handelDots}
+                  className="p-1 text-white rounded-full hover:bg-gray-800 "
+                >
+                  <MoreVertical className="h-5 w-5 mr-2 " />
                 </button>
-              {showEditAndDeleteModals && (
+                {showEditAndDeleteModals && (
                   <EditAndDeleteModal
                     onClose={setShowEditAndDeleteModals}
                     video={video}
@@ -287,61 +346,113 @@ export default function VideoPlayer({ video }) {
               </div>
             </div>
           </div>
+
           {/* USER INFO */}
-          <div
-            className="flex flex_col md:flex-row flex-col items-center gap-4"
-           
-          >
+
+          <div className="flex flex_col md:flex-row flex-col items-center gap-4">
             <div className="flex flex_col md:flex-row flex-col items-center gap-4">
-             <Link
-              to={`/${video?.owner?.username}`}
-             >
-             <img
-                src={video?.owner?.avatar || ""}
-                className="md:w-12 md:h-12 w-16 h-16 sm:w-20 sm:h-20 bg-cover rounded-full"
-              />
-             </Link>
-              <Link
-              to={`/${video?.owner?.username}`}
-              >
-              <div>
-                <h1 className="text-xs sm:text-sm text-gray-300 font-bold ">
-                  {video?.owner?.fullName || "Full Name"}
-                </h1>
-                <p className="text-sm text-center md:text-start text-gray-400">
-                  {`@${video?.owner?.username}` || "User"}
-                </p>
-              </div>
+              <Link to={`/${video?.owner?.username}`}>
+                <img
+                  src={video?.owner?.avatar || ""}
+                  className="md:w-12 md:h-12 w-16 h-16 sm:w-20 sm:h-20 bg-cover rounded-full"
+                />
+              </Link>
+              <Link to={`/${video?.owner?.username}`}>
+                <div>
+                  <h1 className="text-xs sm:text-sm text-gray-300 font-bold ">
+                    {video?.owner?.fullName || "Full Name"}
+                  </h1>
+                  <p className="text-sm text-center md:text-start text-gray-400">
+                    {`@${video?.owner?.username}` || "User"}
+                  </p>
+                </div>
               </Link>
             </div>
             <button
-                onClick={
-                  // video?.isSubscribed 
-                    // handleUnSubscribed
-                    handleToggleSubscribed
-                }
-                className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg flex items-center space-x-2"
-              >
-                <span className="text-xs sm:text-md">
-                  { toggleSubscription?.isPending ? "waiting..." : (video?.isSubscribed
-                    ? "Unsubscribe"
-                    : "Subscribe") }
-                </span>
-              </button>
+              onClick={
+                // video?.isSubscribed
+                // handleUnSubscribed
+                handleToggleSubscribed
+              }
+              className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg flex items-center space-x-2"
+            >
+              <span className="text-xs sm:text-md">
+                {toggleSubscription?.isPending
+                  ? "waiting..."
+                  : video?.isSubscribed
+                  ? "Unsubscribe"
+                  : "Subscribe"}
+              </span>
+            </button>
           </div>
 
           {/* Comments */}
+
           <div className="space-y-4">
-            <h3 className="font-semibold">5034 Comments</h3>
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <h3 className="font-semibold">
+              {millify(commentData?.message?.length) || 5034} Comments
+            </h3>
+            <div className="flex items-center justify-center gap-4">
+              <img
+                src={video?.owner?.avatar || ""}
+                className="md:w-12 md:h-12 w-14 h-14 sm:w-14 sm:h-14 bg-cover rounded-full"
+              />
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                onClick={() => {
+                  setShowCommentIcons(true);
+                }}
+                value={comment}
+                onChange={handleComment}
+                className={`w-full px-3 py-2 bg-black text-white outline-none border-b border-white/50 focus:border-white`}
+              />
+            </div>
+            {/* AFTER INPUT ICONS AND COMMENT BUTTON */}
+            {showCommentIcons && (
+              <div className="flex items-center gap-2 justify-between">
+                <div>
+                  <span
+                    onClick={() => {
+                      setShowEmoji((prev) => !prev);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Smile className="h-5 w-5 text-white mb-4 ml-16" />
+                  </span>
+                  {showEmoji && (
+                    <span>
+                      <EmojiPicker onEmojiClick={handleEmojiClick} />
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center justify-center gap-6">
+                  <button
+                    onClick={() => {
+                      setShowCommentIcons(false);
+                    }}
+                    className="hover:bg-[rgba(255,255,255,0.1)] px-6 py-2 hover:rounded-full transition-all duration-100 hover:text-[#717171]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleCreateComment}
+                    className={`bg-[rgba(255,255,255,0.1)]  px-6 py-2 rounded-full text-[#717171]  ${
+                      comment && "bg-purple-400 text-black"
+                    }`}
+                  >
+                    {createComment?.isPending ? "just a sec" : "Comment"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <Comment video={video} />
           </div>
         </div>
 
         {/* Recommended Videos */}
+
         <div className="w-full lg:w-[400px] space-y-4">
           {recommendedVideos.map((video, index) => (
             <HomeCard
@@ -412,3 +523,5 @@ const recommendedVideos = [
     thumbnail: "/placeholder.svg?height=120&width=160",
   },
 ];
+
+export default VideoPlayer;

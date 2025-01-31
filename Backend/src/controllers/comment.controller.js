@@ -37,7 +37,7 @@ export const getCommentsForVideo = asyncHandler( async (req,res)=>{
 
     // GET COMMENTS FOR VIDEO
 
-    const comments = await Comment.find({video: req.params.id}).populate({ path: "user", select: "-password" });
+    const comments = await Comment.find({video: req.params.id}).populate({ path: "user", select: "-password" }).sort({createdAt:-1});
 
     if(!comments){
         throw new ApiError(404,"No comments found for this video");
@@ -54,8 +54,6 @@ export const getCommentsForVideo = asyncHandler( async (req,res)=>{
 export const deleteComment = asyncHandler( async (req,res)=>{
 
     // GET COMMENT
-
-    console.log(req.params)
 
     const comment = await Comment.findById(req.params.id);
 
@@ -101,5 +99,48 @@ export const updateComment = asyncHandler( async (req,res)=>{
     // RETURN RESPONSE
 
     return res.status(200).json(new ApiResponse(200, updatedComment, "Comment updated successfully"));
+
+} )
+
+// LIKED VIDEOS
+
+export const likeComment = asyncHandler( async(req,res)=>{
+
+    if(!req?.user?._id){
+        throw new ApiError(401,"You are not authenticated");
+    }
+
+    // GET COMMENT
+
+    const comment = await Comment.findById(req.params.id);
+
+    // VALIDATION FOR COMMENT
+
+    if(!comment){
+        throw new ApiError(404,"Comment not found");
+    }
+
+    // CHECK IF USER ALREADY LIKED THE COMMENT
+
+    const isLiked = comment?.likes?.includes(req?.user?._id);
+    console.log(isLiked)
+
+    const likedComment = await Comment.findByIdAndUpdate(
+        req.params.id,
+        {
+            [isLiked ? "$pull":"$push"]:{likes:req?.user?._id}
+        },
+        { new: true }
+    )
+
+    // VALIDATED COMMENT
+
+    if(!likedComment){
+        throw new ApiError(500,"Failed to like comment");
+    }
+
+    // RETURN RESPONSE
+
+    return res.status(200).json(new ApiResponse(200, likedComment, isLiked ? "Comment disliked successfully" : "Comment liked successfully"));
 
 } )

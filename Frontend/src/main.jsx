@@ -20,6 +20,7 @@ import Dashboard from "./routes/Dashboard";
 import SingleVideo from "./routes/SingleVideo";
 import { ToastContainer } from "react-toastify";
 import { PlaylistProvider } from "./context/Playlist.Context";
+import { CommentsProvider } from "./context/Comment.Context";
 
 const queryClient = new QueryClient();
 
@@ -42,8 +43,10 @@ createRoot(document.getElementById("root")).render(
       <UserProvider>
         <VideoProvider>
         <PlaylistProvider>
+        <CommentsProvider>
           <RouterProvider router={router} />
           <ToastContainer position="top-right" />
+        </CommentsProvider>
         </PlaylistProvider>
         </VideoProvider>
       </UserProvider>
