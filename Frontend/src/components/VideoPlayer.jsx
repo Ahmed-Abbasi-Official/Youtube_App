@@ -120,7 +120,7 @@ export default function VideoPlayer({ video }) {
     });
   };
 
-  console.log(video)
+  // console.log(video)
 
   const handelDots = ()=>{
     setShowEditAndDeleteModals((prev)=>!prev);
@@ -233,7 +233,7 @@ export default function VideoPlayer({ video }) {
                     <>
                       <ThumbsUp className="h-5 w-5 mr-2 " />
                       <span className="text-sm">
-                        {millify(video?.owner?.likedVideos?.length)}
+                        {millify(video?.likes?.length)}
                       </span>
                     </>
                   )}
@@ -248,14 +248,14 @@ export default function VideoPlayer({ video }) {
                     <>
                       <MdThumbDownAlt className="h-5 w-5 mr-2 " />
                       <span className="text-sm">
-                        {millify(video?.owner?.disLikedVideos?.length)}
+                        {millify(video?.disLikes?.length)}
                       </span>
                     </>
                   ) : (
                     <>
                       <ThumbsDown className="h-5 w-5 mr-2 " />
                       <span className="text-sm">
-                        {millify(video?.owner?.disLikedVideos?.length)}
+                        {millify(video?.disLikes?.length)}
                       </span>
                     </>
                   )}

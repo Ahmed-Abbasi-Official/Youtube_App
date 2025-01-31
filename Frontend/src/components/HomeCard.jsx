@@ -74,9 +74,7 @@ const HomeCard = ({ video ,className }) => {
         className="relative group rounded-xl overflow-hidden"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={()=>{
-          navigate(`/video/${video?.slug}`)
-        }}
+       
       >
         <video
           ref={videoRef}
@@ -86,6 +84,9 @@ const HomeCard = ({ video ,className }) => {
           muted={isMuted}
           loop
           playsInline
+          onClick={()=>{
+            navigate(`/video/${video?.slug}`)
+          }}
         />
 
         {/* Overlay with controls (only visible on hover) */}
@@ -158,7 +159,11 @@ const HomeCard = ({ video ,className }) => {
         </Link>
         <div className="flex-1 min-w-0">
           <Link to={`/video/${video?.slug}`}>
-          <h2 className="text-sm font-medium line-clamp-2 mb-1">
+          <h2 
+           onClick={()=>{
+            navigate(`/video/${video?.slug}`)
+          }}
+          className="text-sm font-medium line-clamp-2 mb-1">
             {video?.title || "Video Title"}
           </h2>
           </Link>

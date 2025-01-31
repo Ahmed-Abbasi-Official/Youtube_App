@@ -101,7 +101,7 @@ export const VideoProvider = ({ children }) => {
       const res = await axios.get(`${BASE_URL}/dashboard/data`,{
         withCredentials: true,
       });
-      console.log(res.data)
+      // console.log(res.data)
       return res.data;
     },
     retry: false, // Prevent retry on failure

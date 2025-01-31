@@ -10,7 +10,7 @@ const HomeMainBar = () => {
   if(allVideosError){
     return <p>Error in fetching data: {allVideosError}</p>
   }
-  console.log(allVideos)
+  // console.log(allVideos)
   return (
     <div className='w-full flex flex-wrap py-4 mx-auto lg:gap-4 gap-6 sm
     :gap-2  justify-center md:w-[80%] overflow-y-auto'>
