@@ -7,10 +7,19 @@ import HomeCard from "../components/HomeCard";
 import { Link, useParams } from "react-router-dom";
 import { TbUserEdit } from "react-icons/tb";
 import { useVideo } from "../context/Videos.Context";
+import { useQuery } from "@tanstack/react-query";
 
 const MyChannel = () => {
-  const { channelData, channelLoading, channelError, user, updateUserDetails , updateUserAvatar , updateUserCoverImg } =
+  const { channelDataAPI, user, updateUserDetails , updateUserAvatar , updateUserCoverImg } =
     useUser();
+    const params = useParams();
+
+    const { data: channelData, error: channelError, isLoading: channelLoading } = useQuery({
+      queryKey: ["channelProfile",],
+      queryFn: ()=>channelDataAPI(params?.username),
+      // enabled: !!params?.username,
+    });
+
   const {userVideos} = useVideo()
   const [channelName, setChannelName] = useState(channelData?.message?.fullName);
   const [username, setUsername] = useState(channelData?.message?.username);
@@ -21,9 +30,10 @@ const MyChannel = () => {
   const [coverLoading, setCoverLoading] = useState(false);
   const [showAvatarBtn, setShowAvatarBtn] = useState(true);
   const [showCoverBtn, setShowCoverBtn] = useState(true);
-  const params = useParams();
+  
+  
 
-  console.log(channelData)
+  // console.log(channelData)
   
   // GET USER VIDEOS
   useEffect(()=>{
@@ -36,10 +46,12 @@ const MyChannel = () => {
         console.error("Error fetching user videos:", error);
       },
     });
+    channelData
   },[params.username])
   
   if (channelError) return <p>Error in Fetching data {channelError} </p>;
   if (channelLoading) return <p>Loading...</p>;
+  console.log(channelData)
   
 
   // HANDLE EDIT CLICK

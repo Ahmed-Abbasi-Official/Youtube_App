@@ -1,3 +1,4 @@
+import { Subscription } from "../models/subscription.model.js";
 import { User } from "../models/user.model.js";
 import { Video } from "../models/video.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -97,21 +98,34 @@ export const getAllVideos = asyncHandler(async (req, res) => {
 // GET SINGLE VIDEO
 
 export const getSingleVideo = asyncHandler(async (req, res) => {
-  // GET SINGLE VIDEO
-
   const video = await Video.findOne({ slug: req?.params?.slug }).populate('owner');
-
-  // CHECK VIDEO
 
   if (!video) {
     throw new ApiError(404, "Video not found");
   }
 
-  // RETURN RESPONSE
+  let isSubscribed = false;
+
+  if (req.user) {
+    const subscription = await Subscription.findOne({
+      subscriber: req.user._id,
+      channel: video.owner._id,
+    });
+    // console.log(subscription)
+
+    isSubscribed = !!subscription;
+  }
+
+  // Update Video model's isSubscribed field (if subscribed)
+  if (isSubscribed) {
+    await Video.findByIdAndUpdate(video._id, { isSubscribed: true });
+  }else{
+    await Video.findByIdAndUpdate(video._id, { isSubscribed: false });
+  }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, video, "Video fetched successfully"));
+    .json(new ApiResponse(200,video, "Video fetched successfully"));
 });
 
 // DELETE VIDEO
@@ -234,14 +248,9 @@ export const updateVideo = asyncHandler(async (req, res) => {
       );
   });
 
-export const dashboardData = asyncHandler( async(req,res)=>{
+  // DASHBOARD DATA
 
-    // const { username } = req.params;
-  
-    // if (!username?.trim()) {
-    //   throw new ApiError(400, "Username is missing");
-    // }
-  
+  export const dashboardData = asyncHandler(async (req, res) => {
     const channel = await User.aggregate([
       {
         $match: {
@@ -284,7 +293,15 @@ export const dashboardData = asyncHandler( async(req,res)=>{
             },
           },
           totalViews: { $sum: "$videos.views" },
-          totalLikes: { $size: "$likedVideos" },
+          totalLikes: {
+            $sum: {
+              $map: {
+                input: "$videos",
+                as: "video",
+                in: { $size: "$$video.likes" }, // Sum of likes from owned videos
+              },
+            },
+          },
         },
       },
       {
@@ -298,7 +315,7 @@ export const dashboardData = asyncHandler( async(req,res)=>{
           coverImage: 1,
           email: 1,
           totalViews: 1,
-          totalLikes: 1,
+          totalLikes: 1, // Now correctly calculated
         },
       },
     ]);
@@ -310,6 +327,73 @@ export const dashboardData = asyncHandler( async(req,res)=>{
     return res
       .status(200)
       .json(new ApiResponse(200, channel[0], "Dashboard Data fetched successfully"));
+  });
   
-} )
+
+// TOGGLE SUBSCRIPTION  
+
+export const toggleSubscription = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+  const userId = req.user._id;
+
+  if (!channelId) {
+    throw new ApiError(400, "Channel ID is required");
+  }
+
+  const ownerVideo = await Video.findById(channelId);
+
+  if (userId.toString() === ownerVideo?.owner.toString()) {
+    throw new ApiError(400, "You cannot subscribe to yourself");
+  }
+
+  const existingSubscription = await Subscription.findOne({
+    subscriber: userId,
+    channel: ownerVideo?.owner,
+  });
+
+  if (existingSubscription) {
+    // Unsubscribe (Remove subscription)
+   const unSubs= await Subscription.findByIdAndDelete(existingSubscription._id);
+
+   if(!unSubs) {
+     throw new ApiError(500, "Failed to unsubscribe from channel");   // Handle error if failed to delete subscription. 500 means server error.  
+ 
+   }
+
+   const UnsubscribedVideo =   await Video.findOneAndUpdate(
+    { _id: channelId },  // Find a video where the owner matches
+    { isSubscribed: false },  // Update field
+    { new: true }  // Return updated document
+  );
+
+  if(!UnsubscribedVideo) {
+    throw new ApiError(500, "Failed to UnsubscribedVideo to channel");
+  }
+    return res
+      .status(200)
+      .json(new ApiResponse(200, unSubs, "Unsubscribed successfully"));
+  } else {
+    // Subscribe (Create new subscription)
+    await Subscription.create({
+      subscriber: userId,
+      channel: ownerVideo?.owner,
+    });
+
+  const subscribedVideo =   await Video.findOneAndUpdate(
+      { _id: channelId },  // Find a video where the owner matches
+      { isSubscribed: true },  // Update field
+      { new: true }  // Return updated document
+    );
+
+    if(!subscribedVideo) {
+      throw new ApiError(500, "Failed to subscribe to channel");
+    }
+    
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, subscribedVideo, "Subscribed successfully"));
+  }
+});
+
   

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { dashboardData, deleteVideo, getAllVideos, getSingleVideo, getVideosByUser, updateVideo, uploadVideo } from "../controllers/video.controller.js";
+
+import { dashboardData, deleteVideo, getAllVideos, getSingleVideo, getVideosByUser, toggleSubscription, updateVideo, uploadVideo } from "../controllers/video.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/isAuth.middleware.js";
 import increaseVisits from "../middlewares/increaseViews.js";
@@ -13,7 +14,7 @@ router.route('/upload-video').post( verifyJWT , upload.single("video") , uploadV
 router.route('/').get(getAllVideos) ;
 
 // GET SINGLE VIDEO
-router.route('/:slug').get( increaseVisits , getSingleVideo )
+router.route('/:slug').get( verifyJWT ,  increaseVisits , getSingleVideo )
 
 // DELETE SINGLE VIDEO
 router.route('/:id').delete( verifyJWT , deleteVideo) ;
@@ -26,6 +27,9 @@ router.route('/user/update/:id').patch( verifyJWT , upload.single('video') , upd
 
 // GET DASHBOARD
 router.route('/dashboard/data').get( verifyJWT , dashboardData)
+
+// TOGGLE SUBSCRIPTION
+router.route('/subscription/:channelId').get( verifyJWT , toggleSubscription );
 
 
 export default router;

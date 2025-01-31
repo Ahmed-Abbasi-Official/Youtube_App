@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { sendEmail } from "../utils/sendMail.js";
 import UserOTP from "../models/userOTP.model.js";
 import bcrypt from "bcryptjs";
+import { Video } from "../models/video.model.js";
 
 // TOKENS
 
@@ -33,7 +34,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   // GET DATA FROM USER
 
-  const { email, fullName, username, password, file } = req.body;
+  const { email, fullName, username, password } = req.body;
   // console.log(email);
 
   // VALIDATION - NOT EMPTY
@@ -55,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // CHECK FOR AVATAR
-  console.log(req.file)
+  // console.log(req.file)
   const avatarLocalPath=req.file?.path ;
 
   if(!avatarLocalPath){
@@ -661,6 +662,24 @@ const likeVideo = asyncHandler(async (req, res) => {
     { new: true }
   ).select("-password");
 
+  if(!updatedUser){
+    throw new ApiError(500, "Failed to update user's likedVideos array");  // Handle error in case user is not found or updatedUser is null.
+  }
+
+  // Check if video is already in user's likedVideos array
+
+  const video = await Video.findById(videoId);
+  // CHECK LIKES IN VIDEO MODEL
+  const checkLikedVideo = video.likes.includes(req.user._id)
+  // ADD USER IN VIDEO MODEL
+  const addUserInVideo = await Video.findByIdAndUpdate(videoId,{
+    [checkLikedVideo ? "$pull"  : "$push"] : {likes:req.user._id}
+  })
+  // VALIDATION FOR ADDUSERINVIDEO
+  if(!addUserInVideo){
+    throw new ApiError(500, "Failed to update video's likes array");  // Handle error in case user is not found or updatedUser is null.
+  }
+
 
   // Return response
 
@@ -699,6 +718,24 @@ const dislikeVideo = asyncHandler(async (req, res) => {
     },
     { new: true }
   ).select("-password");
+
+  if(!updatedUser){
+    throw new ApiError(500, "Failed to update user's dislikedVideos array");  // Handle error in case user is not found or updatedUser is null.
+  }
+
+  // Check if video is already in user's likedVideos array
+
+  const video = await Video.findById(videoId);
+  // CHECK LIKES IN VIDEO MODEL
+  const checkDisLikedVideo = video.disLikes.includes(req.user._id)
+  // ADD USER IN VIDEO MODEL
+  const addUserInVideo = await Video.findByIdAndUpdate(videoId,{
+    [checkDisLikedVideo ? "$pull"  : "$push"] : {disLikes:req.user._id}
+  })
+  // VALIDATION FOR ADDUSERINVIDEO
+  if(!addUserInVideo){
+    throw new ApiError(500, "Failed to update video's likes array");  // Handle error in case user is not found or updatedUser is null.
+  }
 
   // console.log(updatedUser)
 

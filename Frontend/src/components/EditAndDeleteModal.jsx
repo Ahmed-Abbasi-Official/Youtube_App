@@ -48,6 +48,7 @@ const EditAndDeleteModal = ({  video , onClose }) => {
             </div>
             {show && (
                <UploadVideoModal
+               imp={false}
                videos={video}
                setShowUploadModal={setShow}
                />

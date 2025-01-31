@@ -19,9 +19,11 @@ import { MdThumbDownAlt } from "react-icons/md";
 import millify from "millify";
 import SaveModal from "./SaveModal";
 import EditAndDeleteModal from "./EditAndDeleteModal";
+import { useVideo } from "../context/Videos.Context";
 
 export default function VideoPlayer({ video }) {
-  const { likedVideos, dislikedVideos } = useUser();
+  const { likedVideos, dislikedVideos , user } = useUser();
+  const {toggleSubscription} = useVideo();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -37,7 +39,14 @@ export default function VideoPlayer({ video }) {
     if (videoRef.current) {
       setDuration(videoRef.current.duration);
     }
+    if(video?.likes.includes(user?.message?._id)){
+      setLikedVideo(true);
+    }
+    if(video?.disLikes.includes(user?.message?._id)){
+      setUnLikedVideo(true);
+    }
   }, [videoRef]); // Updated dependency
+ 
 
   const togglePlay = () => {
     if (videoRef.current.paused) {
@@ -111,10 +120,28 @@ export default function VideoPlayer({ video }) {
     });
   };
 
-  // console.log(video)
+  console.log(video)
 
   const handelDots = ()=>{
     setShowEditAndDeleteModals((prev)=>!prev);
+  }
+
+  const handleToggleSubscribed = async ()=>{
+   await toggleSubscription.mutate({videoId: video?._id},
+     {
+      onSuccess: (data) => {
+        if (data?.data === "Subscribed Successfully") {
+          toast.success(data?.data);
+        } else {
+          toast.success(data?.data);
+        }
+      },
+      onError: (error) => {
+        console.log(error);
+        toast.error(error?.response?.data?.message);
+      },
+     }
+    )
   }
 
   return (
@@ -199,7 +226,7 @@ export default function VideoPlayer({ video }) {
                     <>
                       <IoMdThumbsUp className="h-5 w-5 mr-2 " />
                       <span className="text-sm">
-                        {millify(video?.owner?.likedVideos?.length)}
+                        {millify(video?.likes?.length)}
                       </span>
                     </>
                   ) : (
@@ -261,15 +288,22 @@ export default function VideoPlayer({ video }) {
             </div>
           </div>
           {/* USER INFO */}
-          <Link
+          <div
             className="flex flex_col md:flex-row flex-col items-center gap-4"
-            to={`/${video?.owner?.username}`}
+           
           >
             <div className="flex flex_col md:flex-row flex-col items-center gap-4">
-              <img
+             <Link
+              to={`/${video?.owner?.username}`}
+             >
+             <img
                 src={video?.owner?.avatar || ""}
                 className="md:w-12 md:h-12 w-16 h-16 sm:w-20 sm:h-20 bg-cover rounded-full"
               />
+             </Link>
+              <Link
+              to={`/${video?.owner?.username}`}
+              >
               <div>
                 <h1 className="text-xs sm:text-sm text-gray-300 font-bold ">
                   {video?.owner?.fullName || "Full Name"}
@@ -278,8 +312,23 @@ export default function VideoPlayer({ video }) {
                   {`@${video?.owner?.username}` || "User"}
                 </p>
               </div>
+              </Link>
             </div>
-          </Link>
+            <button
+                onClick={
+                  // video?.isSubscribed 
+                    // handleUnSubscribed
+                    handleToggleSubscribed
+                }
+                className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg flex items-center space-x-2"
+              >
+                <span className="text-xs sm:text-md">
+                  { toggleSubscription?.isPending ? "waiting..." : (video?.isSubscribed
+                    ? "Unsubscribe"
+                    : "Subscribe") }
+                </span>
+              </button>
+          </div>
 
           {/* Comments */}
           <div className="space-y-4">

@@ -70,8 +70,9 @@ const LoginPage = () => {
          </div>
           
           <Button
+          disabled={signinUser?.isPending}
           type="submit"
-            value="Continue"
+          value={ signinUser?.isPending ? "Just a sec..." : "Continue" }
             className="bg-[#AE7AFF] text-center py-2"
           />
         </form>

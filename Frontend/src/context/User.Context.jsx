@@ -67,7 +67,7 @@ export const UserProvider = ({ children }) => {
     queryFn: async () => {
       // console.log(document.cookie)
       const res = await axios.get(`${BASE_URL}/me`, {
-        withCredentials: true,  // Allow cookies to be sent
+        withCredentials: true, // Allow cookies to be sent
       });
       // console.log("res");
       return res.data;
@@ -76,7 +76,7 @@ export const UserProvider = ({ children }) => {
     staleTime: Infinity,
     cacheTime: Infinity,
   });
-  
+
   // LOGOUT USER
 
   const logoutMutation = useMutation({
@@ -93,27 +93,20 @@ export const UserProvider = ({ children }) => {
 
   // CHANNEL DATA
 
-  const { data: channelData, error: channelError, isLoading: channelLoading } = useQuery({
-    queryKey: ["channelProfile", user?.message],
-    queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}/user/${user?.message?.username}`,{
-        withCredentials: true,  // Allow cookies to be sent
-      });
-      // console.log(res)
-      return res.data;
-    },
-    enabled: !!user?.message,
-    retry: 2,
-    staleTime: 1000 * 60 * 5,
-  });
+  const channelDataAPI = async (username) => {
+    const res  = await axios.get(`${BASE_URL}/user/${username}`, {
+      withCredentials: true, // Allow cookies to be sent
+    });
+    return res.data
+  };
 
   // UPDATE USER
 
   const updateUserDetails = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-account`, data,{
-        withCredentials: true,  // Allow cookies to be sent
+      const res = await axios.patch(`${BASE_URL}/update-account`, data, {
+        withCredentials: true, // Allow cookies to be sent
       });
       return res.data;
     },
@@ -127,8 +120,8 @@ export const UserProvider = ({ children }) => {
   const updateUserAvatar = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-avatar`, data,{
-        withCredentials: true,  // Allow cookies to be sent
+      const res = await axios.patch(`${BASE_URL}/update-avatar`, data, {
+        withCredentials: true, // Allow cookies to be sent
       });
       return res.data;
     },
@@ -142,8 +135,8 @@ export const UserProvider = ({ children }) => {
   const updateUserCoverImg = useMutation({
     mutationKey: ["user", "channelProfile"],
     mutationFn: async (data) => {
-      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data,{
-        withCredentials: true,  // Allow cookies to be sent
+      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data, {
+        withCredentials: true, // Allow cookies to be sent
       });
       return res.data;
     },
@@ -154,35 +147,43 @@ export const UserProvider = ({ children }) => {
 
   // LIKED VIDEOS
 
-  const likedVideos=useMutation({
+  const likedVideos = useMutation({
     mutationKey: ["likedVideos", user?.message],
     mutationFn: async (video) => {
-      const videoId = video?._id
-      const res = await axios.post(`${BASE_URL}/liked-video`,{videoId}, {
-        withCredentials: true,  // Allow cookies to be sent
-      });
+      const videoId = video?._id;
+      const res = await axios.post(
+        `${BASE_URL}/liked-video`,
+        { videoId },
+        {
+          withCredentials: true, // Allow cookies to be sent
+        }
+      );
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["likedVideos", "user"]);
     },
-  })
+  });
 
   // DISLIKED VIDEOS
 
-  const dislikedVideos=useMutation({
+  const dislikedVideos = useMutation({
     mutationKey: ["dislikedVideos", user?.message],
     mutationFn: async (video) => {
-      const videoId = video?._id
-      const res = await axios.post(`${BASE_URL}/dis-liked-video`,{videoId}, {
-        withCredentials: true,  // Allow cookies to be sent
-      });
+      const videoId = video?._id;
+      const res = await axios.post(
+        `${BASE_URL}/dis-liked-video`,
+        { videoId },
+        {
+          withCredentials: true, // Allow cookies to be sent
+        }
+      );
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["dislikedVideos", "user"]);
     },
-  })
+  });
 
   return (
     <UserContext.Provider
@@ -197,14 +198,12 @@ export const UserProvider = ({ children }) => {
         logoutMutation,
         isAuthenticated,
         setIsAuthenticated,
-        channelData,
-        channelError,
-        channelLoading,
+        channelDataAPI,
         updateUserDetails,
         updateUserAvatar,
         updateUserCoverImg,
         likedVideos,
-        dislikedVideos
+        dislikedVideos,
       }}
     >
       {children}

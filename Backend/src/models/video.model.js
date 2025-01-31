@@ -45,11 +45,27 @@ const videoSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isSubscribed:{
+      type: Boolean,
+      default: false,
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+    likes:[
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    disLikes:[
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ]
   },
   {
     timestamps: true,

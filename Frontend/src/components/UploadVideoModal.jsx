@@ -4,7 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 import { toast } from "react-toastify";
 import UploadDetailsModal from "./UploadDetailsModal";
 
-const UploadVideoModal = ({setShowUploadModal,videos}) => {
+const UploadVideoModal = ({setShowUploadModal,videos,imp}) => {
   const [video , setVideo]=useState(null);
 
 
@@ -52,7 +52,7 @@ const UploadVideoModal = ({setShowUploadModal,videos}) => {
         {/* UPLOAD DETAILS */}
         <div className="overflow-y-auto">
           <UploadDetailsModal
-          imp={false}
+          imp={imp}
           video={video}
           videos={videos}
           onClose={setShowUploadModal}

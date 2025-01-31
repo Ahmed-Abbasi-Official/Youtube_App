@@ -101,11 +101,26 @@ export const VideoProvider = ({ children }) => {
       const res = await axios.get(`${BASE_URL}/dashboard/data`,{
         withCredentials: true,
       });
+      console.log(res.data)
       return res.data;
     },
     retry: false, // Prevent retry on failure
     staleTime: Infinity, // Data is considered fresh indefinitely, preventing unnecessary refetches
     cacheTime: Infinity, // Cache will persist indefinitely
+  })
+
+  // TOGGLE SUBSCRIPTION
+
+  const toggleSubscription = useMutation({
+    mutationFn: async ({videoId}) => {
+      const channelId = videoId
+      console.log(channelId)
+      const res = await axios.get(`${BASE_URL}/subscription/${channelId}`);
+      return res.data;
+    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["dashboard","videos"]) ;
+    }
   })
 
   return <VideoContext.Provider value={{
@@ -119,7 +134,8 @@ export const VideoProvider = ({ children }) => {
     fetchSingleVideo,
     deleteVideo,
     updateVideo,
-    dashboardData
+    dashboardData,
+    toggleSubscription
 
   }}>{children}</VideoContext.Provider>;
 };
