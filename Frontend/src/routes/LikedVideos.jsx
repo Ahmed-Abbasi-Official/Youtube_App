@@ -127,9 +127,9 @@ export default function LikedVideos() {
                 </div>
                 <div className="flex-1">
                   <h3 
-                    onClick={() => {
-                      navigate(`/video/${video?.slug}`)
-                    }}
+                      onClick={() => {
+                        navigate(`/video/${video?.slug}`)
+                      }}
                   className="text-base font-semibold line-clamp-2">{video?.title}</h3>
                   <p className="text-gray-400 text-sm mt-1">{likedVideo?.message?.username}</p>
                   <p className="text-gray-400 text-sm">

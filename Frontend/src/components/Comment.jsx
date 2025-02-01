@@ -6,12 +6,14 @@ import { toast } from "react-toastify";
 import millify from "millify";
 import { IoMdThumbsUp } from "react-icons/io";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Comment({ video }) {
   const { user, userLoading } = useUser();
   const { getComments, likeComment, deleteComment } = useComments();
   const [showPopUp, seShowPopUp] = useState(false);
   const [showPopUpId, setShowPopUpId] = useState(null);
+  const navigate=useNavigate();
 
   // GET ALL COMMENTS
 
@@ -66,6 +68,9 @@ export default function Comment({ video }) {
     });
   };
 
+  console.log(commentData)
+
+
   return (
     <div className="w-full pt-2  bg-[#000] min-h-screen">
       {commentData?.message?.map((comment) => (
@@ -75,16 +80,23 @@ export default function Comment({ video }) {
 
             <div className="h-10 w-10">
               <img
+              onClick={() => {
+                navigate(`/${comment?.user?.username}`)
+              }}
                 src={comment?.user?.avatar || "/placeholder.svg"}
                 alt={comment?.user?.username}
-                className="rounded-full w-full h-full object-cover"
+                className="rounded-full w-full cursor-pointer h-full object-cover"
               />
             </div>
             <div className="flex-1">
               {/* USER INFO */}
 
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-white">
+                <span 
+                onClick={() => {
+                  navigate(`/${comment?.user?.username}`)
+                }}
+                className="text-sm font-medium cursor-pointer text-white">
                   {comment?.user?.username || comment.author}
                 </span>
                 <span className="text-xs text-gray-400">

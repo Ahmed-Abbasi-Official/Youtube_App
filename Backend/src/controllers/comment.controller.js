@@ -37,7 +37,7 @@ export const getCommentsForVideo = asyncHandler( async (req,res)=>{
 
     // GET COMMENTS FOR VIDEO
 
-    const comments = await Comment.find({video: req.params.id}).populate({ path: "user", select: "-password" }).sort({createdAt:-1});
+    const comments = await Comment.find({video: req.params.id}).populate({ path: "user video", select: "-password" }).sort({createdAt:-1});
 
     if(!comments){
         throw new ApiError(404,"No comments found for this video");
