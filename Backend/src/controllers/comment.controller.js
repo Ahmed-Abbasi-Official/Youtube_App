@@ -123,7 +123,6 @@ export const likeComment = asyncHandler( async(req,res)=>{
     // CHECK IF USER ALREADY LIKED THE COMMENT
 
     const isLiked = comment?.likes?.includes(req?.user?._id);
-    console.log(isLiked)
 
     const likedComment = await Comment.findByIdAndUpdate(
         req.params.id,

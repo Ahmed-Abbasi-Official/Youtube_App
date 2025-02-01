@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { format } from 'timeago.js';
 
-const HomeCard = ({ video ,className }) => {
+const HomeCard = ({ video ,className,w }) => {
   const videoRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -69,7 +69,7 @@ const HomeCard = ({ video ,className }) => {
   // console.log(video)
 
   return (
-    <div className={`flex flex-col gap-2 w-[40%] 540px:w-[90%] sm:w-[30%] lg:w-[23%] cursor-pointer ${className}`}>
+    <div className={`flex flex-col gap-2 w-[40%] 540px:${w || "w-[90%]"}  sm:w-[30%] lg:w-[23%] cursor-pointer ${className}`}>
       <div 
         className="relative group rounded-xl overflow-hidden"
         onMouseEnter={handleMouseEnter}

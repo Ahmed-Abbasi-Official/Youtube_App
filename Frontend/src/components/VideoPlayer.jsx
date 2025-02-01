@@ -24,6 +24,7 @@ import { useVideo } from "../context/Videos.Context";
 import EmojiPicker from "emoji-picker-react";
 import Comment from "./Comment";
 import { useComments } from "../context/Comment.Context";
+import Avatar from 'react-avatar';
 import { useQuery } from "@tanstack/react-query";
 
 function VideoPlayer({ video }) {
@@ -349,12 +350,12 @@ function VideoPlayer({ video }) {
 
           {/* USER INFO */}
 
-          <div className="flex flex_col md:flex-row flex-col items-center gap-4">
-            <div className="flex flex_col md:flex-row flex-col items-center gap-4">
+          <div className="flex  items-center gap-4">
+            <div className="flex justify-start items-center gap-4">
               <Link to={`/${video?.owner?.username}`}>
                 <img
                   src={video?.owner?.avatar || ""}
-                  className="md:w-12 md:h-12 w-16 h-16 sm:w-20 sm:h-20 bg-cover rounded-full"
+                  className="md:w-12 md:h-12 w-12 h-12 sm:w-12 sm:h-12 bg-cover rounded-full"
                 />
               </Link>
               <Link to={`/${video?.owner?.username}`}>
@@ -362,7 +363,7 @@ function VideoPlayer({ video }) {
                   <h1 className="text-xs sm:text-sm text-gray-300 font-bold ">
                     {video?.owner?.fullName || "Full Name"}
                   </h1>
-                  <p className="text-sm text-center md:text-start text-gray-400">
+                  <p className="text-sm  md:text-start text-gray-400">
                     {`@${video?.owner?.username}` || "User"}
                   </p>
                 </div>
@@ -393,10 +394,11 @@ function VideoPlayer({ video }) {
               {millify(commentData?.message?.length) || 5034} Comments
             </h3>
             <div className="flex items-center justify-center gap-4">
-              <img
+              {/* <img
                 src={video?.owner?.avatar || ""}
-                className="md:w-12 md:h-12 w-14 h-14 sm:w-14 sm:h-14 bg-cover rounded-full"
-              />
+                className="md:w-12 md:h-12 w-10 h-10 sm:w-10 sm:h-10 bg-cover rounded-full"
+              /> */}
+              <Avatar name={video?.owner?.fullName.slice(0,1)} size="40" round={true} />
               <input
                 type="text"
                 placeholder="Add a comment..."
@@ -453,11 +455,12 @@ function VideoPlayer({ video }) {
 
         {/* Recommended Videos */}
 
-        <div className="w-full lg:w-[400px] space-y-4">
+        <div className="w-full  lg:w-[400px] space-y-4">
           {recommendedVideos.map((video, index) => (
             <HomeCard
+            w='w-full'
               key={index}
-              className="flex gap-2 lg:w-full p-2 bg-gray-900 border-gray-800"
+              className="flex gap-2 w-full lg:w-full p-2 bg-gray-900 border-gray-800"
             >
               <div className="relative w-40 aspect-video rounded-lg overflow-hidden">
                 <img

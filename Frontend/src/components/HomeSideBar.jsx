@@ -59,7 +59,7 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
   return (
    <>
    {/* FOR MOBILE */}
-   <div className='flex items-center justify-between px-4 py-2 md:hidden w-full border sticky z-20 bg-black -bottom-0'>
+   <div className='flex  items-center justify-between px-4 py-2 md:hidden w-full border sticky z-20 bg-black  -bottom-0'>
         {upperButtons.map((elm,idx)=>(
           <div key={elm.routeName} className='flex flex-col justify-start items-center gap-1 cursor-pointer'>
             <span className={`text-lg ${elm?.class}`}>{elm.icon}</span>

@@ -24,7 +24,7 @@ const SingleVideo = () => {
 
   return (
     <>
-    <div className=' flex bg-black'>
+    <div className=' flex md:flex-row flex-col h-[calc(100vh-72px)] w-full  bg-black'>
       
       {/* HOME SIDE BAR */}
       <HomeSideBar
