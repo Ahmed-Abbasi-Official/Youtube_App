@@ -21,6 +21,7 @@ import SingleVideo from "./routes/SingleVideo";
 import { ToastContainer } from "react-toastify";
 import { PlaylistProvider } from "./context/Playlist.Context";
 import { CommentsProvider } from "./context/Comment.Context";
+import LikedVideos from "./routes/LikedVideos";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path="/:username" element={<MyChannel />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/video/:slug" element={<SingleVideo />} />
+      <Route path="/video/liked-videos" element={<LikedVideos />} />
     </Route>
   )
 );

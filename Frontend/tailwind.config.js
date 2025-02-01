@@ -21,10 +21,15 @@ export default {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0)" },
         },
+        incr: {
+          "0%": { scale: "1" },
+          "100%": { scale: "1.01" },
+        },
       },
       animation: {
         slide: "slide .2s ease-in-out",
         slideIn: "slideIn .5s ease-in-out forwards",
+        incr:"incr .1s ease-in-out forwards"
       },
       // Custom scrollbar styles
       scrollbar: {

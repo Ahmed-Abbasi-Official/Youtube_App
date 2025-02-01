@@ -18,7 +18,7 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
     {
       icon:<HiThumbUp />,
       routeName:'Liked Videos',
-      path:'/liked-videos',
+      path:'/video/liked-videos',
       class:"hidden"
     },
     {

@@ -396,4 +396,25 @@ export const toggleSubscription = asyncHandler(async (req, res) => {
   }
 });
 
+// LIKED VIDEOS
+
+export const userLikedVideo = asyncHandler(async(req,res)=>{
+  const userId = req.user._id;
+  // console.log(req.user)
+  if(!userId){
+    throw new ApiError(401, "User not authenticated");
+  }
+  const videos = await User.findById(req.user._id).populate("likedVideos")
+  // console.log(videos)
+  if(!videos){
+    throw new ApiError(404, "User Not Found");
+  }
+
+  // RETURN RESPONSE
+
+  return res
+   .status(200)
+   .json(new ApiResponse(200, videos, "Liked videos fetched successfully"));
+})
+
   

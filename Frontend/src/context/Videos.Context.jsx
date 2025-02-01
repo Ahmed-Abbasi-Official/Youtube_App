@@ -123,6 +123,15 @@ export const VideoProvider = ({ children }) => {
     }
   })
 
+  // LIKED VIDEOS USER
+
+  const fetchUserLikedVideos = async ()=>{
+    const res = await axios.post(`${BASE_URL}/liked`,{
+      withCredentials: true,
+    });
+    return res.data;
+  }
+
   return <VideoContext.Provider value={{
 
     allVideos,
@@ -135,7 +144,8 @@ export const VideoProvider = ({ children }) => {
     deleteVideo,
     updateVideo,
     dashboardData,
-    toggleSubscription
+    toggleSubscription,
+    fetchUserLikedVideos
 
   }}>{children}</VideoContext.Provider>;
 };
