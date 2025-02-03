@@ -68,7 +68,7 @@ export default function Comment({ video }) {
     });
   };
 
-  console.log(commentData)
+  // console.log(commentData)
 
 
   return (

@@ -5,6 +5,7 @@ import { useVideo } from "../context/Videos.Context"
 import { format } from "timeago.js"
 import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import millify from "millify";
 
 export default function LikedVideos() {
   const { fetchUserLikedVideos } = useVideo()
@@ -67,6 +68,9 @@ export default function LikedVideos() {
     const seconds = Math.floor(time % 60)
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
   }
+
+  console.log(likedVideo)
+
   return (
     <div className="w-full flex h-[calc(100vh-72px)] bg-black text-white lg:gap-4">
       {/* HOME SIDE BAR (Sticky) */}
@@ -86,15 +90,16 @@ export default function LikedVideos() {
             <div className="lg:absolute  inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
             <div className="lg:absolute bottom-0 p-2 md:p-4 lg:p-6">
               <h1 className="text-sm md:text-lg lg:text-2xl font-semibold md:font-bold mb-2">Liked videos</h1>
-              <p className="text-white mb-1">Ahmed Abbasi</p>
+              <p className="text-white mb-1">{likedVideo?.message?.fullName}</p>
               <div className="flex items-center gap-2 text-gray-300 text-sm">
-                <span>5,000 videos</span>
+                <span>{millify(likedVideo?.message?.likedVideos?.length)} videos</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right Side - Video List (Scrollable) */}
+        
         <div className="flex-1  h-[calc(100vh-72px)] overflow-y-auto custom-scrollbar pr-4">
           <div className="space-y-4  mt-4">
             {likedVideo?.message?.likedVideos?.map((video, index) => (

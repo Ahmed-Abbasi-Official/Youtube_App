@@ -4,7 +4,6 @@ import VideoPlayer from '../components/VideoPlayer'
 import { useParams } from 'react-router-dom'
 import { useVideo } from '../context/Videos.Context'
 import { useQuery } from '@tanstack/react-query'
-import { useUser } from '../context/User.Context'
 
 const SingleVideo = () => {
   const {fetchSingleVideo}=useVideo();
