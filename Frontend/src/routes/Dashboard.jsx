@@ -24,9 +24,9 @@ const Dashboard = () => {
   }
   // console.log(dashboardData.data);
   return (
-    <div className="px-3 sm:px-6 md:px-28 md:py-8 sm:py-4 py-2 relative flex flex-col space-y-3 sm:space-y-6 justify-center  bg-black  ">
+    <div className="px-3 sm:px-6 md:px-28 md:py-8 sm:py-4 py-2 relative flex flex-col space-y-5 sm:space-y-6 justify-center h-[calc(100vh-72px)] sm:h-fit overflow-y-auto pt-16  bg-black  ">
         {/* HEAD */}
-      <div className="flex sm:flex-row flex-col justify-start gap-1 sm:gap-0 sm:items-center sm:justify-between">
+      <div className="flex sm:flex-row flex-col justify-start gap-3 sm:gap-0 sm:items-center sm:justify-between">
         {/* UPLOAD BUTTON AND TEXT WELCOME */}
         <div className="flex flex-col gap-.5 sm:gap-2">
           <h1 className="md:text-3xl sm:text-xl text-lg font-semibold">

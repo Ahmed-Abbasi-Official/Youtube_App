@@ -45,6 +45,41 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
       path:'/saved-video'
     },
   ]
+  const upperButtonsMobile=[
+    {
+      icon:<RiHome3Line />,
+      routeName:'Home',
+      path:'/'
+    },
+    {
+      icon:<HiThumbUp />,
+      routeName:'Liked Videos',
+      path:'/video/liked-videos',
+      class:"hidden"
+    },
+    {
+      icon:<RiHistoryFill />,
+      routeName:'History',
+      path:'/video/history'
+    },
+    {
+      icon:<CgPlayList />,
+      routeName:'Playlist',
+      path:'/video/playlist',
+      class:"hidden"
+    },
+    {
+      icon:<MdCollectionsBookmark />,
+      routeName:'Collection',
+      path:'/saved-video'
+    },
+    {
+      icon:<IoSettingsSharp />,
+      routeName:'Dashboard',
+      path:'/dashboard'
+    },
+   
+  ]
   // LOWER BUTTONS ARRAY
   const lowerButtons=[
     {
@@ -62,7 +97,7 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
    <>
    {/* FOR MOBILE */}
    <div className='flex  items-center justify-between px-4 py-2 md:hidden w-full border sticky z-20 bg-black  -bottom-0'>
-        {upperButtons.map((elm,idx)=>(
+        {upperButtonsMobile.map((elm,idx)=>(
           <div key={elm.routeName} className='flex flex-col justify-start items-center gap-1 cursor-pointer'>
             <span className={`text-lg ${elm?.class}`}>{elm.icon}</span>
             <Link to={elm.path}

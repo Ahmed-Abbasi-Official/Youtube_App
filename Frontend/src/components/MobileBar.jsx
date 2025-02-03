@@ -44,7 +44,9 @@ const MobileBar = ({setMobileBar}) => {
         px-4  cursor-pointer"
       >
         {/* <span className={`text-lg ${elm?.class}`}>{elm.icon}</span> */}
-        <Link className={`text-sm py-1 mb-2 `}>
+        <Link
+        to="/video/liked-videos"
+        className={`text-sm py-1 mb-2 `}>
           Liked Videos
         </Link>
         {showUser ? (

@@ -69,16 +69,27 @@ export default function LikedVideos() {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
   }
 
-  console.log(likedVideo)
+  // console.log(likedVideo)
 
   return (
-    <div className="w-full flex h-[calc(100vh-72px)] bg-black text-white lg:gap-4">
+    <div className="w-full flex md:flex-row flex-col h-[calc(100vh-72px)] bg-black overflow-auto text-white lg:gap-4">
       {/* HOME SIDE BAR (Sticky) */}
-      <div className="sticky -bottom-0 md:top-0 h-[calc(100vh-72px)]">
-        <HomeSideBar width={"81px"} hidden={"hidden"} padding="2" />
-      </div>
+      <div className="md:hidden absolute w-full bottom-0">
+    <HomeSideBar
+      width="81px"
+      hidden={'hidden'}
+      padding="2"
+      />
+    </div>
+    <div className="md:block hidden">
+    <HomeSideBar
+      width="81px"
+      hidden={'hidden'}
+      padding="2"
+      />
+    </div>
 
-      <div className=" flex flex-col  lg:flex-row lg:gap-6 w-full">
+      <div className=" flex flex-col   lg:flex-row lg:gap-6 w-full">
         {/* Left Side - Playlist Info (Sticky) */}
         <div className="w-full h-[220px] lg:w-[400px] bg-[#1a1818] lg:rounded-lg border-b border-white shadow-xl shadow-black shrink-0  sticky top-0 lg:h-[calc(100vh-72px)] p-2 sm:p-4">
           <div className="relative rounded-xl flex  overflow-hidden">
@@ -100,8 +111,8 @@ export default function LikedVideos() {
 
         {/* Right Side - Video List (Scrollable) */}
         
-        <div className="flex-1  h-[calc(100vh-72px)] overflow-y-auto custom-scrollbar pr-4">
-          <div className="space-y-4  mt-4">
+        <div className="flex-1   overflow-y-auto custom-scrollbar pr-4">
+          <div className="space-y-4 h-[calc(100vh-292px)]  mt-4">
             {likedVideo?.message?.likedVideos?.map((video, index) => (
               <div key={video._id} className="flex gap-4 lg:p-0 p-2 mb-20 group cursor-pointer  hover:animate-incr">
                 <span className="text-gray-400 lg:w-3">{index + 1}</span>

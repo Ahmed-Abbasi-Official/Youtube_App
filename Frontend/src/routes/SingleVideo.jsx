@@ -26,11 +26,12 @@ const SingleVideo = () => {
     <div className=' flex md:flex-row flex-col h-[calc(100vh-72px)] w-full  bg-black'>
       
       {/* HOME SIDE BAR */}
-      <HomeSideBar
-      width="81px"
-      hidden={'hidden'}
-      padding="2"
-      />
+      <div className="md:hidden absolute w-full bottom-0">
+      <HomeSideBar width="81px" hidden={"hidden"} padding="2" />
+    </div>
+    <div className="md:block hidden">
+      <HomeSideBar width="81px" hidden={"hidden"} padding="2" />
+    </div>
       
       {/* SINGLE VIDEO */}
 

@@ -69,7 +69,7 @@ const HomeCard = ({ video ,className,w }) => {
   // console.log(video)
 
   return (
-    <div className={`flex flex-col gap-2 w-full cursor-pointer ${className}`}>
+    <div className={`flex flex-col shadow-sm sm:shadow-black shadow-white gap-2 w-full cursor-pointer ${className}`}>
       <div 
         className="relative group rounded-xl overflow-hidden"
         onMouseEnter={handleMouseEnter}

@@ -18,7 +18,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="h-[72px] border-b-2 border-[##EAECF0]  px-4  md:px-8">
+      <div className="h-[72px] border-b-2 border-[##EAECF0]  px-4 pb-8  md:px-8">
         {/* DESKTOP MENU */}
         <div className="hidden sm:flex justify-between items-center relative">
           {/* LOGO */}
@@ -72,11 +72,13 @@ const Navbar = () => {
 
         {/* MOBILE MENU */}
         <div className="sm:hidden flex justify-between items-center">
+          <Link to='/'>
           <img
             src="/Logo/Logo.png"
             className="w-16 h-16 bg-cover ml-7 "
             alt="LOGO"
           />
+          </Link>
           <div className="flex justify-center items-center gap-2">
             <FiSearch className="text-3xl cursor-pointer" />
             <img
