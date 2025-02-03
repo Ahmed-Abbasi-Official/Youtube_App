@@ -499,57 +499,64 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 // GET WATCH HISTORY
 
 const getWatchHistory = asyncHandler(async (req, res) => {
-  const user = await User.aggregate([
-    {
-      $match: {
-        _id: req.user._id,
+  try {
+    console.log("User ID:", req.user._id); // Debugging: Check user ID
+
+    const user = await User.aggregate([
+      {
+        $match: {
+          _id: req.user._id,
+        },
       },
-    },
-    {
-      $lookup: {
-        from: "videos",
-        localField: "watchHistory",
-        foreignField: "_id",
-        as: "watchHistory",
-        pipeline: [
-          {
-            $lookup: {
-              from: "users",
-              localField: "owner",
-              foreignField: "_id",
-              as: "owner",
-              pipeline: [
-                {
-                  $project: {
-                    fullName: 1,
-                    username: 1,
-                    avatar: 1,
+      {
+        $lookup: {
+          from: "videos",
+          localField: "watchHistory",
+          foreignField: "_id",
+          as: "watchHistory",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                  {
+                    $project: {
+                      fullName: 1,
+                      username: 1,
+                      avatar: 1,
+                    },
                   },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              owner: {
-                $first: "$owner",
+                ],
               },
             },
-          },
-        ],
+            {
+              $addFields: {
+                owner: { $first: "$owner" },
+              },
+            },
+          ],
+        },
       },
-    },
-  ]);
+    ]);
 
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        user[0].watchHistory,
-        "Watch history fetched successfully"
-      )
+    // Debugging: Check if user found
+    if (!user.length) {
+      console.log("User not found or no watch history.");
+      return res.status(404).json(new ApiResponse(404, [], "User not found or no watch history."));
+    }
+
+    console.log("Watch History Data:", user[0].watchHistory); // Debugging: Check fetched data
+
+    return res.status(200).json(
+      new ApiResponse(200, user[0].watchHistory, "Watch history fetched successfully")
     );
+  } catch (error) {
+    console.error("Error fetching watch history:", error);
+    return res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));
+  }
 });
 
 // VERIFT OTP

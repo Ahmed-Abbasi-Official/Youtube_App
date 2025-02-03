@@ -112,3 +112,23 @@ export const togglePlaylist = asyncHandler( async(req,res)=>{
 
 } )
 
+// GET SINGLE PLAYLIST
+
+export const getSinglePlaylist = asyncHandler(async (req,res)=>{
+     const playlist = await Playlist.findById(req?.params?.id)
+    .populate({
+        path: "playlistVideos",
+        options: { sort: { createdAt: -1 } }, // Sort playlistVideos by createdAt
+        populate: {
+            path: "owner"
+        }
+    });
+    // console.log(playlist)
+    if(!playlist){
+        throw new ApiError(404, 'Playlist not found');
+    }
+    return res
+     .status(200)
+     .json(new ApiResponse(200, playlist, 'Playlist fetched successfully'));
+} )
+

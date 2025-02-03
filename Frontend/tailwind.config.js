@@ -25,11 +25,16 @@ export default {
           "0%": { scale: "1" },
           "100%": { scale: "1.01" },
         },
+        incrBig: {
+          "0%": { scale: "1" },
+          "100%": { scale: "1.1" },
+        },
       },
       animation: {
         slide: "slide .2s ease-in-out",
         slideIn: "slideIn .5s ease-in-out forwards",
-        incr:"incr .1s ease-in-out forwards"
+        incr:"incr .1s ease-in-out forwards",
+        incrBig:"incrBig .3s ease-in-out forwards"
       },
       // Custom scrollbar styles
       scrollbar: {

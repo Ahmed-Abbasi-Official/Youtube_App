@@ -5,9 +5,11 @@ import { IoIosVideocam } from "react-icons/io";
 import { MdCollectionsBookmark , MdAdminPanelSettings } from "react-icons/md";
 import { VscDebugBreakpointUnsupported } from "react-icons/vsc";
 import { IoSettingsSharp } from "react-icons/io5";
-import {Link} from 'react-router-dom'
+import { CgPlayList } from "react-icons/cg";
+import {Link, useNavigate} from 'react-router-dom'
 
 const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
+  const navigate = useNavigate()
   // UPPER BUTTONS ARRAY
   const upperButtons=[
     {
@@ -24,12 +26,12 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
     {
       icon:<RiHistoryFill />,
       routeName:'History',
-      path:'/history'
+      path:'/video/history'
     },
     {
-      icon:<IoIosVideocam />,
-      routeName:'My Content',
-      path:'/my-content',
+      icon:<CgPlayList />,
+      routeName:'Playlist',
+      path:'/video/playlist',
       class:"hidden"
     },
     {
@@ -70,11 +72,15 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
         ))}
    </div>
    {/* DESKTOP */}
-   <div className={` sticky hidden md:flex flex-col h-[calc(100vh-72px)] justify-between w-[${width}]  px-2 lg:px-4 py-4 border-r-2 border-[##EAECF0]`}>
+   <div className={` sticky hidden md:flex flex-col h-[calc(100vh-72px)] justify-between w-[${width}]  px-2 lg:px-4 py-4 border-r-2 border-[#EAECF0]`}>
         {/* UPPER BUTTONS */}
       <div>
         {upperButtons.map((elm,idx)=>(
-          <div key={elm.routeName} className={`flex justify-start items-center gap-2 border py-2 px-2 lg:px-${padding} mt-1 cursor-pointer`}>
+          <div key={elm.routeName} 
+          onClick={()=>{
+            navigate(elm.path)
+          }}
+          className={`flex justify-start items-center gap-2 border py-2 px-2 lg:px-${padding} mt-1 cursor-pointer`}>
             <Link to={elm.path}
             className='text-xs lg:text-[16px] font-semibold flex items-center gap-2'
             >
@@ -87,7 +93,11 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
         {/* LOWER BUTTONS */}
         <div>
         {lowerButtons.map((elm,idx)=>(
-          <div key={elm.routeName} className={`flex justify-start items-center gap-2 border py-2 px-2 lg:px-${padding} mt-1 cursor-pointer`}>
+          <div key={elm.routeName} 
+          onClick={()=>{
+            navigate(elm.path)
+          }}
+          className={`flex justify-start items-center gap-2 border py-2 px-2 lg:px-${padding} mt-1 cursor-pointer`}>
             <Link to={elm.path}
             className='text-xs lg:text-[16px] font-semibold flex items-center gap-2'
             >

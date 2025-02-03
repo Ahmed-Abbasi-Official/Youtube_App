@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { Axis3D } from "lucide-react";
 import { createContext, useContext, useState } from "react";
 
 const PlaylistContext = createContext();
@@ -58,13 +59,21 @@ export const PlaylistProvider = ({ children }) => {
     },
   })
 
+  // GET SINGLE PLAYLIST
+
+  const fetchSinglePlaylist = async (id)=>{
+      const res = await axios.get(`${BASE_URL}/playlist/${id}`)
+      return res.data;
+  } 
+
   return (
     <PlaylistContext.Provider
       value={{
         createPlaylist,
         fetchPlaylists,
         deletePlaylist,
-        togglePlaylistVideo
+        togglePlaylistVideo,
+        fetchSinglePlaylist
       }}
     >
       {children}

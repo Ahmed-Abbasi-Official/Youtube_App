@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 export default function Comment({ video }) {
   const { user, userLoading } = useUser();
   const { getComments, likeComment, deleteComment } = useComments();
-  const [showPopUp, seShowPopUp] = useState(false);
   const [showPopUpId, setShowPopUpId] = useState(null);
   const navigate=useNavigate();
 
