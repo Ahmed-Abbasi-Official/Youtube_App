@@ -221,7 +221,7 @@ export default function WatchHistory() {
                 />
                 <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               </div>
-            </div>
+            </div>  
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-6 sm:gap-4 mb-6  ">

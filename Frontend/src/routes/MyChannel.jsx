@@ -51,7 +51,6 @@ const MyChannel = () => {
   
   if (channelError) return <p>Error in Fetching data {channelError} </p>;
   if (channelLoading) return <p>Loading...</p>;
-  console.log(channelData)
   
 
   // HANDLE EDIT CLICK

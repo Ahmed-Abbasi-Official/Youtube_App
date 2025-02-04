@@ -18,6 +18,7 @@ import {
     pauseHistory,
     updateUserCoverImage,
     verifyEmail,
+    getSubscribersAndSubscribed,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/isAuth.middleware.js";
@@ -42,6 +43,7 @@ router
   .route("/update-coverImage")
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
 router.route("/user/:username").get(verifyJWT, getUserChannelProfile);
+router.route("/community").get(verifyJWT, getSubscribersAndSubscribed);
 router.route("/history").get(verifyJWT, getWatchHistory);
 router.route("/history/:videoId").delete(verifyJWT, removeVideoFromHistory);
 router.route("/history/all").get(verifyJWT, deleteAllHistory);

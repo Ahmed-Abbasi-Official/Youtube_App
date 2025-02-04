@@ -7,6 +7,7 @@ import { sendEmail } from "../utils/sendMail.js";
 import UserOTP from "../models/userOTP.model.js";
 import bcrypt from "bcryptjs";
 import { Video } from "../models/video.model.js";
+import { Subscription } from "../models/subscription.model.js";
 
 // TOKENS
 
@@ -832,6 +833,30 @@ const dislikeVideo = asyncHandler(async (req, res) => {
 
 })
 
+// GET ALL SUBSCRIBER AND SUBSRIBED
+
+const getSubscribersAndSubscribed = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // Find all users who subscribed to this user (subscribers)
+  const subscribers = await Subscription.find({ channel: userId })
+    .populate("subscriber") // ✅ Populates full subscriber details
+
+  // Find all users this user has subscribed to (subscribed)
+  const subscribed = await Subscription.find({ subscriber: userId })
+    .populate("channel subscriber") // ✅ Populates full subscribed user details
+
+  return res.status(200).json(
+    new ApiResponse(200, { subscribers, subscribed },"Fetch data Successfully")
+  );
+});
+
+
 
 export {
 
@@ -852,6 +877,7 @@ export {
   dislikeVideo,
   removeVideoFromHistory,
   deleteAllHistory,
-  pauseHistory
+  pauseHistory,
+  getSubscribersAndSubscribed
 
 };

@@ -41,8 +41,8 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
     },
     {
       icon:<MdAdminPanelSettings />,
-      routeName:'Subscribers',
-      path:'/saved-video'
+      routeName:'Community',
+      path:'/user/subcribers'
     },
   ]
   const upperButtonsMobile=[

@@ -229,6 +229,15 @@ export const UserProvider = ({ children }) => {
       }
     })
 
+    // GET COMMUNITY
+
+    const getCommunity = async () => {
+      const res = await axios.get(`${BASE_URL}/community`, {
+        withCredentials: true, // Allow cookies to be sent
+      });
+      return res.data;
+    };
+
 
   return (
     <UserContext.Provider
@@ -252,7 +261,8 @@ export const UserProvider = ({ children }) => {
         getHistory,
         deleteHistory,
         deleteAllHistory,
-        pauseHistory
+        pauseHistory,
+        getCommunity
       }}
     >
       {children}

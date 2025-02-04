@@ -45,6 +45,11 @@ const MobileBar = ({setMobileBar}) => {
         className={`text-sm py-1 mb-2 `}>
           Playlist Videos
         </Link>
+        <Link 
+        to='/user/subcribers'
+        className={`text-sm py-1 mb-2 `}>
+          Community
+        </Link>
         <Link className={`text-sm py-1 mb-2 `}>
           Setting
         </Link>
