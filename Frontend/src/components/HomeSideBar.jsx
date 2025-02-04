@@ -83,11 +83,6 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
   // LOWER BUTTONS ARRAY
   const lowerButtons=[
     {
-      icon:<VscDebugBreakpointUnsupported />,
-      routeName:'Support',
-      path:'/support'
-    },
-    {
       icon:<IoSettingsSharp />,
       routeName:'Dashboard',
       path:'/dashboard'

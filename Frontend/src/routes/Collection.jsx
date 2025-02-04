@@ -49,7 +49,6 @@ export default function Collection() {
     queryKey: ["video"],
     queryFn: fetchUserLikedVideos,
   })
-  console.log(likedVideo)
 
   const handleLoadedMetadata = (id, e) => {
     setDurations((prev) => ({
@@ -103,7 +102,7 @@ export default function Collection() {
       />
     </div>
     {/* MAIN PART */}
-     <div className="h-full w-full overflow-y-auto custom-scrollbar bg-black text-white p-4">
+     <div className="h-full w-full overflow-y-auto custom-scrollbar bg-black text-white p-2 md:p-4">
        {/* Header Section */}
        <div className="flex items-center gap-4 mb-8">
         <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-2xl">{user?.message?.fullName.slice(0,1)}</div>
@@ -130,7 +129,7 @@ export default function Collection() {
           </button>
         </div>
        
-        <div className="overflow-x-hidden custom-scrollbar">
+        <div className="overflow-x-auto ">
           <div className="flex gap-4 pb-4">
           {(historyLoading && (
           <p>Loading</p>
@@ -139,9 +138,9 @@ export default function Collection() {
           <p> Error is Fecthing History </p>
         ))}
             { !historyLoading && !historyError  && history?.message?.map((item) => (
-              <div key={item?._id} className="w-72 shrink-0">
+              <div key={item?._id} className="w-[290px]  sm:w-80 shrink-0">
                 <div className="relative aspect-video mb-2">
-                  <div 
+                <div 
                   className="w-full h-full cursor-pointer"
                   onMouseEnter={() => handleMouseEnter(item._id)}
                     onMouseLeave={() => handleMouseLeave(item._id)}
@@ -173,6 +172,7 @@ export default function Collection() {
         </div>
       </div>
       <hr />
+
       {/* Playlists Section */}
 
 
@@ -195,7 +195,7 @@ export default function Collection() {
             </button>
           </div>
         </div>
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-auto">
           <div className="flex gap-4 pb-4">
           {(playlistLoading && (
           <p>Loading</p>
@@ -209,7 +209,7 @@ export default function Collection() {
                 navigate(`/video/playlist/${item._id}`)
               }}
               key={item._id} 
-              className="w-80 cursor-pointer shrink-0 shadow-sm shadow-red-400 rounded-lg">
+              className="w-[290px]  sm:w-80 cursor-pointer shrink-0 shadow-sm shadow-red-400 rounded-lg">
                 <div className="relative aspect-video mb-2">
                   <img
                     src={playlist?.message[0]?.playlistVideos[0]?.thumbnail || "/placeholder.svg"}
@@ -246,7 +246,7 @@ export default function Collection() {
             </button>
           </div>
         </div>
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-auto">
           <div className="flex gap-4 pb-4">
 
           {(likedVideoLoading && (
@@ -257,7 +257,7 @@ export default function Collection() {
         ))}
             
             { !likedVideoLoading && !likedVideoError && likedVideo?.message?.likedVideos?.map((item) => (
-              <div key={item._id} className="w-80 shrink-0">
+              <div key={item._id} className="w-[290px]  sm:w-80 shrink-0">
                 <div className="relative aspect-video mb-2">
                   <div 
                   className="w-full h-full cursor-pointer"

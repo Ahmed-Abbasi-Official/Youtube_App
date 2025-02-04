@@ -41,7 +41,7 @@ const Navbar = () => {
           {/* BUTTONS */}
           <div className="flex gap-6 md:gap-8 justify-center items-center">
             {/* THREE DOTS */}
-            <HiOutlineDotsVertical className="cursor-pointer" />
+            {/* <HiOutlineDotsVertical className="cursor-pointer" /> */}
             {/* LOGIN */}
             {isAuthenticated ? (
               <img
