@@ -54,6 +54,7 @@ export const VideoProvider = ({ children }) => {
 
   const userVideos = useMutation({
     mutationFn: async (username) => {
+      // console.log(username)
       const res = await axios.get(`${BASE_URL}/user/${username}`);
       return res.data;
     },
@@ -123,6 +124,34 @@ export const VideoProvider = ({ children }) => {
     }
   })
 
+  // UNSUBS
+
+  const unsubscribe = useMutation({
+    mutationFn: async (channelId) => {
+      const res = await axios.post(`${BASE_URL}/unsubscription/${channelId}`,{
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["dashboard","videos","user"]) ;
+    }
+  })
+
+  // SUBS
+
+  const subscribe = useMutation({
+    mutationFn: async (channelId) => {
+      const res = await axios.post(`${BASE_URL}/subscription/${channelId}`,{
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["dashboard","videos","user"]) ;
+    }
+  })
+
   // LIKED VIDEOS USER
 
   const fetchUserLikedVideos = async ()=>{
@@ -145,7 +174,9 @@ export const VideoProvider = ({ children }) => {
     updateVideo,
     dashboardData,
     toggleSubscription,
-    fetchUserLikedVideos
+    fetchUserLikedVideos,
+    unsubscribe,
+    subscribe
 
   }}>{children}</VideoContext.Provider>;
 };

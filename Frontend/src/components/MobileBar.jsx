@@ -29,7 +29,7 @@ const MobileBar = ({setMobileBar}) => {
       }, [user]); // Empty dependency array ensures this effect runs only once, on mount
   return (
    <>
-    <div className="bg-black shadow-sm shadow-white flex justify-start pt-4 flex-col gap-1  w-full h-full">
+    <div className="bg-black shadow-sm shadow-white flex justify-start  pt-4 flex-col gap-1  w-full h-full">
       <div
         className="flex flex-col justify-center items-start 
         px-4  cursor-pointer"
@@ -49,9 +49,6 @@ const MobileBar = ({setMobileBar}) => {
         to='/user/subcribers'
         className={`text-sm py-1 mb-2 `}>
           Community
-        </Link>
-        <Link className={`text-sm py-1 mb-2 `}>
-          Setting
         </Link>
       </div>
       <div

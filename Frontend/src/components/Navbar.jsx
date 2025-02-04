@@ -20,7 +20,7 @@ const Navbar = () => {
     <>
       <div className="h-[72px] border-b-2 border-[##EAECF0]  px-4 pb-8  md:px-8">
         {/* DESKTOP MENU */}
-        <div className="hidden sm:flex justify-between items-center relative">
+        <div className="hidden md:flex justify-between items-center relative">
           {/* LOGO */}
           <Link to="/">
             <img
@@ -71,7 +71,7 @@ const Navbar = () => {
         {modal && <Modal />}
 
         {/* MOBILE MENU */}
-        <div className="sm:hidden flex justify-between items-center">
+        <div className="md:hidden flex justify-between items-center">
           <Link to='/'>
           <img
             src="/Logo/Logo.png"

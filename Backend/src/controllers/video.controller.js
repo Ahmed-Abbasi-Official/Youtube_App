@@ -162,21 +162,28 @@ export const deleteVideo = asyncHandler(async (req, res) => {
 
 export const getVideosByUser = asyncHandler(async (req, res) => {
   // GET SELECTED USER VIDEOS
-  const user = await User.findOne({ username: req?.params?.username }).sort({ createdAt: -1 });
-  if(!user){
+  const user = await User.findOne({ username: req?.params?.username });
+  if (!user) {
     throw new ApiError(404, "User not found");
   }
 
-  // GET VIDEOS 
+  // GET SORT QUERY
+  const { sort } = req.query; // Get sort query parameter (newest or oldest)
+  let sortOption = { createdAt: -1 }; // Default newest
 
-  const videos = await Video.find({ owner: user._id }).populate("owner");
+  if (sort === "oldest") {
+    sortOption = { createdAt: 1 };
+  }
+
+  // GET VIDEOS WITH SORTING
+  const videos = await Video.find({ owner: user._id }).sort(sortOption).populate("owner");
 
   // RETURN RESPONSE
-
   return res
     .status(200)
     .json(new ApiResponse(200, videos, "Videos fetched successfully"));
 });
+
 
 // UPDATE VIDEO
 
@@ -395,6 +402,67 @@ export const toggleSubscription = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, subscribedVideo, "Subscribed successfully"));
   }
 });
+
+// UNSUBS
+
+export const unsubs = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+  const userId = req?.user?._id
+
+    // Remove Subscription Entry
+  const unsubs=  await Subscription.findOneAndDelete({ subscriber: userId, channel: channelId });
+
+  if(!unsubs) {
+    throw new ApiError(500, "Failed to unsubscribe from channel");
+  }
+
+    // Update videos where owner is the unsubscribed channel
+   const isSub= await Video.updateMany(
+      { owner: channelId },
+      { $set: { isSubscribed: false } }
+    );
+
+    if(isSub.nModified === 0){
+      throw new ApiError(500, "Failed to update videos");
+    }
+
+  // RETURN RESPONSE
+
+  return res
+   .status(200)
+   .json(new ApiResponse(200, {}, "Unsubscribed successfully"));
+
+})
+
+// SUBS
+
+export const subs = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+  const userId = req?.user?._id
+
+    // Add Subscription Entry
+  await Subscription.create({
+    subscriber: userId,
+    channel: channelId,
+  });
+
+  // Update videos where owner is the subscribed channel
+  const isSub= await Video.updateMany(
+    { owner: channelId },
+    { $set: { isSubscribed: true } }
+  );
+
+  if(isSub.nModified === 0){
+    throw new ApiError(500, "Failed to update videos");
+  }
+
+  // RETURN RESPONSE
+
+  return res
+   .status(200)
+   .json(new ApiResponse(200, {}, "Subscribed successfully"));
+
+})
 
 // LIKED VIDEOS
 
