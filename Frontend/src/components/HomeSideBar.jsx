@@ -37,7 +37,7 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
     {
       icon:<MdCollectionsBookmark />,
       routeName:'Collection',
-      path:'/saved-video'
+      path:'/collection'
     },
     {
       icon:<MdAdminPanelSettings />,
@@ -71,7 +71,7 @@ const HomeSideBar = ({width="20%",hidden,padding="4"}) => {
     {
       icon:<MdCollectionsBookmark />,
       routeName:'Collection',
-      path:'/saved-video'
+      path:'/collection'
     },
     {
       icon:<IoSettingsSharp />,

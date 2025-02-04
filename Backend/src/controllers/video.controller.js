@@ -404,7 +404,14 @@ export const userLikedVideo = asyncHandler(async(req,res)=>{
   if(!userId){
     throw new ApiError(401, "User not authenticated");
   }
-  const videos = await User.findById(req.user._id).populate("likedVideos")
+  const videos = await User.findById(req.user._id)
+  .populate({
+    path: "likedVideos", // Populates likedVideos
+    populate: {
+      path: "owner", // Populates the owner field within each liked video
+    },
+  });
+
   // console.log(videos)
   if(!videos){
     throw new ApiError(404, "User Not Found");

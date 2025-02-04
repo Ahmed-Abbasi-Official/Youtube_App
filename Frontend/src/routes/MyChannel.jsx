@@ -10,7 +10,7 @@ import { useVideo } from "../context/Videos.Context";
 import { useQuery } from "@tanstack/react-query";
 
 const MyChannel = () => {
-  const { channelDataAPI, user, updateUserDetails , updateUserAvatar , updateUserCoverImg } =
+  const { channelDataAPI, user, userLoading , updateUserDetails , updateUserAvatar , updateUserCoverImg } =
     useUser();
     const params = useParams();
 
@@ -30,7 +30,10 @@ const MyChannel = () => {
   const [coverLoading, setCoverLoading] = useState(false);
   const [showAvatarBtn, setShowAvatarBtn] = useState(true);
   const [showCoverBtn, setShowCoverBtn] = useState(true);
-  
+    
+  if(userLoading){
+    return <p>Loading...</p>;
+  }
   
 
   // console.log(channelData)

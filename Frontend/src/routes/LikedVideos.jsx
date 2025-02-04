@@ -69,7 +69,7 @@ export default function LikedVideos() {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
   }
 
-  // console.log(likedVideo)
+  console.log(likedVideo)
 
   return (
     <div className="w-full flex md:flex-row flex-col h-[calc(100vh-72px)] bg-black overflow-auto text-white lg:gap-4">
@@ -147,7 +147,11 @@ export default function LikedVideos() {
                         navigate(`/video/${video?.slug}`)
                       }}
                   className="text-base font-semibold line-clamp-2">{video?.title}</h3>
-                  <p className="text-gray-400 text-sm mt-1">{likedVideo?.message?.username}</p>
+                  <p 
+                  onClick={()=>{
+                    navigate(`/${video?.owner?.username}`)
+                  }}
+                  className="text-gray-400 text-sm mt-1">{video?.owner?.username}</p>
                   <p className="text-gray-400 text-sm">
                     {video?.views} views • {format(video?.createdAt)}
                   </p>

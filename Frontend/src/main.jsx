@@ -26,6 +26,7 @@ import WatchHistory from "./routes/WatchHistory";
 import PLaylists from "./routes/PLaylists";
 import PlaylistVideos from "./components/PlaylistVideos";
 import SubscribersAndSubscribed from "./routes/SubscribersAndSubscribed";
+import Collection from "./routes/Collection";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const router = createBrowserRouter(
       <Route path="/video/playlist" element={<PLaylists />} />
       <Route path="/video/playlist/:id" element={<PlaylistVideos />} />
       <Route path="/user/subcribers" element={<SubscribersAndSubscribed />} />
+      <Route path="/collection" element={<Collection />} />
     </Route>
   )
 );

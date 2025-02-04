@@ -52,12 +52,14 @@ const Modal = ({ setModal}) => {
         {/* BUTTONS */}
         <div className="flex flex-col gap-2">
           {/* LOGOUT  BUTTOn */}
-          <Link
+          <button
             className="bg-gray-400 md:py-2 md:px-4 py-1 sm:px-2 text-sm sm:text-md  text-white rounded text-center"
-            to={`/${user?.message?.username}`}
+           onClick={()=>{
+            navigate(`/${user?.message?.username}`)
+           }} 
           >
             My Channel
-          </Link>
+          </button>
           <button
             className="bg-[#dc2525] md:py-2 md:px-4 py-1 text-sm sm:text-md sm:px-2 text-white rounded"
             onClick={handleLogout}
