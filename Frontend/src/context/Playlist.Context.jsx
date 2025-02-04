@@ -66,6 +66,8 @@ export const PlaylistProvider = ({ children }) => {
       return res.data;
   } 
 
+
+
   return (
     <PlaylistContext.Provider
       value={{
@@ -73,7 +75,7 @@ export const PlaylistProvider = ({ children }) => {
         fetchPlaylists,
         deletePlaylist,
         togglePlaylistVideo,
-        fetchSinglePlaylist
+        fetchSinglePlaylist,
       }}
     >
       {children}

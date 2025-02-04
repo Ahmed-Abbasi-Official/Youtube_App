@@ -11,6 +11,9 @@ const HomeMainBar = () => {
   if (allVideosError) {
     return <p>Error in fetching data: {allVideosError}</p>;
   }
+  if(allVideos?.message?.length===0){
+    return <p>No Videos Yet</p>
+  }
 
   return (
     <div className="w-full grid gap-6 sm:gap-4 md:gap-6 py-4 px-2 md:w-[80%] overflow-y-auto

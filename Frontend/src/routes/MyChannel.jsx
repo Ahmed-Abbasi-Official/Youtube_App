@@ -329,7 +329,8 @@ const MyChannel = () => {
           </div>
 
           {/* VEDIOS SHOWCASE */}
-          <div className=" flex flex-wrap py-4 lg:gap-4 gap-6 sm:gap-2 justify-center w-full bg-black overflow-y-scroll h-[600px] custom-scrollbar">
+          <div className=" w-full grid gap-6 sm:gap-4 md:gap-6 py-4 px-2
+    grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 overflow-y-scroll h-[600px] custom-scrollbar">
             {
               userVideos?.isPending ?(
                 <p>Loading</p>

@@ -34,8 +34,18 @@ const MobileBar = ({setMobileBar}) => {
         className="flex flex-col justify-center items-start 
         px-4  cursor-pointer"
       >
+         <Link
+        to="/video/liked-videos"
+        className={`text-sm py-1 mb-2 `}>
+          Liked Videos
+        </Link>
         {/* <span className={`text-lg ${elm?.class}`}>{elm.icon}</span> */}
-        <Link className={`text-sm py-1 `}>
+        <Link 
+        to='/video/playlist'
+        className={`text-sm py-1 mb-2 `}>
+          Playlist Videos
+        </Link>
+        <Link className={`text-sm py-1 mb-2 `}>
           Setting
         </Link>
       </div>
@@ -44,11 +54,7 @@ const MobileBar = ({setMobileBar}) => {
         px-4  cursor-pointer"
       >
         {/* <span className={`text-lg ${elm?.class}`}>{elm.icon}</span> */}
-        <Link
-        to="/video/liked-videos"
-        className={`text-sm py-1 mb-2 `}>
-          Liked Videos
-        </Link>
+       
         {showUser ? (
               <img
                 src={user?.message?.avatar}

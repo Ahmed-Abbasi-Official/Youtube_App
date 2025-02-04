@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
     changePassword,
+    deleteAllHistory,
     dislikeVideo,
     getCurrentUser,
     getUserChannelProfile,
@@ -10,14 +11,17 @@ import {
     logoutUser,
     refreshAcessToken,
     registerUser,
+    removeVideoFromHistory,
     resendOTP,
     updateAccountDetails,
     updateUserAvatar,
+    pauseHistory,
     updateUserCoverImage,
     verifyEmail,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/isAuth.middleware.js";
+import increaseVisits from "../middlewares/increaseViews.js";
 
 const router = Router();
 
@@ -39,6 +43,9 @@ router
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
 router.route("/user/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/history").get(verifyJWT, getWatchHistory);
+router.route("/history/:videoId").delete(verifyJWT, removeVideoFromHistory);
+router.route("/history/all").get(verifyJWT, deleteAllHistory);
+// router.route("/history/pause").patch( increaseVisits , verifyJWT, pauseHistory);
 router.route("/verify-email").post( verifyEmail );
 router.route("/resend-email").post( resendOTP );
 router.route("/liked-video").post( verifyJWT , likeVideo );

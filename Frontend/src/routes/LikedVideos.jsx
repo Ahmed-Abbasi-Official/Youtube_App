@@ -111,7 +111,7 @@ export default function LikedVideos() {
 
         {/* Right Side - Video List (Scrollable) */}
         
-        <div className="flex-1   overflow-y-auto custom-scrollbar pr-4">
+        <div className="flex-1 mb-24  overflow-y-auto custom-scrollbar pr-4">
           <div className="space-y-4 h-[calc(100vh-292px)]  mt-4">
             {likedVideo?.message?.likedVideos?.map((video, index) => (
               <div key={video._id} className="flex gap-4 lg:p-0 p-2 mb-20 group cursor-pointer  hover:animate-incr">

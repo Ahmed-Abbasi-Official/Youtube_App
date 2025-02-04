@@ -106,7 +106,7 @@ const PlaylistVideos = () => {
       </div>
   
       {/* RIGHT SIDE VIDEO LIST */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar pr-4">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 mb-24">
         <div className="space-y-4 h-[calc(100vh-292px)] mt-4">
           {singlePlaylist?.message?.playlistVideos?.map((video, index) => (
             <div key={video._id} className="flex gap-4 lg:p-0 p-2 mb-20 group cursor-pointer hover:animate-incr">
@@ -139,7 +139,11 @@ const PlaylistVideos = () => {
                     navigate(`/video/${video?.slug}`)
                   }}
                   className="text-base font-semibold line-clamp-2">{video?.title}</h3>
-                <p className="text-gray-400 text-sm mt-1">{video?.owner?.username}</p>
+                <p 
+                 onClick={() => {
+                  navigate(`/${video?.owner?.username}`)
+                }}
+                className="text-gray-400 text-sm mt-1">{video?.owner?.username}</p>
                 <p className="text-gray-400 text-sm">
                   {video?.views} views • {format(video?.createdAt)}
                 </p>

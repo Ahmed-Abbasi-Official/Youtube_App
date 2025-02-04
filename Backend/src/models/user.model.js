@@ -32,6 +32,10 @@ const userSchema = new Schema(
     coverImage: {
       type: String, // Cloundinary URL
     },
+    isHistoryPaused:{
+      type: Boolean,
+      default: false,
+    },
     watchHistory: [
       {
         type: Schema.Types.ObjectId,

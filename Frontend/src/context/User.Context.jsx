@@ -24,7 +24,7 @@ export const UserProvider = ({ children }) => {
     mutationKey: ["user"],
     mutationFn: async (data) => {
       const res = await axios.post(`${BASE_URL}/login`, data);
-      console.log(res);
+      // console.log(res);
       return res.data;
     },
     onSuccess: () => {
@@ -185,6 +185,51 @@ export const UserProvider = ({ children }) => {
     },
   });
 
+    // GET HISTORY
+
+    const getHistory = async ()=>{
+      const res = await axios.get(`${BASE_URL}/history`)
+      return res.data;
+    }
+
+    // DELETE HISTORY
+
+    const deleteHistory = useMutation({
+      mutationFn: async (playlistId) => {
+        const res = await axios.delete(`${BASE_URL}/history/${playlistId}`)
+        return res.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["history"]);
+      }
+    })
+
+    // DELETE ALL HISTORY
+
+    const deleteAllHistory = useMutation({
+      mutationFn: async () => {
+        const res = await axios.get(`${BASE_URL}/history/all`)
+        // console.log(res)
+        return res.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["history"]);
+      }
+    })
+
+    // PAUSE HISTORY
+
+    const pauseHistory = useMutation({
+      mutationFn: async () => {
+        const res = await axios.patch(`${BASE_URL}/history/pause`)
+        return res.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["history"]);
+      }
+    })
+
+
   return (
     <UserContext.Provider
       value={{
@@ -204,6 +249,10 @@ export const UserProvider = ({ children }) => {
         updateUserCoverImg,
         likedVideos,
         dislikedVideos,
+        getHistory,
+        deleteHistory,
+        deleteAllHistory,
+        pauseHistory
       }}
     >
       {children}

@@ -500,8 +500,6 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
 const getWatchHistory = asyncHandler(async (req, res) => {
   try {
-    console.log("User ID:", req.user._id); // Debugging: Check user ID
-
     const user = await User.aggregate([
       {
         $match: {
@@ -537,18 +535,20 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                 owner: { $first: "$owner" },
               },
             },
+            {
+              $sort: { createdAt: -1 }, // Sorting watchHistory inside lookup
+            },
           ],
         },
       },
     ]);
 
-    // Debugging: Check if user found
     if (!user.length) {
       console.log("User not found or no watch history.");
       return res.status(404).json(new ApiResponse(404, [], "User not found or no watch history."));
     }
 
-    console.log("Watch History Data:", user[0].watchHistory); // Debugging: Check fetched data
+    // console.log("Watch History Data:", user[0].watchHistory);
 
     return res.status(200).json(
       new ApiResponse(200, user[0].watchHistory, "Watch history fetched successfully")
@@ -556,6 +556,84 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error("Error fetching watch history:", error);
     return res.status(500).json(new ApiResponse(500, null, "Internal Server Error"));
+  }
+});
+
+// REMOVE VIDEO FROM HISTORY
+
+const removeVideoFromHistory = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!videoId) {
+    throw new ApiError(400, "Video id is missing");
+  }
+   
+ const user = await User.findByIdAndUpdate(
+    req?.user?._id,
+    { $pull: { watchHistory: videoId } },
+    { new: true } // ✅ Correct placement
+  );
+
+  if(!user){
+    throw new ApiError(404, null, "User not found");
+  }
+
+  // RETURN RESPONSE
+
+  return res
+   .status(200)
+   .json(new ApiResponse(200, {}, "Video removed from watch history successfully"));
+  
+
+})
+
+// DELETE ALL HISTORY
+
+const deleteAllHistory = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      { $set: { watchHistory: [] } },
+      { new: true } // ✅ Correct placement
+    );
+
+    if (!user) {
+      throw new ApiError(404, null, "User not found");
+    }
+
+    // RETURN RESPONSE
+
+    return res
+     .status(200)
+     .json(new ApiResponse(200, {}, "All watch history removed successfully"));
+  } catch (error) {
+    console.error("Error deleting all history:", error);
+    return res.status(500).json(new ApiResponse(500, error, "Internal Server Error"));
+  }
+});
+
+// PAUSE HISTORY
+
+const pauseHistory = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      { $set: { isHistoryPaused: true } },
+      { new: true } // ✅ Correct placement
+    );
+
+    if (!user) {
+      throw new ApiError(404, null, "User not found");
+    }
+
+    // RETURN RESPONSE
+
+    return res
+     .status(200)
+     .json(new ApiResponse(200, {}, "Watch history paused successfully"));
+  } catch (error) {
+    console.error("Error pausing watch history:", error);
+    return res.status(500).json(new ApiResponse(500, error, "Internal Server Error"));
   }
 });
 
@@ -771,6 +849,9 @@ export {
   verifyEmail,
   resendOTP,
   likeVideo,
-  dislikeVideo
+  dislikeVideo,
+  removeVideoFromHistory,
+  deleteAllHistory,
+  pauseHistory
 
 };
