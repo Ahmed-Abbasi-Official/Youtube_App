@@ -38,6 +38,7 @@ const UploadDetailsModal = ({ video , videos , imp=true , onClose }) => {
     
 
     if(imp){
+      setLoading(true);
       await uploadVideo.mutate(formData ,  {
         onSuccess: (data) => {
           setLoading(false)

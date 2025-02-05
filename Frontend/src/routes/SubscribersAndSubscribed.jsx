@@ -151,7 +151,7 @@ const SubscribersAndSubscribed = () => {
           }
           
           {/* Search Header */}
-            <div className="flex lg:w-64 w-52 items-center mb-6 space-x-4">
+            {/* <div className="flex lg:w-64 w-52 items-center mb-6 space-x-4">
               <div className="flex relative">
                 <input
                   type="search"
@@ -160,7 +160,7 @@ const SubscribersAndSubscribed = () => {
                 />
                 <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               </div>
-            </div>  
+            </div>   */}
         </div>
       </div>
     </div>

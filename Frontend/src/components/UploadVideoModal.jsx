@@ -7,9 +7,6 @@ import UploadDetailsModal from "./UploadDetailsModal";
 const UploadVideoModal = ({setShowUploadModal,videos,imp}) => {
   const [video , setVideo]=useState(null);
 
-
-
-
   return (
     <div className=" animate-slide fixed z-20 bg-black top-[85px] sm:top-[90px] translate-x-1/2 right-1/2 w-[90%] sm:w-[70%]  md:w-[60%] h-[500px]  p-2 sm:p-6 rounded shadow-sm shadow-white">
       <div className="flex flex-col gap-2 sm:gap-4 overflow-y-hidden">

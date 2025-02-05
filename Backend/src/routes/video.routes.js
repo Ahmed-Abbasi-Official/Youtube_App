@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { dashboardData, deleteVideo, getAllVideos, getSingleVideo, getVideosByUser, subs, toggleSubscription, unsubs, updateVideo, uploadVideo, userLikedVideo } from "../controllers/video.controller.js";
+import { dashboardData, deleteVideo, getAllVideos, getSingleVideo, getVideosByCategory, getVideosByUser, searchVideos, subs, toggleSubscription, unsubs, updateVideo, uploadVideo, userLikedVideo } from "../controllers/video.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/isAuth.middleware.js";
 import increaseVisits from "../middlewares/increaseViews.js";
@@ -39,6 +39,12 @@ router.route('/unsubscription/:channelId').post(verifyJWT , unsubs );
 
 // SUBS
 router.route('/subscription/:channelId').post(verifyJWT , subs );
+
+// SEARCH
+router.route('/videos/search').get(searchVideos)
+
+// GET VIDEOS BY CAT
+router.route('/videos/category/:category').get(verifyJWT, getVideosByCategory)
 
 
 export default router;

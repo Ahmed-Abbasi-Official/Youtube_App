@@ -115,7 +115,7 @@ export const VideoProvider = ({ children }) => {
   const toggleSubscription = useMutation({
     mutationFn: async ({videoId}) => {
       const channelId = videoId
-      console.log(channelId)
+      // console.log(channelId)
       const res = await axios.get(`${BASE_URL}/subscription/${channelId}`);
       return res.data;
     },
@@ -161,6 +161,13 @@ export const VideoProvider = ({ children }) => {
     return res.data;
   }
 
+  // SEARCH
+
+  const searchVideos = async (query)=>{
+    const res = await axios.get(`${BASE_URL}/videos/search?q=${query}`);
+    return res.data;
+  }
+
   return <VideoContext.Provider value={{
 
     allVideos,
@@ -176,7 +183,8 @@ export const VideoProvider = ({ children }) => {
     toggleSubscription,
     fetchUserLikedVideos,
     unsubscribe,
-    subscribe
+    subscribe,
+    searchVideos
 
   }}>{children}</VideoContext.Provider>;
 };

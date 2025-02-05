@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import Input from "../utils/Input";
 import Button from "../utils/Button";
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useUser } from "../context/User.Context";
 import Modal from "./Modal";
 import MobileBar from "./MobileBar";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const { isAuthenticated , user} = useUser();
@@ -31,13 +30,7 @@ const Navbar = () => {
             />
           </Link>
           {/* SEARCH */}
-          <div>
-            <Input
-              type="text"
-              placeholder="Search"
-              className="h-[35px] w-[300px] md:w-[400px]"
-            />
-          </div>
+         <SearchBar/>
           {/* BUTTONS */}
           <div className="flex gap-6 md:gap-8 justify-center items-center">
             {/* THREE DOTS */}
