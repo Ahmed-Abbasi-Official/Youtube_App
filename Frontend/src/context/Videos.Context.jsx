@@ -168,6 +168,13 @@ export const VideoProvider = ({ children }) => {
     return res.data;
   }
 
+  // GET VIDEOS BY CAT
+
+  const fetchVideosByCategory = async (category)=>{
+    const res = await axios.get(`${BASE_URL}/videos/category/${category}`);
+    return res.data;
+  }
+
   return <VideoContext.Provider value={{
 
     allVideos,
@@ -184,7 +191,8 @@ export const VideoProvider = ({ children }) => {
     fetchUserLikedVideos,
     unsubscribe,
     subscribe,
-    searchVideos
+    searchVideos,
+    fetchVideosByCategory
 
   }}>{children}</VideoContext.Provider>;
 };

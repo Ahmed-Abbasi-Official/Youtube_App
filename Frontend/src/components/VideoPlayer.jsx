@@ -31,7 +31,7 @@ function VideoPlayer({ video }) {
   const { likedVideos, dislikedVideos, user } = useUser();
   const { createComment } = useComments();
   const { getComments } = useComments();
-  const { toggleSubscription } = useVideo();
+  const { toggleSubscription , fetchVideosByCategory } = useVideo();
   // GET ALL COMMENTS
   const {
     data: commentData,
@@ -41,6 +41,17 @@ function VideoPlayer({ video }) {
     queryKey: ["comments"],
     queryFn: async () => {
       return await getComments(video?._id);
+    },
+  });
+  // GET ALL VIDEOS BY CAT
+  const {
+    data: videosCat,
+    catLoading,
+    catError,
+  } = useQuery({
+    queryKey: ["cat"],
+    queryFn: async () => {
+      return await fetchVideosByCategory(video?._category);
     },
   });
   const [isPlaying, setIsPlaying] = useState(false);
@@ -456,31 +467,21 @@ function VideoPlayer({ video }) {
         {/* Recommended Videos */}
 
         <div className="w-full  lg:w-[400px] space-y-4">
-          {recommendedVideos.map((video, index) => (
+          {catLoading && (
+            <p>Loading Videos...</p>
+          )}
+          {catError && (
+            <p>Fetching Videos Failed</p>
+          )}
+          {!catLoading && !catError && videosCat?.message?.map((video, index) => (
+            
             <HomeCard
             w='w-full'
               key={index}
               className="flex gap-2 w-full lg:w-full p-2 bg-gray-900 border-gray-800"
-            >
-              <div className="relative w-40 aspect-video rounded-lg overflow-hidden">
-                <img
-                  src={video.thumbnail || "/placeholder.svg"}
-                  alt={video.title}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium line-clamp-2 text-white">
-                  {video.title}
-                </h3>
-                <p className="text-sm text-gray-400">{video.channel}</p>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <span>{video.views} Views</span>
-                  <span>•</span>
-                  <span>{video.timeAgo}</span>
-                </div>
-              </div>
-            </HomeCard>
+              video={video}
+           />
+             
           ))}
         </div>
       </div>

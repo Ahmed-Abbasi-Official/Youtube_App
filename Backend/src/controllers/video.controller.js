@@ -518,7 +518,9 @@ export const getVideosByCategory = asyncHandler(async (req, res) => {
   const { category } = req.params;
 
   // Pehle 6 videos specified category ki fetch karo
-  let categoryVideos = await Video.find({ category }).limit(6);
+  let categoryVideos = await Video.find({ category })
+    .limit(6)
+    .populate("owner");
 
   // Agar 6 se kam videos milein toh remaining count calculate karo
   const remainingCount = 6 - categoryVideos.length;
@@ -526,9 +528,9 @@ export const getVideosByCategory = asyncHandler(async (req, res) => {
   // Remaining videos kisi bhi category se le aao (except given category)
   let otherVideos = [];
   if (remainingCount > 0) {
-    otherVideos = await Video.find({ category: { $ne: category } }).limit(
-      remainingCount
-    );
+    otherVideos = await Video.find({ category: { $ne: category } })
+      .limit(remainingCount)
+      .populate("owner");
   }
 
   // Ab mix videos fetch karo (except jo pehle le chuke hain)
@@ -539,13 +541,14 @@ export const getVideosByCategory = asyncHandler(async (req, res) => {
         ...otherVideos.map((v) => v._id),
       ],
     },
-  }).limit(10);
+  })
+    .limit(10)
+    .populate("owner");
 
   // Final response
   const allVideos = [...categoryVideos, ...otherVideos, ...mixedVideos];
 
   // RETURN RESPONSE
-
   return res
     .status(200)
     .json(new ApiResponse(200, allVideos, "Videos fetched successfully"));
