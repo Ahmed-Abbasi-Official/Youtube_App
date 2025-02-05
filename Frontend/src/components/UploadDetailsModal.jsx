@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useVideo } from "../context/Videos.Context";
 import { useNavigate } from "react-router-dom";
 
-const UploadDetailsModal = ({ video , videos , imp=true , onClose }) => {
+const UploadDetailsModal = ({ video , videos , imp=true , onClose , thumbnail }) => {
   const {uploadVideo,cancelUpload , updateVideo} = useVideo();
   const [loading , setLoading]=useState(false);
   const navigate = useNavigate();
@@ -34,6 +34,7 @@ const UploadDetailsModal = ({ video , videos , imp=true , onClose }) => {
     formData.append("description", data.description);
     formData.append("video", video); // Video field name match with backend
     formData.append("category", data.category);
+    formData.append("thumbnail", thumbnail); 
     formData.append("isPublic", data.privacy); // Tags field name match with backend
     
 

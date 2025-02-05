@@ -48,6 +48,7 @@ const MyChannel = () => {
   const [coverLoading, setCoverLoading] = useState(false);
   const [showAvatarBtn, setShowAvatarBtn] = useState(true);
   const [showCoverBtn, setShowCoverBtn] = useState(true);
+  const [showbtn , setShowBtn]=useState(false);
 
   if (userLoading) {
     return <p>Loading...</p>;
@@ -362,14 +363,20 @@ const MyChannel = () => {
           <div className="mt-1">
             <div className="flex justify-start space-x-4 text-gray-400 px-6">
               <Link
+              onClick={()=>{
+                setShowBtn(false)
+              }}
                 to={`/${channelData?.message?.username}?sort=newest`}
-                className=" font-semibold px-6 hover:text-white py-1 border  "
+                className={` font-semibold px-6 hover:text-white py-1 border ${!showbtn && "bg-purple-600 text-white"}  `}
               >
                 Newest
               </Link>
               <Link
+              onClick={()=>{
+                setShowBtn(true)
+              }}
                 to={`/${channelData?.message?.username}?sort=oldest`}
-                className="hover:text-white border py-1 px-2"
+                className={`hover:text-white border py-1 px-2 ${showbtn && "bg-purple-600 text-white"}`}
               >
                 Oldest
               </Link>

@@ -8,7 +8,8 @@ import increaseVisits from "../middlewares/increaseViews.js";
 const router = Router();
 
 // UPLOAD ROUTE
-router.route('/upload-video').post( verifyJWT , upload.single("video") , uploadVideo)
+router.route('/upload-video').post( verifyJWT , upload.fields([{ name: "video", maxCount: 1 }, { name: "thumbnail", maxCount: 1 }])
+, uploadVideo)
 
 // GET ALL VIDEOS
 router.route('/').get(getAllVideos) ;

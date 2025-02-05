@@ -6,6 +6,7 @@ import UploadDetailsModal from "./UploadDetailsModal";
 
 const UploadVideoModal = ({setShowUploadModal,videos,imp}) => {
   const [video , setVideo]=useState(null);
+  const [thumbnail , setThumbnail]=useState(null);
 
   return (
     <div className=" animate-slide fixed z-20 bg-black top-[85px] sm:top-[90px] translate-x-1/2 right-1/2 w-[90%] sm:w-[70%]  md:w-[60%] h-[500px]  p-2 sm:p-6 rounded shadow-sm shadow-white">
@@ -22,6 +23,7 @@ const UploadVideoModal = ({setShowUploadModal,videos,imp}) => {
             <RxCross2 className="text-2xl font-bold" />
           </button>
         </div>
+        <div className="flex gap-2">
         {/* UPLOAD VIDEO */}
         <div className="border py-2 flex  flex-col gap-2 justify-center w-full text-center">
           {/* ICONS */}
@@ -31,7 +33,7 @@ const UploadVideoModal = ({setShowUploadModal,videos,imp}) => {
           <p className="text-sm">
             <label htmlFor="video">
             <span className="text-[#9747FF] cursor-pointer">
-              Click to upload{" "}
+              Click to upload Video{" "}
             </span>
             <input
                 id="video"
@@ -46,12 +48,38 @@ const UploadVideoModal = ({setShowUploadModal,videos,imp}) => {
             or drag and drop
           </p>
         </div>
+        {/* UPLOAD THUMBNAIL */}
+        { imp && <div className="border py-2 flex  flex-col gap-2 justify-center w-full text-center">
+          {/* ICONS */}
+          <span>
+            <TbCloudUpload className="w-full font-bold text-4xl text-center" />
+          </span>
+          <p className="text-sm">
+            <label htmlFor="thumbnail">
+            <span className="text-[#9747FF] cursor-pointer">
+              Click to upload Thumbnail{" "}
+            </span>
+            <input
+                id="thumbnail"
+                required
+                type="file"
+                className="hidden"
+                onChange={(e)=>{
+                  setThumbnail(e.target.files[0])
+                }}
+              />
+            </label>
+            or drag and drop
+          </p>
+        </div>}
+        </div>
         {/* UPLOAD DETAILS */}
         <div className="overflow-y-auto">
           <UploadDetailsModal
           imp={imp}
           video={video}
           videos={videos}
+          thumbnail={thumbnail}
           onClose={setShowUploadModal}
           />
         </div>

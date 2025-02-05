@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { format } from 'timeago.js';
+import React, { useState, useRef, useEffect } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { format } from "timeago.js";
 
-const HomeCard = ({ video ,className,w }) => {
+const HomeCard = ({ video, className, w }) => {
   const videoRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -10,7 +10,8 @@ const HomeCard = ({ video ,className,w }) => {
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
-  const navigate=useNavigate();
+  const [showThumbnail, setShowThumbnail] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (videoRef.current) {
@@ -24,6 +25,7 @@ const HomeCard = ({ video ,className,w }) => {
   };
 
   const handleMouseEnter = () => {
+    setShowThumbnail(false)
     setIsHovered(true);
     if (videoRef.current) {
       videoRef.current.play().catch(() => {
@@ -33,6 +35,7 @@ const HomeCard = ({ video ,className,w }) => {
   };
 
   const handleMouseLeave = () => {
+    setShowThumbnail(true)
     setIsHovered(false);
     if (videoRef.current) {
       videoRef.current.pause();
@@ -63,36 +66,47 @@ const HomeCard = ({ video ,className,w }) => {
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   // console.log(video)
 
   return (
-    <div className={`flex flex-col shadow-sm sm:shadow-black shadow-white gap-2 w-full cursor-pointer ${className}`}>
-      <div 
+    <div
+      className={`flex flex-col shadow-sm sm:shadow-black shadow-white gap-2 w-full cursor-pointer ${className}`}
+    >
+      <div
         className="relative group rounded-xl overflow-hidden"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-       onClick={()=>{
-        navigate(`/video/${video?.slug}`)
-       }}
+        onClick={() => {
+          navigate(`/video/${video?.slug}`);
+        }}
       >
-        <video
-          ref={videoRef}
-          src={video?.videoFile}
-          className="w-full h-[200px] object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
-          onTimeUpdate={handleTimeUpdate}
-          // muted={isMuted}
-          loop
-          playsInline
-        />
+        {
+          showThumbnail && (
+            <img src={video?.thumbnail} alt={video?.title}
+            className="w-full h-[200px] object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+            />
+          )
+        }
+        { !showThumbnail &&
+          <video
+            ref={videoRef}
+            src={video?.videoFile}
+            className="w-full h-[200px] object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+            onTimeUpdate={handleTimeUpdate}
+            // muted={isMuted}
+            loop
+            playsInline
+          />
+        }
 
         {/* Overlay with controls (only visible on hover) */}
         {isHovered && (
           <div className="absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300">
             {/* Volume controls */}
-            <div 
+            <div
               className="absolute top-4 right-4 flex items-center gap-2"
               // onMouseEnter={() => setIsVolumeSliderVisible(true)}
               // onMouseLeave={() => setIsVolumeSliderVisible(false)}
@@ -105,7 +119,7 @@ const HomeCard = ({ video ,className,w }) => {
                   {/* {isMuted ? '🔇' : volume < 0.5 ? '🔉' : '🔊'} */}
                 </span>
               </button>
-              
+
               {/* Volume slider */}
               {isVolumeSliderVisible && (
                 <div className="bg-black bg-opacity-50 rounded-full p-2 transition-all duration-200">
@@ -127,7 +141,7 @@ const HomeCard = ({ video ,className,w }) => {
               <div className="flex items-center gap-2 text-white text-xs">
                 <span>{formatTime(currentTime)}</span>
                 <div className="flex-1 h-1 bg-gray-600 rounded-full">
-                  <div 
+                  <div
                     className="h-full bg-white rounded-full"
                     style={{ width: `${(currentTime / duration) * 100}%` }}
                   />
@@ -149,22 +163,23 @@ const HomeCard = ({ video ,className,w }) => {
       {/* Video details */}
       <div className="flex items-start gap-3 p-2">
         <Link to={`/${video?.owner?.username}`}>
-        <img
-          src={video?.owner?.avatar || "/Main/Avatar.png"}
-          className="w-9 h-9 rounded-full object-cover"
-          loading="lazy"
-          alt=""
-        />
+          <img
+            src={video?.owner?.avatar || "/Main/Avatar.png"}
+            className="w-9 h-9 rounded-full object-cover"
+            loading="lazy"
+            alt=""
+          />
         </Link>
         <div className="flex-1 min-w-0">
           <Link to={`/video/${video?.slug}`}>
-          <h2 
-           onClick={()=>{
-            navigate(`/video/${video?.slug}`)
-          }}
-          className="text-sm font-medium line-clamp-2 mb-1">
-            {video?.title || "Video Title"}
-          </h2>
+            <h2
+              onClick={() => {
+                navigate(`/video/${video?.slug}`);
+              }}
+              className="text-sm font-medium line-clamp-2 mb-1"
+            >
+              {video?.title || "Video Title"}
+            </h2>
           </Link>
           <Link to={`/${video?.owner?.username}`}>
             <p className="text-sm text-gray-500 hover:text-gray-700">

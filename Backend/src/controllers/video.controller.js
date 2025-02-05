@@ -11,52 +11,58 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const uploadVideo = asyncHandler(async (req, res) => {
   // GET DATA FROM USER
-
   const { title, description, category, isPublic } = req.body;
 
   // CHECK VALIDATION FOR DATA
-
   if ([title, description].some((field) => field?.trim() === "")) {
     throw new Error("All fields are required");
   }
-  // CHECK FOR VIDEO
 
-  const videoLocalPath = req.file?.path;
+  // CHECK FOR VIDEO FILE
+  const videoLocalPath = req.files?.video?.[0]?.path;
   if (!videoLocalPath) {
-    throw new ApiError(400, "videoLocalPath file is required");
+    throw new ApiError(400, "Video file is required");
   }
 
-  // UPLOAD CLOUDINARY
-
+  // UPLOAD VIDEO TO CLOUDINARY
   const videoURL = await uploadCloudinary(videoLocalPath);
 
-  // VALDATION CLOUDINARY VIDEO
-
+  // VALIDATE VIDEO UPLOAD
   if (!videoURL) {
-    throw new ApiError(400, "video file is required");
+    throw new ApiError(400, "Failed to upload video");
   }
 
-  //  SLUG LOGIC
-
+  // SLUG LOGIC
   let slug = req.body.title.replace(/ /g, "-").toLowerCase();
   let existSlug = await Video.findOne({ slug });
   let counter = 2;
-
   while (existSlug) {
     slug = `${slug}-${counter}`;
     existSlug = await Video.findOne({ slug });
     counter++;
   }
+
   console.log(slug);
 
-  // CREATE THUMBNAI
+  // CHECK FOR USER-DEFINED THUMBNAIL
+  let thumbnailUrl;
+  const thumbnailLocalPath = req.files?.thumbnail?.[0]?.path;
 
-  const thumbnailUrl = videoURL?.url
-    .replace("/upload/", "/upload/so_1,w_600,c_fill/")
-    .replace(".mp4", ".jpg");
+  if (thumbnailLocalPath) {
+    // Agar user ne thumbnail diya hai toh upload karo
+    const uploadedThumbnail = await uploadCloudinary(thumbnailLocalPath);
+    if (!uploadedThumbnail) {
+      throw new ApiError(400, "Failed to upload thumbnail");
+    }
+    thumbnailUrl = uploadedThumbnail.url;
+  } else {
+    // Agar user ne thumbnail nahi diya toh Cloudinary ka auto-generated thumbnail lo
+    thumbnailUrl = videoURL?.url
+      .replace("/upload/", "/upload/so_1,w_600,c_fill/")
+      .replace(".mp4", ".jpg");
+  }
 
   // CREATE NEW VIDEO DOCUMENT
-
   const video = await Video.create({
     title,
     description,
@@ -73,12 +79,12 @@ export const uploadVideo = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to create video");
   }
 
-  // RETURN RSPONSE
-
+  // RETURN RESPONSE
   return res
     .status(201)
     .json(new ApiResponse(201, video, "Video uploaded successfully"));
 });
+
 
 // GET ALL VIDEOS
 
@@ -224,13 +230,6 @@ export const updateVideo = asyncHandler(async (req, res) => {
   // Generate new thumbnail URL only if video is updated
   const newUpdatedVideoURL = updatedVideoURL || video.videoFile;
 
-  // Ensure newUpdatedVideoURL is a string before applying replace
-  const thumbnailUrl =
-    typeof newUpdatedVideoURL === "string"
-      ? newUpdatedVideoURL
-          .replace("/upload/", "/upload/so_1,w_600,c_fill/")
-          .replace(".mp4", ".jpg")
-      : video.thumbnail; // fallback to existing thumbnail if video is not updated
 
   // UPDATE VIDEO
   const updatedVideo = await Video.findByIdAndUpdate(
@@ -242,7 +241,6 @@ export const updateVideo = asyncHandler(async (req, res) => {
       slug: video?.slug,
       isPublic: req.body.isPublic || video?.isPublic,
       videoFile: newUpdatedVideoURL || video.videoFile, // Ensure videoFile is updated only if a new file is provided
-      thumbnail: thumbnailUrl,
     },
     { new: true }
   );
