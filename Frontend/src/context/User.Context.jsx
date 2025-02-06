@@ -1,240 +1,273 @@
-import axios from "axios"
-import { createContext, useContext, useState, useCallback, useMemo } from "react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import axios from "axios";
+import { createContext, useContext, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-const UserContext = createContext(null)
-const BASE_URL = "https://play-lgud.onrender.com/api/v1/users"
+const UserContext = createContext();
+const BASE_URL = "https://play-lgud.onrender.com/api/v1/users";
 
 export const UserProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const queryClient = useQueryClient()
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const queryClient = useQueryClient();
 
-  const signupUserMutation = useMutation({
-    mutationFn: (data) => axios.post(`${BASE_URL}/signup`, data),
-    onSuccess: (data) => {
-      console.log(data)
+  // SIGN USER
+
+  const signupUser = useMutation({
+    mutationFn: async (data) => {
+      const res = await axios.post(`${BASE_URL}/register`, data);
+      return res.data;
     },
-  })
+  });
 
-  const signupUser = (data) => {
-    signupUserMutation.mutate(data)
-  }
+  // SIGNUP USER
 
-  const verifiedOTPMutation = useMutation({
-    mutationFn: (data) => axios.post(`${BASE_URL}/verify-otp`, data),
-    onSuccess: (data) => {
-      console.log(data)
+  const signinUser = useMutation({
+    mutationKey: ["user"],
+    mutationFn: async (data) => {
+      const res = await axios.post(`${BASE_URL}/login`, data);
+      // console.log(res);
+      return res.data;
     },
-  })
-
-  const verifiedOTP = (data) => {
-    verifiedOTPMutation.mutate(data)
-  }
-
-  const signinUserMutation = useMutation({
-    mutationFn: (data) => axios.post(`${BASE_URL}/signin`, data),
-    onSuccess: (data) => {
-      setIsAuthenticated(true)
-      queryClient.setQueryData(["user"], data.data)
+    onSuccess: () => {
+      queryClient.invalidateQueries(["user"]);
     },
-  })
+  });
 
-  const signinUser = (data) => {
-    signinUserMutation.mutate(data)
-  }
+  // VERIFIED USER
 
-  const resendOTPMutation = useMutation({
-    mutationFn: (data) => axios.post(`${BASE_URL}/resend-otp`, data),
-    onSuccess: (data) => {
-      console.log(data)
+  const verifiedOTP = useMutation({
+    mutationFn: async ({ getOtp, data }) => {
+      const res = await axios.post(`${BASE_URL}/verify-email`, {
+        otp: getOtp,
+        userId: data?._id,
+      });
+      return res.data;
     },
-  })
+  });
 
-  const resendOTP = (data) => {
-    resendOTPMutation.mutate(data)
-  }
+  // RESEND OTP
+
+  const resendOTP = useMutation({
+    mutationFn: async ({ data }) => {
+      const res = await axios.post(`${BASE_URL}/resend-email`, {
+        userId: data?._id,
+        email: data?.email,
+      });
+      return res.data;
+    },
+  });
+
+  // GET USER
 
   const {
     data: user,
-    isLoading: userLoading,
     error: userError,
+    isLoading: userLoading,
   } = useQuery({
     queryKey: ["user"],
-    queryFn: () => axios.get(`${BASE_URL}/profile`).then((res) => res.data),
-    enabled: isAuthenticated,
-  })
+    queryFn: async () => {
+      // console.log(document.cookie)
+      const res = await axios.get(`${BASE_URL}/me`, {
+        withCredentials: true, // Allow cookies to be sent
+      });
+      // console.log("res");
+      return res.data;
+    },
+    retry: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
+
+  // LOGOUT USER
 
   const logoutMutation = useMutation({
-    mutationFn: () => axios.post(`${BASE_URL}/logout`),
-    onSuccess: () => {
-      setIsAuthenticated(false)
-      queryClient.removeQueries(["user"])
+    mutationFn: async () => {
+      const res = await axios.post(`${BASE_URL}/logout`);
+      return res.data;
     },
-  })
-
-  const channelDataAPI = useCallback(async (id) => {
-    const { data } = await axios.get(`/api/v1/channels/${id}`)
-    return data
-  }, [])
-
-  const updateUserDetailsMutation = useMutation({
-    mutationFn: (data) => axios.put(`${BASE_URL}/update-details`, data),
     onSuccess: () => {
-      queryClient.invalidateQueries(["user"])
+      queryClient.invalidateQueries(["user"]);
+      queryClient.removeQueries(["user"]);
+      setIsAuthenticated(false);
     },
-  })
+  });
 
-  const updateUserDetails = (data) => {
-    updateUserDetailsMutation.mutate(data)
-  }
+  // CHANNEL DATA
 
-  const updateUserAvatarMutation = useMutation({
-    mutationFn: (data) => axios.put(`${BASE_URL}/update-avatar`, data),
+  const channelDataAPI = async (username) => {
+    const res  = await axios.get(`${BASE_URL}/user/${username}`, {
+      withCredentials: true, // Allow cookies to be sent
+    });
+    return res.data
+  };
+
+  // UPDATE USER
+
+  const updateUserDetails = useMutation({
+    mutationKey: ["user", "channelProfile"],
+    mutationFn: async (data) => {
+      const res = await axios.patch(`${BASE_URL}/update-account`, data, {
+        withCredentials: true, // Allow cookies to be sent
+      });
+      return res.data;
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(["user"])
+      queryClient.invalidateQueries(["user", "channelProfile"]);
     },
-  })
+  });
 
-  const updateUserAvatar = (data) => {
-    updateUserAvatarMutation.mutate(data)
-  }
+  // UPDATE AVATAR
 
-  const updateUserCoverImgMutation = useMutation({
-    mutationFn: (data) => axios.put(`${BASE_URL}/update-cover-img`, data),
+  const updateUserAvatar = useMutation({
+    mutationKey: ["user", "channelProfile"],
+    mutationFn: async (data) => {
+      const res = await axios.patch(`${BASE_URL}/update-avatar`, data, {
+        withCredentials: true, // Allow cookies to be sent
+      });
+      return res.data;
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(["user"])
+      queryClient.invalidateQueries(["user", "channelProfile"]);
     },
-  })
+  });
 
-  const updateUserCoverImg = (data) => {
-    updateUserCoverImgMutation.mutate(data)
-  }
+  // UPDATE COVER IMAGE
 
-  const { data: likedVideos } = useQuery({
-    queryKey: ["likedVideos"],
-    queryFn: () => axios.get(`${BASE_URL}/liked-videos`).then((res) => res.data),
-    enabled: isAuthenticated,
-  })
-
-  const { data: dislikedVideos } = useQuery({
-    queryKey: ["dislikedVideos"],
-    queryFn: () => axios.get(`${BASE_URL}/disliked-videos`).then((res) => res.data),
-    enabled: isAuthenticated,
-  })
-
-  const {
-    data: history,
-    isLoading: historyLoading,
-    error: historyError,
-  } = useQuery({
-    queryKey: ["history"],
-    queryFn: () => axios.get(`${BASE_URL}/history`).then((res) => res.data),
-    enabled: isAuthenticated,
-  })
-
-  const deleteHistoryMutation = useMutation({
-    mutationFn: (id) => axios.delete(`${BASE_URL}/history/${id}`),
+  const updateUserCoverImg = useMutation({
+    mutationKey: ["user", "channelProfile"],
+    mutationFn: async (data) => {
+      const res = await axios.patch(`${BASE_URL}/update-coverImage`, data, {
+        withCredentials: true, // Allow cookies to be sent
+      });
+      return res.data;
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(["history"])
+      queryClient.invalidateQueries(["user", "channelProfile"]);
     },
-  })
+  });
 
-  const deleteHistory = (id) => {
-    deleteHistoryMutation.mutate(id)
-  }
+  // LIKED VIDEOS
 
-  const deleteAllHistoryMutation = useMutation({
-    mutationFn: () => axios.delete(`${BASE_URL}/history`),
+  const likedVideos = useMutation({
+    mutationKey: ["likedVideos", user?.message],
+    mutationFn: async (video) => {
+      const videoId = video?._id;
+      const res = await axios.post(
+        `${BASE_URL}/liked-video`,
+        { videoId },
+        {
+          withCredentials: true, // Allow cookies to be sent
+        }
+      );
+      return res.data;
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(["history"])
+      queryClient.invalidateQueries(["likedVideos", "user"]);
     },
-  })
+  });
 
-  const deleteAllHistory = () => {
-    deleteAllHistoryMutation.mutate()
-  }
+  // DISLIKED VIDEOS
 
-  const pauseHistoryMutation = useMutation({
-    mutationFn: (id) => axios.put(`${BASE_URL}/history/${id}/pause`),
+  const dislikedVideos = useMutation({
+    mutationKey: ["dislikedVideos", user?.message],
+    mutationFn: async (video) => {
+      const videoId = video?._id;
+      const res = await axios.post(
+        `${BASE_URL}/dis-liked-video`,
+        { videoId },
+        {
+          withCredentials: true, // Allow cookies to be sent
+        }
+      );
+      return res.data;
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(["history"])
+      queryClient.invalidateQueries(["dislikedVideos", "user"]);
     },
-  })
+  });
 
-  const pauseHistory = (id) => {
-    pauseHistoryMutation.mutate(id)
-  }
+    // GET HISTORY
 
-  const {
-    data: community,
-    isLoading: communityLoading,
-    error: communityError,
-  } = useQuery({
-    queryKey: ["community"],
-    queryFn: () => axios.get(`${BASE_URL}/community`).then((res) => res.data),
-    enabled: isAuthenticated,
-  })
+    const getHistory = async ()=>{
+      const res = await axios.get(`${BASE_URL}/history`)
+      return res.data;
+    }
 
-  const getHistory = history
-  const getCommunity = community
+    // DELETE HISTORY
 
-  const contextValue = useMemo(
-    () => ({
-      signupUser,
-      verifiedOTP,
-      signinUser,
-      resendOTP,
-      user,
-      userError,
-      userLoading,
-      logoutMutation,
-      isAuthenticated,
-      setIsAuthenticated,
-      channelDataAPI,
-      updateUserDetails,
-      updateUserAvatar,
-      updateUserCoverImg,
-      likedVideos,
-      dislikedVideos,
-      getHistory,
-      deleteHistory,
-      deleteAllHistory,
-      pauseHistory,
-      getCommunity,
-    }),
-    [
-      signupUser,
-      verifiedOTP,
-      signinUser,
-      resendOTP,
-      user,
-      userError,
-      userLoading,
-      logoutMutation,
-      isAuthenticated,
-      channelDataAPI,
-      updateUserDetails,
-      updateUserAvatar,
-      updateUserCoverImg,
-      likedVideos,
-      dislikedVideos,
-      getHistory,
-      deleteHistory,
-      deleteAllHistory,
-      pauseHistory,
-      getCommunity,
-      setIsAuthenticated,
-    ],
-  )
+    const deleteHistory = useMutation({
+      mutationFn: async (playlistId) => {
+        const res = await axios.delete(`${BASE_URL}/history/${playlistId}`)
+        return res.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["history"]);
+      }
+    })
 
-  return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
-}
+    // DELETE ALL HISTORY
 
-export const useUser = () => {
-  const context = useContext(UserContext)
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider")
-  }
-  return context
-}
+    const deleteAllHistory = useMutation({
+      mutationFn: async () => {
+        const res = await axios.get(`${BASE_URL}/history/all`)
+        // console.log(res)
+        return res.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["history"]);
+      }
+    })
 
+    // PAUSE HISTORY
+
+    const pauseHistory = useMutation({
+      mutationFn: async () => {
+        const res = await axios.patch(`${BASE_URL}/history/pause`)
+        return res.data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["history"]);
+      }
+    })
+
+    // GET COMMUNITY
+
+    const getCommunity = async () => {
+      const res = await axios.get(`${BASE_URL}/community`, {
+        withCredentials: true, // Allow cookies to be sent
+      });
+      return res.data;
+    };
+
+
+  return (
+    <UserContext.Provider
+      value={{
+        signupUser,
+        verifiedOTP,
+        signinUser,
+        resendOTP,
+        user,
+        userError,
+        userLoading,
+        logoutMutation,
+        isAuthenticated,
+        setIsAuthenticated,
+        channelDataAPI,
+        updateUserDetails,
+        updateUserAvatar,
+        updateUserCoverImg,
+        likedVideos,
+        dislikedVideos,
+        getHistory,
+        deleteHistory,
+        deleteAllHistory,
+        pauseHistory,
+        getCommunity
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export const useUser = () => useContext(UserContext);

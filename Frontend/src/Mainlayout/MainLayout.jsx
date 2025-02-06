@@ -10,10 +10,8 @@ const MainLayout = () => {
   useEffect(() => {
     if (user) {
       setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
     }
-  }, [user, setIsAuthenticated]);
+  }, [user]);
 
   if (userLoading) return <Loader />;
 

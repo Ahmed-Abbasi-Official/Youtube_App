@@ -1,198 +1,200 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import axios from "axios"
-import { createContext, useContext, useState, useMemo, useCallback } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { createContext, useContext, useState } from "react";
+import { useParams } from "react-router-dom";
 
-const VideoContext = createContext(null)
-const BASE_URL = "https://play-lgud.onrender.com/api/v1/videos"
+const VideoContext = createContext();
+const BASE_URL = "https://play-lgud.onrender.com/api/v1/videos";
 
 export const VideoProvider = ({ children }) => {
-  const queryClient = useQueryClient()
-  const [abortController, setAbortController] = useState(null)
+  const queryClient = useQueryClient();
+  const [abortController, setAbortController] = useState(null);
+
+  // UPLOAD VIDEO
 
   const uploadVideo = useMutation({
     mutationFn: async (data) => {
-      const controller = new AbortController()
-      setAbortController(controller)
-      const res = await axios.post(`${BASE_URL}/upload-video`, data, {
-        withCredentials: true,
-        signal: controller.signal,
-      })
-      return res.data
+      const controller = new AbortController(); // Create abort controller
+      setAbortController(controller); // Save controller
+      const res = await axios.post(`${BASE_URL}/upload-video`,data,{
+        withCredentials:true,
+        signal: controller.signal, // Pass signal for cancellation
+      });
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["videos"])
-    },
-  })
-
-  const cancelUpload = useCallback(() => {
-    if (abortController) {
-      abortController.abort()
-      uploadVideo.reset()
-      console.log("Upload cancelled.")
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["videos"]) ;
     }
-  }, [abortController, uploadVideo])
+  })
+  
+   // ✅ CANCEL UPLOADING 
 
-  const {
-    data: allVideos,
-    error: allVideosError,
-    isLoading: allVideosLoading,
-  } = useQuery({
+   const cancelUpload = () => {
+    if (abortController) {
+      abortController.abort(); // Cancel request
+      uploadVideo.reset(); // Reset mutation state
+      console.log("Upload cancelled.");
+    }
+  };
+
+  // GET ALL VIDEOS
+
+  const {data:allVideos , error:allVideosError , isLoading:allVideosLoading} = useQuery({
     queryKey: ["videos"],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}`)
-      return res.data
+      const res = await axios.get(`${BASE_URL}`);
+      return res.data;
     },
-    retry: false,
-    staleTime: Number.POSITIVE_INFINITY,
-    cacheTime: Number.POSITIVE_INFINITY,
-  })
+    retry: false, // Prevent retry on failure
+    staleTime: Infinity, // Data is considered fresh indefinitely, preventing unnecessary refetches
+    cacheTime: Infinity, // Cache will persist indefinitely
+  });
+
+   // GET USER VIDEO   
 
   const userVideos = useMutation({
     mutationFn: async (username) => {
-      const res = await axios.get(`${BASE_URL}/user/${username}`)
-      return res.data
+      // console.log(username)
+      const res = await axios.get(`${BASE_URL}/user/${username}`);
+      return res.data;
     },
   })
 
-  const fetchSingleVideo = useCallback(async (slug) => {
-    const res = await axios.get(`${BASE_URL}/${slug}`)
-    return res.data
-  }, [])
+  // GET SINGLE VIDEOS
+
+  const fetchSingleVideo = async (slug) => {
+    const res = await axios.get(`${BASE_URL}/${slug}`);
+    return res.data;
+  };
+
+  // DELETE VIDEO
 
   const deleteVideo = useMutation({
     mutationFn: async (videoId) => {
-      const res = await axios.delete(`${BASE_URL}/${videoId}`)
-      return res.data
+      const res = await axios.delete(`${BASE_URL}/${videoId}`);
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["videos"])
-    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["videos"]) ;
+    }
   })
+
+  // UPDATE VIDEO
 
   const updateVideo = useMutation({
     mutationFn: async ({ videoId, data }) => {
       const res = await axios.patch(`${BASE_URL}/user/update/${videoId}`, data, {
         withCredentials: true,
-      })
-      return res.data
+        // signal: controller.signal,
+      });
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["videos"])
-    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["videos"]) ;
+    }
   })
 
-  const { data: dashboardData } = useQuery({
+  // GET DASHBOARD
+
+  const dashboardData = useQuery({
     queryKey: ["dashboard"],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}/dashboard/data`, {
+      const res = await axios.get(`${BASE_URL}/dashboard/data`,{
         withCredentials: true,
-      })
-      return res.data
+      });
+      // console.log(res.data)
+      return res.data;
     },
-    retry: false,
-    staleTime: Number.POSITIVE_INFINITY,
-    cacheTime: Number.POSITIVE_INFINITY,
+    retry: false, // Prevent retry on failure
+    staleTime: Infinity, // Data is considered fresh indefinitely, preventing unnecessary refetches
+    cacheTime: Infinity, // Cache will persist indefinitely
   })
 
+  // TOGGLE SUBSCRIPTION
+
   const toggleSubscription = useMutation({
-    mutationFn: async ({ videoId }) => {
+    mutationFn: async ({videoId}) => {
       const channelId = videoId
-      const res = await axios.get(`${BASE_URL}/subscription/${channelId}`)
-      return res.data
+      // console.log(channelId)
+      const res = await axios.get(`${BASE_URL}/subscription/${channelId}`);
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["dashboard", "videos"])
-    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["dashboard","videos"]) ;
+    }
   })
+
+  // UNSUBS
 
   const unsubscribe = useMutation({
     mutationFn: async (channelId) => {
-      const res = await axios.post(`${BASE_URL}/unsubscription/${channelId}`, {
+      const res = await axios.post(`${BASE_URL}/unsubscription/${channelId}`,{
         withCredentials: true,
-      })
-      return res.data
+      });
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["dashboard", "videos", "user"])
-    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["dashboard","videos","user"]) ;
+    }
   })
+
+  // SUBS
 
   const subscribe = useMutation({
     mutationFn: async (channelId) => {
-      const res = await axios.post(`${BASE_URL}/subscription/${channelId}`, {
+      const res = await axios.post(`${BASE_URL}/subscription/${channelId}`,{
         withCredentials: true,
-      })
-      return res.data
+      });
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["dashboard", "videos", "user"])
-    },
+    onSuccess:()=>{
+      queryClient.invalidateQueries(["dashboard","videos","user"]) ;
+    }
   })
 
-  const fetchUserLikedVideos = useCallback(async () => {
-    const res = await axios.post(`${BASE_URL}/liked`, {
+  // LIKED VIDEOS USER
+
+  const fetchUserLikedVideos = async ()=>{
+    const res = await axios.post(`${BASE_URL}/liked`,{
       withCredentials: true,
-    })
-    return res.data
-  }, [])
-
-  const searchVideos = useCallback(async (query) => {
-    const res = await axios.get(`${BASE_URL}/videos/search?q=${query}`)
-    return res.data
-  }, [])
-
-  const fetchVideosByCategory = useCallback(async (category) => {
-    const res = await axios.get(`${BASE_URL}/videos/category/${category}`)
-    return res.data
-  }, [])
-
-  const contextValue = useMemo(
-    () => ({
-      allVideos,
-      allVideosError,
-      allVideosLoading,
-      userVideos,
-      uploadVideo,
-      cancelUpload,
-      fetchSingleVideo,
-      deleteVideo,
-      updateVideo,
-      dashboardData,
-      toggleSubscription,
-      fetchUserLikedVideos,
-      unsubscribe,
-      subscribe,
-      searchVideos,
-      fetchVideosByCategory,
-    }),
-    [
-      allVideos,
-      allVideosError,
-      allVideosLoading,
-      userVideos,
-      uploadVideo,
-      cancelUpload,
-      fetchSingleVideo,
-      deleteVideo,
-      updateVideo,
-      dashboardData,
-      toggleSubscription,
-      fetchUserLikedVideos,
-      unsubscribe,
-      subscribe,
-      searchVideos,
-      fetchVideosByCategory,
-    ],
-  )
-
-  return <VideoContext.Provider value={contextValue}>{children}</VideoContext.Provider>
-}
-
-export const useVideo = () => {
-  const context = useContext(VideoContext)
-  if (!context) {
-    throw new Error("useVideo must be used within a VideoProvider")
+    });
+    return res.data;
   }
-  return context
-}
 
+  // SEARCH
+
+  const searchVideos = async (query)=>{
+    const res = await axios.get(`${BASE_URL}/videos/search?q=${query}`);
+    return res.data;
+  }
+
+  // GET VIDEOS BY CAT
+
+  const fetchVideosByCategory = async (category)=>{
+    const res = await axios.get(`${BASE_URL}/videos/category/${category}`);
+    return res.data;
+  }
+
+  return <VideoContext.Provider value={{
+
+    allVideos,
+    allVideosError,
+    allVideosLoading,
+    userVideos,
+    uploadVideo,
+    cancelUpload,
+    fetchSingleVideo,
+    deleteVideo,
+    updateVideo,
+    dashboardData,
+    toggleSubscription,
+    fetchUserLikedVideos,
+    unsubscribe,
+    subscribe,
+    searchVideos,
+    fetchVideosByCategory
+
+  }}>{children}</VideoContext.Provider>;
+};
+
+export const useVideo = () => useContext(VideoContext);

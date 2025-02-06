@@ -1,72 +1,79 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import axios from "axios"
-import { createContext, useContext, useMemo, useCallback } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { createContext, useContext, useState } from "react";
 
-const CommentsContext = createContext(null)
-const BASE_URL = "https://play-lgud.onrender.com/api/v1/comments"
+const CommentsContext = createContext();
+const BASE_URL = "https://play-lgud.onrender.com/api/v1/comments";
 
 export const CommentsProvider = ({ children }) => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
-  const getComments = useCallback(async (videoId) => {
-    const res = await axios.get(`${BASE_URL}/${videoId}`)
-    return res.data
-  }, [])
+    // GET ALL COMMENTS   
+
+  const getComments = async(videoId)=>{
+    const res = await axios.get(`${BASE_URL}/${videoId}`);
+    // console.log(res)
+    return res.data;
+  };
+
+    // CREATE COMMENT
 
   const createComment = useMutation({
     mutationFn: async (data) => {
       const res = await axios.post(`${BASE_URL}/create-comment`, data, {
-        withCredentials: true,
-      })
-      return res.data
+        withCredentials: true,  // Allow cookies to be sent
+      });
+      queryClient.invalidateQueries(["comments"]);
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["comments"])
+    onSuccess: (data) => {
+      queryClient.setQueryData("comments");
     },
   })
+
+  // LIKED COMMENT
 
   const likeComment = useMutation({
     mutationFn: async (commentId) => {
       const res = await axios.patch(`${BASE_URL}/like-comment/${commentId}`, null, {
-        withCredentials: true,
-      })
-      return res.data
+        withCredentials: true,  // Allow cookies to be sent
+      });
+      queryClient.invalidateQueries(["comments"]);
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["comments"])
+    onSuccess: (data) => {
+      queryClient.setQueryData("comments");
     },
   })
+
+  // DELETE COMMENT
 
   const deleteComment = useMutation({
     mutationFn: async (commentId) => {
       const res = await axios.delete(`${BASE_URL}/comment-delete/${commentId}`, {
-        withCredentials: true,
-      })
-      return res.data
+        withCredentials: true,  // Allow cookies to be sent
+      });
+      return res.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["comments"])
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["comments"]);
     },
   })
 
-  const contextValue = useMemo(
-    () => ({
-      getComments,
-      createComment,
-      likeComment,
-      deleteComment,
-    }),
-    [getComments, createComment, likeComment, deleteComment],
-  )
+  return (
+    <CommentsContext.Provider
+      value={{
 
-  return <CommentsContext.Provider value={contextValue}>{children}</CommentsContext.Provider>
-}
+        getComments,
+        createComment,
+        likeComment,
+        deleteComment
 
-export const useComments = () => {
-  const context = useContext(CommentsContext)
-  if (!context) {
-    throw new Error("useComments must be used within a CommentsProvider")
-  }
-  return context
-}
+      }}
+    >
+      {children}
+    </CommentsContext.Provider>
+  );
+};
 
+export const useComments = () => useContext(CommentsContext);
