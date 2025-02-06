@@ -23,10 +23,11 @@ import { PlaylistProvider } from "./context/Playlist.Context";
 import { CommentsProvider } from "./context/Comment.Context";
 import LikedVideos from "./routes/LikedVideos";
 import WatchHistory from "./routes/WatchHistory";
-import PLaylists from "./routes/PLaylists";
+import Playlists from "./routes/PLaylists";
 import PlaylistVideos from "./components/PlaylistVideos";
 import SubscribersAndSubscribed from "./routes/SubscribersAndSubscribed";
 import Collection from "./routes/Collection";
+
 
 const queryClient = new QueryClient();
 
@@ -41,7 +42,7 @@ const router = createBrowserRouter(
       <Route path="/video/:slug" element={<SingleVideo />} />
       <Route path="/video/liked-videos" element={<LikedVideos />} />
       <Route path="/video/history" element={<WatchHistory />} />
-      <Route path="/video/playlist" element={<PLaylists />} />
+      <Route path="/video/playlist" element={<Playlists />} />
       <Route path="/video/playlist/:id" element={<PlaylistVideos />} />
       <Route path="/user/subcribers" element={<SubscribersAndSubscribed />} />
       <Route path="/collection" element={<Collection />} />
