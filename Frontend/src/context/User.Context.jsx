@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useCallback, useMemo } from "react
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 const UserContext = createContext(null)
-const BASE_URL = "/api/v1/users"
+const BASE_URL = "http://localhost:4000/api/v1/users"
 
 export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)

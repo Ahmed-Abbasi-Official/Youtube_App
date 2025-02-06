@@ -5,7 +5,7 @@ import axios from "axios"
 import { createContext, useContext, useMemo, useCallback } from "react"
 
 const PlaylistContext = createContext(null)
-const BASE_URL = "/api/v1/playlist"
+const BASE_URL = "http://localhost:4000/api/v1/playlist"
 
 export const PlaylistProvider = ({ children }) => {
   const queryClient = useQueryClient()

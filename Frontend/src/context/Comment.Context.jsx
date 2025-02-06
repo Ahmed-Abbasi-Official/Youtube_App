@@ -1,11 +1,9 @@
-"use client"
-
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { createContext, useContext, useMemo, useCallback } from "react"
 
 const CommentsContext = createContext(null)
-const BASE_URL = "/api/v1/comments"
+const BASE_URL = "http://localhost:4000/api/v1/comments"
 
 export const CommentsProvider = ({ children }) => {
   const queryClient = useQueryClient()

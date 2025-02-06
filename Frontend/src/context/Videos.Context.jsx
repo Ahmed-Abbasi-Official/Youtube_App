@@ -3,7 +3,7 @@ import axios from "axios"
 import { createContext, useContext, useState, useMemo, useCallback } from "react"
 
 const VideoContext = createContext(null)
-const BASE_URL = "/api/v1/videos"
+const BASE_URL = "http://localhost:4000/api/v1/videos"
 
 export const VideoProvider = ({ children }) => {
   const queryClient = useQueryClient()
