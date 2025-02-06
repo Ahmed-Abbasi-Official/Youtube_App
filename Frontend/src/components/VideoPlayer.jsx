@@ -24,7 +24,7 @@ import { useVideo } from "../context/Videos.Context";
 import EmojiPicker from "emoji-picker-react";
 import Comment from "./Comment";
 import { useComments } from "../context/Comment.Context";
-import Avatar from 'react-avatar';
+// import Avatar from 'react-avatar';
 import { useQuery } from "@tanstack/react-query";
 
 function VideoPlayer({ video }) {
@@ -409,7 +409,7 @@ function VideoPlayer({ video }) {
                 src={video?.owner?.avatar || ""}
                 className="md:w-12 md:h-12 w-10 h-10 sm:w-10 sm:h-10 bg-cover rounded-full"
               /> */}
-              <Avatar name={video?.owner?.fullName.slice(0,1)} size="40" round={true} />
+              {/* <Avatar name={video?.owner?.fullName.slice(0,1)} size="40" round={true} /> */}
               <input
                 type="text"
                 placeholder="Add a comment..."
