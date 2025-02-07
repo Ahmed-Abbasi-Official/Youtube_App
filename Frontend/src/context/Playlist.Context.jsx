@@ -12,7 +12,9 @@ export const PlaylistProvider = ({ children }) => {
   // FETCH PLAYLISTS
 
   const fetchPlaylists = async () => {
-    const res = await axios.get(`${BASE_URL}`);
+    const res = await axios.get(`${BASE_URL}`, {
+      withCredentials: true, // Allow cookies to be sent
+    });
     // console.log(res);
     return res.data;
   };
@@ -34,7 +36,9 @@ export const PlaylistProvider = ({ children }) => {
 
   const deletePlaylist=useMutation({
     mutationFn: async (playlistId) => {
-      const res = await axios.delete(`${BASE_URL}/${playlistId}`);
+      const res = await axios.delete(`${BASE_URL}/${playlistId}`,{
+        withCredentials: true,
+      });
       return res.data;
     },
     onSuccess: async () => {
@@ -62,7 +66,9 @@ export const PlaylistProvider = ({ children }) => {
   // GET SINGLE PLAYLIST
 
   const fetchSinglePlaylist = async (id)=>{
-      const res = await axios.get(`${BASE_URL}/playlist/${id}`)
+      const res = await axios.get(`${BASE_URL}/playlist/${id}`, {
+        withCredentials: true, // Allow cookies to be sent
+      })
       return res.data;
   } 
 

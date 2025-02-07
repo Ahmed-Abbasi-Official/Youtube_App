@@ -3,7 +3,7 @@ import axios from "axios";
 import { createContext, useContext, useState } from "react";
 
 const CommentsContext = createContext();
-const BASE_URL = "https://play-lgud.onrender.com/api/v1/comments";
+const BASE_URL = "https://play-lgud.onrender.com//api/v1/comments";
 
 export const CommentsProvider = ({ children }) => {
   const queryClient = useQueryClient();
@@ -11,7 +11,9 @@ export const CommentsProvider = ({ children }) => {
     // GET ALL COMMENTS   
 
   const getComments = async(videoId)=>{
-    const res = await axios.get(`${BASE_URL}/${videoId}`);
+    const res = await axios.get(`${BASE_URL}/${videoId}`, {
+      withCredentials: true, // Allow cookies to be sent
+    });
     // console.log(res)
     return res.data;
   };

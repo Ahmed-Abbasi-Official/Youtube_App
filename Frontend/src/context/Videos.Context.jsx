@@ -42,7 +42,9 @@ export const VideoProvider = ({ children }) => {
   const {data:allVideos , error:allVideosError , isLoading:allVideosLoading} = useQuery({
     queryKey: ["videos"],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}`);
+      const res = await axios.get(`${BASE_URL}`,{
+        withCredentials:true,
+      });
       return res.data;
     },
     retry: false, // Prevent retry on failure
@@ -55,7 +57,9 @@ export const VideoProvider = ({ children }) => {
   const userVideos = useMutation({
     mutationFn: async (username) => {
       // console.log(username)
-      const res = await axios.get(`${BASE_URL}/user/${username}`);
+      const res = await axios.get(`${BASE_URL}/user/${username}`,{
+        withCredentials:true,
+      });
       return res.data;
     },
   })
@@ -63,7 +67,9 @@ export const VideoProvider = ({ children }) => {
   // GET SINGLE VIDEOS
 
   const fetchSingleVideo = async (slug) => {
-    const res = await axios.get(`${BASE_URL}/${slug}`);
+    const res = await axios.get(`${BASE_URL}/${slug}`,{
+      withCredentials:true,
+    });
     return res.data;
   };
 
@@ -71,7 +77,9 @@ export const VideoProvider = ({ children }) => {
 
   const deleteVideo = useMutation({
     mutationFn: async (videoId) => {
-      const res = await axios.delete(`${BASE_URL}/${videoId}`);
+      const res = await axios.delete(`${BASE_URL}/${videoId}`,{
+        withCredentials:true,
+      });
       return res.data;
     },
     onSuccess:()=>{
@@ -116,7 +124,9 @@ export const VideoProvider = ({ children }) => {
     mutationFn: async ({videoId}) => {
       const channelId = videoId
       // console.log(channelId)
-      const res = await axios.get(`${BASE_URL}/subscription/${channelId}`);
+      const res = await axios.get(`${BASE_URL}/subscription/${channelId}`,{
+        withCredentials:true,
+      });
       return res.data;
     },
     onSuccess:()=>{
@@ -164,14 +174,18 @@ export const VideoProvider = ({ children }) => {
   // SEARCH
 
   const searchVideos = async (query)=>{
-    const res = await axios.get(`${BASE_URL}/videos/search?q=${query}`);
+    const res = await axios.get(`${BASE_URL}/videos/search?q=${query}`,{
+      withCredentials:true,
+    });
     return res.data;
   }
 
   // GET VIDEOS BY CAT
 
   const fetchVideosByCategory = async (category)=>{
-    const res = await axios.get(`${BASE_URL}/videos/category/${category}`);
+    const res = await axios.get(`${BASE_URL}/videos/category/${category}`,{
+      withCredentials:true,
+    });
     return res.data;
   }
 

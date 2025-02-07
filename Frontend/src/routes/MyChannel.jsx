@@ -32,7 +32,9 @@ const MyChannel = () => {
     isLoading: channelLoading,
   } = useQuery({
     queryKey: ["videos", params.username, sort], // Cache key
-    queryFn: () => channelDataAPI(`${params?.username}`),
+    queryFn: () => channelDataAPI(`${params?.username}`, {
+      withCredentials: true, // Allow cookies to be sent
+    }),
     // enabled: !!params?.username,
   });
 

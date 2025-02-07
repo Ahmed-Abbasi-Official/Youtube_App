@@ -6,7 +6,7 @@ import Modal from "./Modal";
 
 const MobileBar = ({setMobileBar}) => {
     const [showUser, setShowUser] = useState(false);
-    const { user, userError, userLoading } = useUser();
+    const { user, userError, userLoading , isAuthenticated } = useUser();
      const [modal, setModal] = useState(false);
 
     // GET COOKIES
@@ -57,7 +57,7 @@ const MobileBar = ({setMobileBar}) => {
       >
         {/* <span className={`text-lg ${elm?.class}`}>{elm.icon}</span> */}
        
-        {showUser ? (
+        {user ? (
               <img
                 src={user?.message?.avatar}
                 alt="User Image"

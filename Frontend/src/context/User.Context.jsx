@@ -23,7 +23,7 @@ export const UserProvider = ({ children }) => {
   const signinUser = useMutation({
     mutationKey: ["user"],
     mutationFn: async (data) => {
-      const res = await axios.post(`${BASE_URL}/login`, data);
+      const res = await axios.post(`${BASE_URL}/login`, data,{ withCredentials: true });
       // console.log(res);
       return res.data;
     },
@@ -66,9 +66,7 @@ export const UserProvider = ({ children }) => {
     queryKey: ["user"],
     queryFn: async () => {
       // console.log(document.cookie)
-      const res = await axios.get(`${BASE_URL}/me`, {
-        withCredentials: true, // Allow cookies to be sent
-      });
+      const res = await axios.get(`${BASE_URL}/me`, { withCredentials: true });
       // console.log("res");
       return res.data;
     },
@@ -81,7 +79,7 @@ export const UserProvider = ({ children }) => {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.post(`${BASE_URL}/logout`);
+      const res = await axios.post(`${BASE_URL}/logout`, { withCredentials: true });
       return res.data;
     },
     onSuccess: () => {
@@ -94,9 +92,7 @@ export const UserProvider = ({ children }) => {
   // CHANNEL DATA
 
   const channelDataAPI = async (username) => {
-    const res  = await axios.get(`${BASE_URL}/user/${username}`, {
-      withCredentials: true, // Allow cookies to be sent
-    });
+    const res  = await axios.get(`${BASE_URL}/user/${username}`);
     return res.data
   };
 
@@ -188,7 +184,7 @@ export const UserProvider = ({ children }) => {
     // GET HISTORY
 
     const getHistory = async ()=>{
-      const res = await axios.get(`${BASE_URL}/history`)
+      const res = await axios.get(`${BASE_URL}/history`, { withCredentials: true })
       return res.data;
     }
 
@@ -196,7 +192,7 @@ export const UserProvider = ({ children }) => {
 
     const deleteHistory = useMutation({
       mutationFn: async (playlistId) => {
-        const res = await axios.delete(`${BASE_URL}/history/${playlistId}`)
+        const res = await axios.delete(`${BASE_URL}/history/${playlistId}`, { withCredentials: true })
         return res.data;
       },
       onSuccess: () => {
@@ -208,7 +204,7 @@ export const UserProvider = ({ children }) => {
 
     const deleteAllHistory = useMutation({
       mutationFn: async () => {
-        const res = await axios.get(`${BASE_URL}/history/all`)
+        const res = await axios.get(`${BASE_URL}/history/all`, { withCredentials: true })
         // console.log(res)
         return res.data;
       },
@@ -234,7 +230,7 @@ export const UserProvider = ({ children }) => {
     const getCommunity = async () => {
       const res = await axios.get(`${BASE_URL}/community`, {
         withCredentials: true, // Allow cookies to be sent
-      });
+      })
       return res.data;
     };
 
