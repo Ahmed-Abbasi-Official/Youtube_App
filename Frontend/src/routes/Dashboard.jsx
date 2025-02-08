@@ -7,9 +7,13 @@ import { FaRegHeart } from "react-icons/fa";
 import { useVideo } from "../context/Videos.Context";
 
 const Dashboard = () => {
-  const { user, userError, userLoading } = useUser();
+  const { user, userError, userLoading , isAuthenticated } = useUser();
   const {dashboardData}=useVideo();
   const [showUploadModal, setShowUploadModal] = useState(false);
+
+  if(!isAuthenticated){
+    return <p>You must Login First</p>
+   }
 
   if (userLoading) {
     return <div>Loading...</div>;

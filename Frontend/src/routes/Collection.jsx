@@ -9,13 +9,18 @@ import { useRef, useState } from "react";
 import { usePlaylist } from "../context/Playlist.Context";
 
 export default function Collection() {
-  const { getHistory , user , userLoading  } = useUser();
+  const { getHistory , user , userLoading , isAuthenticated } = useUser();
   const {fetchPlaylists,deletePlaylist}=usePlaylist();
   const { fetchUserLikedVideos } = useVideo()
   const [hoveredVideoId, setHoveredVideoId] = useState(null)
   const [durations, setDurations] = useState({})
   const videoRefs = useRef({})
   const navigate = useNavigate();
+
+  
+  if(!isAuthenticated){
+    return <p>You must Login First</p>
+   }
 
    // GET HISTORIES
 

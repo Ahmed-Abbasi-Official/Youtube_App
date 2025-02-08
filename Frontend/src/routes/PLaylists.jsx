@@ -8,12 +8,18 @@ import { CgPlayList } from "react-icons/cg";
 import { format } from "timeago.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/User.Context";
 
 export default function Playlists() {
     const {fetchPlaylists,deletePlaylist}=usePlaylist();
+    const {isAuthenticated}=useUser();
     const [showPopUpId, setShowPopUpId] = useState(null);
     const navigate = useNavigate();
       // GET ALL PLAYLISTS
+
+      if(!isAuthenticated){
+        return <p>You must Login First</p>
+       }
 
   const { data: playlist, isLoading, error } = useQuery({
     queryKey: ["playlist"],

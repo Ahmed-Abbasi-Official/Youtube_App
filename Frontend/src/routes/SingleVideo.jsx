@@ -4,10 +4,16 @@ import VideoPlayer from '../components/VideoPlayer'
 import { useParams } from 'react-router-dom'
 import { useVideo } from '../context/Videos.Context'
 import { useQuery } from '@tanstack/react-query'
+import { useUser } from '../context/User.Context'
 
 const SingleVideo = () => {
+  const {isAuthenticated}=useUser();
   const {fetchSingleVideo}=useVideo();
   const {slug}=useParams()
+
+  if(!isAuthenticated){
+    return <p>Login First</p>
+  }
 
   // GET SINGLE VIDEO
 
@@ -18,7 +24,8 @@ const SingleVideo = () => {
   });
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching video </p>;
+  if (error){ console.log(error) 
+    return <p>Error fetching video </p>};
   if(!video) return <p>No Video Found</p>
 
   return (

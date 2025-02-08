@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import HistorySearchBar from "../components/HistorySearchBar";
 
 export default function WatchHistory() {
-  const { getHistory, deleteHistory, deleteAllHistory, pauseHistory } =
+  const { getHistory, deleteHistory,isAuthenticated, deleteAllHistory, pauseHistory } =
     useUser();
   const [hoveredVideoId, setHoveredVideoId] = useState(null);
   const [durations, setDurations] = useState({});
@@ -26,6 +26,10 @@ export default function WatchHistory() {
   const videoRefs = useRef({});
   const { id } = useParams();
   const navigate = useNavigate();
+
+  if(!isAuthenticated){
+   return <p>You must Login First</p>
+  }
 
   // GET HISTORIES
 

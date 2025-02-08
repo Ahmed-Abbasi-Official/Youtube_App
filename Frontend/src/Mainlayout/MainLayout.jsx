@@ -10,10 +10,14 @@ const MainLayout = () => {
   useEffect(() => {
     if (user) {
       setIsAuthenticated(true);
+    }else{
+      setIsAuthenticated(false)
     }
   }, [user]);
 
-  if (userLoading) return <Loader />;
+  // if (userLoading) return <Loader />;
+
+
 
   return (
     <div className="bg-[#000] text-white w-full h-[100vh]">

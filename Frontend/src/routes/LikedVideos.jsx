@@ -6,13 +6,19 @@ import { format } from "timeago.js"
 import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import millify from "millify";
+import { useUser } from "../context/User.Context"
 
 export default function LikedVideos() {
-  const { fetchUserLikedVideos } = useVideo()
+  const { fetchUserLikedVideos } = useVideo();
+  const {isAuthenticated}=useUser();
   const [hoveredVideoId, setHoveredVideoId] = useState(null)
   const [durations, setDurations] = useState({})
   const videoRefs = useRef({})
   const navigate = useNavigate()
+
+  if(!isAuthenticated){
+    return <p>You must Login First</p>
+   }
 
   // GET ALL LIKED VIDEOS
   const {

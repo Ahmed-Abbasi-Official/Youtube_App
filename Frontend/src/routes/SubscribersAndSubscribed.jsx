@@ -8,9 +8,13 @@ import {  useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SubscribersAndSubscribed = () => {
-  const {getCommunity,user} = useUser();
+  const {getCommunity,user , isAuthenticated} = useUser();
   const [toggleSubs , setToggleSubs] = useState(false);
   const navigate = useNavigate();
+
+  if(!isAuthenticated){
+    return <p>You must Login First</p>
+   }
   
   // GET COMMUNITY
 
