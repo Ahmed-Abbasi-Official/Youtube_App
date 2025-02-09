@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const VideoContext = createContext();
@@ -9,6 +9,16 @@ const BASE_URL = "https://play-lgud.onrender.com/api/v1/videos";
 export const VideoProvider = ({ children }) => {
   const queryClient = useQueryClient();
   const [abortController, setAbortController] = useState(null);
+
+   // ✅ Prefetch videos & dashboard data when provider mounts
+   useEffect(() => {
+    queryClient.prefetchQuery(["videos"], async () => {
+      const res = await axios.get(`${BASE_URL}`, { withCredentials: true });
+      return res.data;
+    });
+
+
+  }, [queryClient]); // Run once when component mounts
 
   // UPLOAD VIDEO
 
@@ -39,18 +49,22 @@ export const VideoProvider = ({ children }) => {
 
   // GET ALL VIDEOS
 
-  const {data:allVideos , error:allVideosError , isLoading:allVideosLoading} = useQuery({
+  const { data: allVideos, error: allVideosError, isLoading: allVideosLoading } = useQuery({
     queryKey: ["videos"],
     queryFn: async () => {
-      const res = await axios.get(`${BASE_URL}`,{
-        withCredentials:true,
+      const res = await axios.get(`${BASE_URL}`, {
+        withCredentials: true,
       });
       return res.data;
     },
     retry: false, // Prevent retry on failure
-    staleTime: Infinity, // Data is considered fresh indefinitely, preventing unnecessary refetches
+    staleTime: Infinity, // Data is considered fresh indefinitely
     cacheTime: Infinity, // Cache will persist indefinitely
+    initialData: () => {
+      return queryClient.getQueryData(["videos"]); // Use prefetched data
+    },
   });
+  
 
    // GET USER VIDEO   
 
