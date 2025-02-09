@@ -22,13 +22,20 @@ export default function Comment({ video }) {
     error,
   } = useQuery({
     queryKey: ["comments"],
-    queryFn: async () => {
-      return await getComments(video?._id);
-    },
-  });
+    queryFn: async()=> {
+      const res = await axios.get(`${BASE_URL}/${video?._id}`, {
+        withCredentials: true, // Allow cookies to be sent
+      }
+    )
+    return res.data;
+        
+  }});
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+  if(error){
+    return <p>Error in Fetching Comments</p>
   }
 
   // HANDLE LIKED COMMENT
