@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useVideo } from "../context/Videos.Context"
 import { useRef, useState } from "react";
 import { usePlaylist } from "../context/Playlist.Context";
+import axios from "axios";
 
 export default function Collection() {
   const { getHistory , user , userLoading , isAuthenticated } = useUser();
@@ -52,7 +53,12 @@ export default function Collection() {
     error:likedVideoError,
   } = useQuery({
     queryKey: ["video"],
-    queryFn: fetchUserLikedVideos,
+    queryFn: async ()=>{
+      const res = await axios.post(`https://play-lgud.onrender.com/api/v1/videos/liked` ,{userId:user?.message?._id}, {
+        withCredentials: true,
+      });
+      return res.data
+    }
   })
 
   const handleLoadedMetadata = (id, e) => {
