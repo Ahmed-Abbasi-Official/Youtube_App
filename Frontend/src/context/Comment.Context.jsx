@@ -3,7 +3,7 @@ import axios from "axios";
 import { createContext, useContext, useState } from "react";
 
 const CommentsContext = createContext();
-const BASE_URL = "https://play-lgud.onrender.com//api/v1/comments";
+const BASE_URL = "https://play-lgud.onrender.com/api/v1/comments";
 
 export const CommentsProvider = ({ children }) => {
   const queryClient = useQueryClient();

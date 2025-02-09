@@ -466,8 +466,8 @@ export const subs = asyncHandler(async (req, res) => {
 // LIKED VIDEOS
 
 export const userLikedVideo = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-  // console.log(req.user)
+  const userId = req.body.userId;
+  console.log(userId)
   if (!userId) {
     throw new ApiError(401, "User not authenticated");
   }

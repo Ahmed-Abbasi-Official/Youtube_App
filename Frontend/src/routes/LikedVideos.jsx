@@ -7,10 +7,11 @@ import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import millify from "millify";
 import { useUser } from "../context/User.Context"
+import axios from "axios"
 
 export default function LikedVideos() {
   const { fetchUserLikedVideos } = useVideo();
-  const {isAuthenticated}=useUser();
+  const {isAuthenticated,user}=useUser();
   const [hoveredVideoId, setHoveredVideoId] = useState(null)
   const [durations, setDurations] = useState({})
   const videoRefs = useRef({})
@@ -27,7 +28,12 @@ export default function LikedVideos() {
     error,
   } = useQuery({
     queryKey: ["video"],
-    queryFn: fetchUserLikedVideos,
+    queryFn: async ()=>{
+      const res = await axios.post(`https://play-lgud.onrender.com/api/v1/videos/liked` ,{userId:user?.message?._id}, {
+        withCredentials: true,
+      });
+      return res.data
+    }
   })
 
   if (isLoading) {
@@ -37,7 +43,7 @@ export default function LikedVideos() {
     console.error("Error fetching liked videos:", error)
     return <p> Error in Fetching </p>
   }
-  if (!likedVideo?.message?.likedVideos?.length) {
+  if (likedVideo?.message?.likedVideos?.length===0) {
     return <p>No liked videos yet</p>
   }
 
