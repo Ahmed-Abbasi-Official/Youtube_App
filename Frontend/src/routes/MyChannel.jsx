@@ -13,13 +13,12 @@ import axios from "axios";
 const MyChannel = () => {
   const {
     isAuthenticated,
-    channelDataAPI,
     user,
-    userLoading,
     updateUserDetails,
     updateUserAvatar,
     updateUserCoverImg,
   } = useUser();
+  const { userVideos, unsubscribe, subscribe } = useVideo();
   if(!isAuthenticated){
     return <p>You must login first</p>
   }
@@ -30,10 +29,10 @@ const MyChannel = () => {
   // Get query parameters
   const searchParams = new URLSearchParams(location.search);
   const sort = searchParams.get("sort");
-  
   const queryClient = useQueryClient();
   const [channelName, setChannelName] = useState("");
   const [username, setUsername] = useState("");
+  
   
   const {
     data: channelData,
@@ -47,11 +46,17 @@ const MyChannel = () => {
         `https://play-lgud.onrender.com/api/v1/users/user/${params.username}`,
         { withCredentials: true }
       );
+      console.log(res)
       return res.data;
     },
     enabled: !!params.username, // Run only if username is valid
   });
-  
+  if (channelLoading) return <p>Loading...</p>;
+  if (channelError) {
+    console.error("Error state:", channelError);
+    return <p>Error in fetching data</p>;
+  }
+ 
   useEffect(() => {
     if (channelData?.message) {
       setChannelName(channelData.message.fullName);
@@ -59,7 +64,7 @@ const MyChannel = () => {
     }
   }, [channelData]);
   
-  const { userVideos, unsubscribe, subscribe } = useVideo();
+  
   
   useEffect(() => {
     if (params.username) {
@@ -75,11 +80,7 @@ const MyChannel = () => {
     }
   }, [params.username, sort]);
   
-  if (channelLoading) return <p>Loading...</p>;
-  if (channelError) {
-    console.error("Error state:", channelError);
-    return <p>Error in fetching data</p>;
-  }
+
   
 
   const [isEditing, setIsEditing] = useState(false);
