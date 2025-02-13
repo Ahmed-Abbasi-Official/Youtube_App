@@ -8,6 +8,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { TbUserEdit } from "react-icons/tb";
 import { useVideo } from "../context/Videos.Context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 const MyChannel = () => {
   const {
@@ -18,31 +19,65 @@ const MyChannel = () => {
     updateUserAvatar,
     updateUserCoverImg,
   } = useUser();
+  
   const params = useParams();
   const location = useLocation();
-
+  
   // Get query parameters
   const searchParams = new URLSearchParams(location.search);
   const sort = searchParams.get("sort");
+  
   const queryClient = useQueryClient();
-
+  const [channelName, setChannelName] = useState("");
+  const [username, setUsername] = useState("");
+  
   const {
     data: channelData,
     error: channelError,
     isLoading: channelLoading,
   } = useQuery({
     queryKey: ["videos", params.username, sort], // Cache key
-    queryFn: () => channelDataAPI(`${params?.username}`, {
-      withCredentials: true, // Allow cookies to be sent
-    }),
-    // enabled: !!params?.username,
+    queryFn: async () => {
+      if (!params.username) return null;
+      const res = await axios.get(
+        `https://play-lgud.onrender.com/api/v1/users/user/${params.username}`,
+        { withCredentials: true }
+      );
+      return res.data;
+    },
+    enabled: !!params.username, // Run only if username is valid
   });
+  
+  useEffect(() => {
+    if (channelData?.message) {
+      setChannelName(channelData.message.fullName);
+      setUsername(channelData.message.username);
+    }
+  }, [channelData]);
+  
+  const { userVideos, unsubscribe, subscribe } = useVideo();
+  
+  useEffect(() => {
+    if (params.username) {
+      userVideos.mutate(`${params.username}?sort=${sort}`, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["videos"]);
+        },
+        onError: (error) => {
+          toast.error(error?.response?.data?.message);
+          console.error("Error fetching user videos:", error);
+        },
+      });
+    }
+  }, [params.username, sort]);
+  
+  if (channelLoading) return <p>Loading...</p>;
+  if (channelError) {
+    console.error("Error state:", channelError);
+    return <p>Error in fetching data</p>;
+  }
+  
 
-  const { userVideos, unsubscribe ,subscribe } = useVideo();
-  const [channelName, setChannelName] = useState(
-    channelData?.message?.fullName
-  );
-  const [username, setUsername] = useState(channelData?.message?.username);
   const [isEditing, setIsEditing] = useState(false);
   const [updateCover, setUpdateCover] = useState(null);
   const [updateAvatar, setUpdateAvatar] = useState(null);
@@ -52,9 +87,6 @@ const MyChannel = () => {
   const [showCoverBtn, setShowCoverBtn] = useState(true);
   const [showbtn , setShowBtn]=useState(false);
 
-  if (userLoading) {
-    return <p>Loading...</p>;
-  }
 
   // console.log(channelData)
 
@@ -73,8 +105,7 @@ const MyChannel = () => {
     channelData;
   }, [params.username, sort]);
 
-  if (channelError) return <p>Error in Fetching data {channelError} </p>;
-  if (channelLoading) return <p>Loading...</p>;
+  
 
   // HANDLE EDIT CLICK
 
