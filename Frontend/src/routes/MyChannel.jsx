@@ -12,6 +12,7 @@ import axios from "axios";
 
 const MyChannel = () => {
   const {
+    isAuthenticated,
     channelDataAPI,
     user,
     userLoading,
@@ -19,6 +20,9 @@ const MyChannel = () => {
     updateUserAvatar,
     updateUserCoverImg,
   } = useUser();
+  if(!isAuthenticated){
+    return <p>You must login first</p>
+  }
   
   const params = useParams();
   const location = useLocation();

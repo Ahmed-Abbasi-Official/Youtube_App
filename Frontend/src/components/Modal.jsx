@@ -11,7 +11,7 @@ const Modal = ({ setModal}) => {
     // HANDLE LOGOUT
 
     const handleLogout = () => {
-      logoutMutation.mutate(null, {
+      logoutMutation.mutate(user?.message?._id, {
         onSuccess: () => {
           navigate("/");
           toast.success("Logged Out Successfully");

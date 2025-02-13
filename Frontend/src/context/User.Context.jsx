@@ -78,14 +78,15 @@ export const UserProvider = ({ children }) => {
   // LOGOUT USER
 
   const logoutMutation = useMutation({
-    mutationFn: async () => {
-      const res = await axios.post(`${BASE_URL}/logout`, { withCredentials: true });
+    mutationFn: async (id) => {
+      console.log(id)
+      const res = await axios.post(`${BASE_URL}/logout`,{userId:id}, { withCredentials: true });
       return res.data;
     },
     onSuccess: () => {
+      setIsAuthenticated(false);
       queryClient.invalidateQueries(["user"]);
       queryClient.removeQueries(["user"]);
-      setIsAuthenticated(false);
     },
   });
 
