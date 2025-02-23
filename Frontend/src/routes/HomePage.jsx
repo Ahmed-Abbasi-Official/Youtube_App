@@ -9,7 +9,7 @@ const HomePage = () => {
       <HomeSideBar/>
       {/* Scrollable categories with custom scrollbar */}
       
-      {/* HOME MAIN BAR */}
+      {/* HOME MAIN BA */}
       <HomeMainBar/>
       </div>
   )
